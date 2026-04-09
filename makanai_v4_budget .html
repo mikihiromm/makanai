@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>賄いメニュー管理</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;color:#1a1a1a;background:#f5f5f0;padding:12px}
+.app{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;padding:16px;border:0.5px solid #ddd}
+.tabs{display:flex;margin-bottom:16px;border-bottom:0.5px solid #ddd}
+.tab{padding:10px 14px;font-size:14px;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;margin-bottom:-0.5px;flex:1;text-align:center}
+.tab.active{color:#1a1a1a;border-bottom-color:#1a1a1a;font-weight:500}
+.view{display:none}.view.active{display:block}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-head{font-size:11px;color:#888;text-align:center;padding:3px 0}
+.cal-day{min-height:62px;border:0.5px solid #ddd;border-radius:6px;padding:3px;cursor:pointer;background:#fff}
+.cal-day:active{background:#f5f5f0}
+.cal-day.today{border-color:#378ADD}
+.cal-day.empty{background:transparent;border-color:transparent;cursor:default}
+.day-num{font-size:10px;color:#888;margin-bottom:1px}
+.day-main{font-size:9px;background:#E1F5EE;color:#0F6E56;border-radius:3px;padding:1px 3px;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.day-side{font-size:9px;background:#FAEEDA;color:#854F0B;border-radius:3px;padding:1px 3px;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.month-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.month-nav h2{font-size:15px;font-weight:500;flex:1;text-align:center}
+.nav-btn{background:none;border:0.5px solid #ccc;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:14px;min-width:36px;min-height:36px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat{background:#f5f5f0;border-radius:8px;padding:10px 8px}
+.stat-label{font-size:11px;color:#888;margin-bottom:3px}
+.stat-val{font-size:18px;font-weight:500}
+.stat-val.over{color:#A32D2D}.stat-val.ok{color:#0F6E56}
+.menu-item{background:#fff;border:0.5px solid #ddd;border-radius:12px;margin-bottom:8px;overflow:hidden}
+.menu-header{padding:10px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;cursor:pointer}
+.menu-header:active{background:#f5f5f0}
+.menu-name{font-size:14px;font-weight:500}
+.menu-meta{font-size:12px;color:#888;margin-top:2px}
+.menu-arrow{font-size:11px;color:#888;transition:transform .2s;flex-shrink:0;padding-top:2px}
+.menu-arrow.open{transform:rotate(180deg)}
+.menu-detail{display:none;padding:0 12px 12px;border-top:0.5px solid #f0f0f0}
+.menu-detail.open{display:block}
+.recipe-section{margin-top:10px}
+.recipe-title{font-size:12px;font-weight:500;color:#888;margin-bottom:6px}
+.recipe-steps{font-size:13px;line-height:1.8;padding-left:16px}
+.recipe-steps li{margin-bottom:2px}
+.ing-table{width:100%;font-size:12px;border-collapse:collapse;margin-bottom:4px}
+.ing-table td{padding:3px 6px 3px 0;border-bottom:0.5px solid #f5f5f0;vertical-align:top}
+.ing-table td:last-child{text-align:right;color:#888;white-space:nowrap}
+.cost-pill{font-size:11px;font-weight:500;padding:2px 6px;border-radius:6px;white-space:nowrap}
+.cost-ok{background:#E1F5EE;color:#0F6E56}
+.cost-over{background:#FCEBEB;color:#A32D2D}
+.badge{font-size:10px;padding:2px 6px;border-radius:6px;font-weight:500;white-space:nowrap}
+.badge-green{background:#E1F5EE;color:#0F6E56}
+.badge-amber{background:#FAEEDA;color:#854F0B}
+.badge-blue{background:#E6F1FB;color:#185FA5}
+.badge-pink{background:#FBEAF0;color:#72243E}
+.badge-coral{background:#FAECE7;color:#712B13}
+.btn{border:0.5px solid #ccc;background:none;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;color:#1a1a1a;min-height:36px}
+.btn:active{background:#f5f5f0}
+.btn-primary{background:#1a1a1a;color:#fff;border-color:transparent}
+.btn-sm{padding:6px 10px;font-size:12px;min-height:32px}
+.btn-danger-sm{padding:6px 10px;font-size:12px;min-height:32px;color:#A32D2D;border-color:#f7c1c1}
+.form-group{margin-bottom:12px}
+label{font-size:13px;color:#888;display:block;margin-bottom:4px}
+input,select,textarea{width:100%;border:0.5px solid #ccc;border-radius:8px;padding:10px;font-size:16px;background:#fff;color:#1a1a1a;font-family:inherit;-webkit-appearance:none}
+textarea{height:80px;resize:vertical;font-size:14px}
+.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:16px 16px 0 0;padding:20px 16px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:16px;font-weight:500;margin-bottom:14px}
+.modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px}
+.divider{height:0.5px;background:#ddd;margin:10px 0}
+.ing-row{display:flex;gap:6px;margin-bottom:6px;align-items:center}
+.ing-row input{flex:2;font-size:14px;padding:8px}.ing-row input.amt{flex:1}.ing-row input.unit{flex:1}
+.del-btn{background:none;border:none;color:#888;cursor:pointer;font-size:18px;padding:4px 6px;min-width:32px}
+.cost-bar-wrap{height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-top:4px}
+.cost-bar{height:100%;border-radius:3px}
+.filter-row{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
+.filter-btn{font-size:12px;padding:6px 12px;border:0.5px solid #ccc;border-radius:20px;background:none;cursor:pointer;color:#888;white-space:nowrap;min-height:32px}
+.filter-btn.active{background:#1a1a1a;color:#fff;border-color:transparent}
+.type-toggle{display:flex;margin-bottom:12px;border:0.5px solid #ddd;border-radius:8px;overflow:hidden}
+.type-btn{font-size:13px;padding:8px 0;border:none;background:none;cursor:pointer;color:#888;flex:1;text-align:center;min-height:36px}
+.type-btn.active-main{background:#E1F5EE;color:#0F6E56}
+.type-btn.active-side{background:#FAEEDA;color:#854F0B}
+.legend{display:flex;gap:12px;margin-bottom:10px;font-size:12px;color:#888}
+.legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+.search-row{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.search-row input{font-size:14px;padding:8px 10px;flex:1}
+.fab{position:fixed;bottom:20px;right:20px;width:52px;height:52px;border-radius:50%;background:#1a1a1a;color:#fff;border:none;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:50}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="tabs">
+  <button class="tab active" onclick="showTab('calendar')">カレンダー</button>
+  <button class="tab" onclick="showTab('menus')">メニュー一覧</button>
+  <button class="tab" onclick="showTab('cost')">コスト管理</button>
+</div>
+
+<div id="view-calendar" class="view active">
+  <div class="month-nav">
+    <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
+    <h2 id="month-label"></h2>
+    <button class="nav-btn" onclick="changeMonth(1)">▶</button>
+  </div>
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#5DCAA5"></span>主菜</span>
+    <span><span class="legend-dot" style="background:#EF9F27"></span>副菜</span>
+  </div>
+  <div class="cal-grid">
+    <div class="cal-head">日</div><div class="cal-head">月</div><div class="cal-head">火</div>
+    <div class="cal-head">水</div><div class="cal-head">木</div><div class="cal-head">金</div>
+    <div class="cal-head">土</div>
+  </div>
+  <div class="cal-grid" id="cal-body" style="margin-top:3px"></div>
+  <button class="fab" onclick="openAssignModal()">＋</button>
+</div>
+
+<div id="view-menus" class="view">
+  <div class="search-row">
+    <input type="search" id="search" placeholder="メニューを検索..." oninput="renderMenus()">
+    <button class="btn btn-primary btn-sm" onclick="openMenuModal()">＋ 追加</button>
+  </div>
+  <div class="type-toggle">
+    <button class="type-btn active-main" id="ttype-main" onclick="setTypeFilter('main')">主菜</button>
+    <button class="type-btn" id="ttype-side" onclick="setTypeFilter('side')">副菜</button>
+  </div>
+  <div class="filter-row" id="filter-row"></div>
+  <div id="menu-list"></div>
+</div>
+
+<div id="view-cost" class="view">
+  <div class="stats">
+    <div class="stat"><div class="stat-label">今月の合計</div><div class="stat-val" id="stat-total">¥0</div></div>
+    <div class="stat"><div class="stat-label">1人あたり</div><div class="stat-val" id="stat-per">¥0</div></div>
+    <div class="stat"><div class="stat-label">今月の回数</div><div class="stat-val" id="stat-count">0回</div></div>
+  </div>
+  <div style="background:#fff;border:0.5px solid #ddd;border-radius:12px;padding:1rem;margin-bottom:12px">
+    <div style="font-size:14px;font-weight:500;margin-bottom:12px">メニュー別コスト <span style="font-size:11px;color:#888;font-weight:400">目標¥1,750/回</span></div>
+    <div id="cost-list"></div>
+  </div>
+</div>
+</div>
+
+<div class="modal-bg" id="modal-assign">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>メニューを割り当て</h3>
+    <div class="form-group"><label>日付</label><input type="date" id="a-date"></div>
+    <div class="form-group"><label>主菜</label><select id="a-main" onchange="updateCostPreview()"></select></div>
+    <div class="form-group"><label>副菜（任意）</label><select id="a-side" onchange="updateCostPreview()"></select></div>
+    <div style="font-size:13px;color:#888;margin-bottom:16px;padding:10px;background:#f5f5f0;border-radius:8px" id="assign-cost-preview"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" style="flex:1" onclick="closeModal('modal-assign')">キャンセル</button>
+      <button class="btn btn-primary" style="flex:2" onclick="saveAssign()">割り当て</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-menu">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3 id="modal-title">メニューを登録</h3>
+    <div class="form-group"><label>種別</label>
+      <select id="f-type" onchange="onTypeChange()">
+        <option value="main">主菜</option><option value="side">副菜</option>
+      </select>
+    </div>
+    <div class="form-group"><label>メニュー名</label><input type="text" id="f-name" placeholder="例：豚汁定食"></div>
+    <div class="form-group" id="f-cat-group"><label>カテゴリ</label>
+      <select id="f-cat">
+        <option value="和食">和食</option><option value="洋食">洋食</option>
+        <option value="中華">中華</option><option value="その他">その他</option>
+      </select>
+    </div>
+    <div class="form-group"><label>メモ</label><textarea id="f-memo" placeholder="コツや注意点など"></textarea></div>
+    <div class="form-group"><label>作り方</label><textarea id="f-recipe" placeholder="①〜②〜" style="height:100px"></textarea></div>
+    <div class="divider"></div>
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px">食材・コスト（7名分）</div>
+    <div id="ing-list"></div>
+    <button class="btn btn-sm" onclick="addIng()" style="margin-bottom:12px;width:100%">＋ 食材を追加</button>
+    <div class="form-group"><label>合計コスト</label><div style="font-size:18px;font-weight:500;padding:4px 0" id="f-total">¥0</div></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn" style="flex:1" onclick="closeModal('modal-menu')">キャンセル</button>
+      <button class="btn btn-primary" style="flex:2" onclick="saveMenu()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BUDGET=1750;
+let mainMenus=[
+  {id:1,name:'豚汁定食',cat:'和食',memo:'根菜でボリューム感',recipe:['①豚こま肉を一口大に切る','②大根・ごぼう・にんじんを乱切り','③豚肉を炒め野菜を加える','④だしと水を加えて煮る','⑤味噌を溶き入れて完成','⑥ご飯と一緒に盛り付け'],ingredients:[{name:'豚こま肉',amount:400,unit:'g'},{name:'大根・ごぼう・にんじん',amount:500,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1200},
+  {id:2,name:'チャーハン',cat:'中華',memo:'強火で一気に炒める',recipe:['①冷やご飯と卵を混ぜる','②フライパンを強火で熱す','③ご飯を一気に炒める','④ハム・ねぎを加える','⑤醤油・塩こしょうで味付け'],ingredients:[{name:'米（炊いたもの）',amount:1400,unit:'g'},{name:'卵',amount:7,unit:'個'},{name:'ハム',amount:150,unit:'g'}],cost:900},
+  {id:3,name:'麻婆豆腐定食',cat:'中華',memo:'豆腐でボリューム出る',recipe:['①豆腐を湯通しする','②ひき肉を炒め豆板醤を加える','③スープを加えて煮立てる','④豆腐を加えて煮る','⑤片栗粉でとろみをつける','⑥ごま油を回しかけ完成'],ingredients:[{name:'豆腐',amount:1400,unit:'g'},{name:'豚ひき肉',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1100},
+  {id:4,name:'鶏の唐揚げ定食',cat:'和食',memo:'むね肉で節約',recipe:['①むね肉を一口大に切る','②醤油・酒・生姜・にんにくで漬け込む','③片栗粉をまぶす','④170℃で4分揚げる','⑤180℃で1分揚げてカラッとさせる'],ingredients:[{name:'鶏むね肉',amount:1200,unit:'g'},{name:'揚げ油',amount:150,unit:'ml'},{name:'米',amount:600,unit:'g'}],cost:1400},
+  {id:5,name:'ナポリタン',cat:'洋食',memo:'ウインナーで節約',recipe:['①スパゲッティを塩茹で','②ウインナーを斜め切りにする','③玉ねぎ・ピーマンを炒める','④パスタを加えケチャップで味付け','⑤塩こしょうで調整して完成'],ingredients:[{name:'スパゲッティ',amount:700,unit:'g'},{name:'ウインナー',amount:200,unit:'g'},{name:'玉ねぎ・ピーマン',amount:300,unit:'g'}],cost:900},
+  {id:6,name:'カレーライス',cat:'洋食',memo:'むね肉で節約',recipe:['①むね肉を一口大に切る','②玉ねぎをあめ色に炒める','③じゃがいも・にんじんを加える','④水を加えて20分煮込む','⑤ルーを溶かしさらに10分煮る'],ingredients:[{name:'鶏むね肉',amount:600,unit:'g'},{name:'玉ねぎ・じゃがいも',amount:700,unit:'g'},{name:'カレールー',amount:150,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1350},
+  {id:7,name:'親子丼',cat:'和食',memo:'むね肉で十分おいしい',recipe:['①むね肉を薄切りにする','②だし・醤油・みりんでタレを作る','③玉ねぎと鶏肉を煮る','④溶き卵を回しかけ半熟に','⑤ご飯の上に盛り付け'],ingredients:[{name:'鶏むね肉',amount:700,unit:'g'},{name:'卵',amount:10,unit:'個'},{name:'玉ねぎ',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1200},
+  {id:8,name:'焼きそば',cat:'その他',memo:'もやしでかさ増し',recipe:['①豚こまを炒める','②キャベツ・もやしを加える','③麺を加えて炒め合わせる','④ソース・醤油で味付け','⑤青のり・紅生姜を添えて完成'],ingredients:[{name:'中華蒸し麺',amount:700,unit:'g'},{name:'豚こま肉',amount:300,unit:'g'},{name:'キャベツ・もやし',amount:500,unit:'g'}],cost:900},
+  {id:9,name:'肉じゃが',cat:'和食',memo:'豚こまで節約',recipe:['①豚こまを炒める','②じゃがいも・玉ねぎを加える','③だし・醤油・みりん・砂糖で煮る','④落とし蓋をして15分煮込む','⑤ご飯と一緒に盛り付け'],ingredients:[{name:'豚こま肉',amount:400,unit:'g'},{name:'じゃがいも',amount:700,unit:'g'},{name:'玉ねぎ',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1150},
+  {id:10,name:'豚の生姜焼き定食',cat:'和食',memo:'こま肉でも美味',recipe:['①醤油・みりん・生姜でタレを作る','②豚こまをタレに漬ける','③玉ねぎを炒める','④豚肉をタレごと加えて強火で炒める','⑤ご飯・キャベツと盛り付け'],ingredients:[{name:'豚こま肉',amount:800,unit:'g'},{name:'玉ねぎ',amount:300,unit:'g'},{name:'生姜',amount:40,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1300},
+  {id:11,name:'オムライス',cat:'洋食',memo:'シンプルに仕上げる',recipe:['①むね肉と玉ねぎを炒める','②ご飯・ケチャップを加えチキンライスを作る','③卵を薄く焼く','④チキンライスを包む','⑤ケチャップをかけて完成'],ingredients:[{name:'卵',amount:14,unit:'個'},{name:'鶏むね肉',amount:400,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1100},
+  {id:12,name:'ミートソースパスタ',cat:'洋食',memo:'大量作り置きOK',recipe:['①玉ねぎ・にんにくをみじん切りで炒める','②ひき肉を加えよく炒める','③トマト缶・コンソメを加えて20分煮込む','④塩こしょうで味を整える','⑤茹でたパスタにソースをかける'],ingredients:[{name:'スパゲッティ',amount:700,unit:'g'},{name:'豚ひき肉',amount:400,unit:'g'},{name:'トマト缶',amount:2,unit:'缶'}],cost:1100},
+  {id:13,name:'回鍋肉定食',cat:'中華',memo:'キャベツでボリューム',recipe:['①豚こまを炒める','②キャベツをざく切りにして加える','③甜麺醤・豆板醤・醤油でタレを作る','④タレを加えて強火で炒め合わせる','⑤ご飯と盛り付け'],ingredients:[{name:'豚こま肉',amount:500,unit:'g'},{name:'キャベツ',amount:600,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1100},
+  {id:14,name:'さばの味噌煮定食',cat:'和食',memo:'さば缶でも代用可',recipe:['①さばを霜降りにする','②鍋に水・酒・みりん・砂糖を煮立てる','③さば・生姜を加えて煮る','④味噌を溶き入れ10分煮る','⑤煮汁を絡めて完成'],ingredients:[{name:'さば切り身',amount:700,unit:'g'},{name:'生姜',amount:40,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1200},
+  {id:15,name:'担々麺',cat:'中華',memo:'ごまダレを丁寧に',recipe:['①ひき肉を炒め醤油・豆板醤で味付け','②練りごま・醤油・酢・砂糖でタレを作る','③スープを温めてタレを溶かす','④麺を茹でてスープへ','⑤肉みそをのせて完成'],ingredients:[{name:'中華麺',amount:700,unit:'g'},{name:'豚ひき肉',amount:300,unit:'g'},{name:'練りごま',amount:60,unit:'g'}],cost:1100},
+  {id:16,name:'牛丼',cat:'和食',memo:'牛こまで節約',recipe:['①玉ねぎを薄切りにする','②だし・醤油・みりん・砂糖を合わせて煮立てる','③玉ねぎを加えて煮る','④牛こまを加えてさっと煮る','⑤ご飯にのせて紅生姜を添える'],ingredients:[{name:'牛こま肉',amount:600,unit:'g'},{name:'玉ねぎ',amount:500,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1500},
+  {id:17,name:'麻婆なす定食',cat:'中華',memo:'なすは安い時期に',recipe:['①なすを乱切りにして素揚げ','②ひき肉を炒めにんにく・豆板醤を加える','③スープ・醤油・砂糖を加えて煮る','④なすを加えてさらに煮る','⑤片栗粉でとろみをつけごま油を回しかける'],ingredients:[{name:'なす',amount:700,unit:'g'},{name:'豚ひき肉',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1000},
+  {id:18,name:'鮭の塩焼き定食',cat:'和食',memo:'皮はパリッと焼く',recipe:['①鮭に塩を振って10分置く','②水分をふき取る','③グリルで両面を焼く','④大根おろし・レモンを添える','⑤ご飯・みそ汁と盛り付け'],ingredients:[{name:'鮭切り身',amount:700,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1300},
+  {id:19,name:'ペペロンチーノ',cat:'洋食',memo:'にんにく多めが美味',recipe:['①にんにくを薄切りにする','②スパゲッティを塩茹で','③にんにくを弱火でじっくり炒める','④唐辛子・ベーコンを加える','⑤茹で汁で乳化させてパスタを絡める'],ingredients:[{name:'スパゲッティ',amount:700,unit:'g'},{name:'にんにく',amount:60,unit:'g'},{name:'ベーコン',amount:150,unit:'g'}],cost:850},
+  {id:20,name:'青椒肉絲定食',cat:'中華',memo:'ピーマンでかさ増し',recipe:['①豚こまを細切りにして下味をつける','②ピーマンを細切りにする','③豚肉を炒めて取り出す','④ピーマンを炒め豚肉を戻す','⑤醤油・オイスターソースで味付け'],ingredients:[{name:'豚こま肉',amount:400,unit:'g'},{name:'ピーマン',amount:350,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1100},
+  {id:21,name:'タコライス',cat:'その他',memo:'レタスとチーズで彩り',recipe:['①ひき肉をよく炒める','②チリパウダー・醤油で味付け','③レタスをちぎりトマトを角切りに','④ご飯の上にレタス・肉・トマトをのせる','⑤チーズをかけて完成'],ingredients:[{name:'豚ひき肉',amount:500,unit:'g'},{name:'米',amount:600,unit:'g'},{name:'レタス',amount:200,unit:'g'}],cost:1050},
+  {id:22,name:'クリームシチュー',cat:'洋食',memo:'パンとの相性抜群',recipe:['①むね肉と野菜を炒める','②水を加えて15分煮込む','③シチュールーを溶かし入れる','④牛乳を加えて弱火で5分','⑤塩こしょうで調整して完成'],ingredients:[{name:'鶏むね肉',amount:500,unit:'g'},{name:'じゃがいも・玉ねぎ',amount:600,unit:'g'},{name:'シチュールー',amount:150,unit:'g'}],cost:1200},
+  {id:23,name:'鶏そぼろ丼',cat:'和食',memo:'少量で広がる',recipe:['①ひき肉に醤油・みりん・砂糖・生姜を加える','②箸4本で混ぜながら炒り煮にする','③卵を溶いて炒り卵を作る','④ご飯の上に2色で盛り付け'],ingredients:[{name:'鶏ひき肉',amount:600,unit:'g'},{name:'卵',amount:7,unit:'個'},{name:'米',amount:600,unit:'g'}],cost:1050},
+  {id:24,name:'豆腐ステーキ丼',cat:'和食',memo:'豆腐でコスト節約',recipe:['①豆腐を水切りして厚切りにする','②豆腐を多めの油でこんがり焼く','③豚こまを炒めて戻す','④醤油・みりん・砂糖・生姜のタレで絡める','⑤ご飯の上に盛り付け'],ingredients:[{name:'豆腐（木綿）',amount:1400,unit:'g'},{name:'豚こま肉',amount:200,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:800},
+  {id:25,name:'野菜炒め定食',cat:'その他',memo:'旬の野菜で節約',recipe:['①豚こまを炒める','②もやし・キャベツを加える','③強火でさっと炒める','④塩・こしょう・醤油・ごま油で味付け','⑤ご飯と盛り付け'],ingredients:[{name:'豚こま肉',amount:400,unit:'g'},{name:'もやし・キャベツ',amount:500,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:850},
+  {id:26,name:'うどん炒め',cat:'その他',memo:'冷凍うどんで節約',recipe:['①冷凍うどんをレンジで解凍','②豚こまを炒める','③キャベツ・にんじんを加える','④うどんを加えて炒め合わせる','⑤醤油・ソースで味付けして完成'],ingredients:[{name:'冷凍うどん',amount:7,unit:'玉'},{name:'豚こま肉',amount:300,unit:'g'},{name:'キャベツ・にんじん',amount:400,unit:'g'}],cost:900},
+  {id:27,name:'豆腐と卵の中華炒め',cat:'中華',memo:'コスパ最強メニュー',recipe:['①豆腐を一口大に切って水切り','②フライパンで豆腐に焼き色をつける','③溶き卵を加えてふんわり炒める','④鶏がらスープ・醤油・ごま油で味付け','⑤ご飯と盛り付け'],ingredients:[{name:'豆腐',amount:1400,unit:'g'},{name:'卵',amount:7,unit:'個'},{name:'米',amount:600,unit:'g'}],cost:750},
+  {id:28,name:'サバ缶カレー',cat:'洋食',memo:'さば缶で魚もリーズナブル',recipe:['①玉ねぎをあめ色に炒める','②さば缶を汁ごと加えてほぐす','③水を加えて煮立てる','④カレールーを溶かし入れる','⑤10分煮込んでご飯と盛り付け'],ingredients:[{name:'さば缶',amount:4,unit:'缶'},{name:'玉ねぎ',amount:400,unit:'g'},{name:'カレールー',amount:150,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1100},
+  {id:29,name:'焼きうどん',cat:'その他',memo:'冷凍うどんを使うと安い',recipe:['①冷凍うどんをレンジで解凍','②豚こまを炒める','③ピーマン・玉ねぎを加える','④うどんを加えて炒め合わせる','⑤ウスターソース・醤油で味付け'],ingredients:[{name:'冷凍うどん',amount:7,unit:'玉'},{name:'豚こま肉',amount:300,unit:'g'},{name:'ピーマン・玉ねぎ',amount:300,unit:'g'}],cost:850},
+  {id:30,name:'豚こまと大根の煮物定食',cat:'和食',memo:'大根でボリュームアップ',recipe:['①豚こまを炒める','②大根を半月切りにして加える','③だし・醤油・みりん・酒を加える','④落とし蓋をして20分煮込む','⑤ご飯と盛り付け'],ingredients:[{name:'豚こま肉',amount:400,unit:'g'},{name:'大根',amount:700,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:950},
+  {id:31,name:'豚のみそ炒め定食',cat:'和食',memo:'みそダレが白飯に合う',recipe:['①豚こまを炒める','②キャベツ・ピーマンを加える','③みそ・みりん・酒・砂糖のタレを加える','④強火で炒め合わせる','⑤ご飯と盛り付け'],ingredients:[{name:'豚こま肉',amount:600,unit:'g'},{name:'キャベツ・ピーマン',amount:500,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1050},
+  {id:32,name:'鶏むねの甘酢炒め',cat:'和食',memo:'甘酢で食欲増進',recipe:['①むね肉を一口大に切り片栗粉をまぶす','②フライパンで焼き色をつける','③酢・砂糖・醤油・ケチャップでタレを作る','④タレを加えて絡める','⑤ご飯と盛り付け'],ingredients:[{name:'鶏むね肉',amount:900,unit:'g'},{name:'玉ねぎ・ピーマン',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1150},
+  {id:33,name:'キーマカレー',cat:'洋食',memo:'ひき肉で節約',recipe:['①玉ねぎをみじん切りにしてよく炒める','②ひき肉を加えて炒める','③カレー粉・コンソメ・トマト缶を加える','④水を加えて15分煮込む','⑤ご飯と盛り付け'],ingredients:[{name:'豚ひき肉',amount:600,unit:'g'},{name:'玉ねぎ',amount:400,unit:'g'},{name:'カレー粉',amount:30,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1100},
+  {id:34,name:'豚キムチ炒め定食',cat:'その他',memo:'キムチで発酵食品も摂れる',recipe:['①豚こまを炒める','②もやし・キムチを加えて炒める','③醤油・ごま油で味付け','④白ごまを振る','⑤ご飯と盛り付け'],ingredients:[{name:'豚こま肉',amount:500,unit:'g'},{name:'キムチ',amount:200,unit:'g'},{name:'もやし',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1200},
+  {id:35,name:'あじの南蛮漬け定食',cat:'和食',memo:'作り置きOK',recipe:['①あじに片栗粉をまぶして揚げる','②玉ねぎ・にんじんを細切りにする','③酢・砂糖・醤油・唐辛子で南蛮酢を作る','④揚げたあじを南蛮酢に漬ける','⑤一晩置いてご飯と盛り付け'],ingredients:[{name:'あじ（開き）',amount:700,unit:'g'},{name:'玉ねぎ・にんじん',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1300},
+  {id:36,name:'豆腐ハンバーグ定食',cat:'洋食',memo:'豆腐でかさ増し節約',recipe:['①豆腐をしっかり水切りする','②ひき肉・豆腐・玉ねぎ・卵・パン粉を混ぜる','③成形して焼き色をつける','④蒸し焼きにして火を通す','⑤デミグラスソースをかけてご飯と盛り付け'],ingredients:[{name:'豚ひき肉',amount:400,unit:'g'},{name:'豆腐',amount:400,unit:'g'},{name:'卵',amount:4,unit:'個'},{name:'米',amount:600,unit:'g'}],cost:1150},
+  {id:37,name:'鶏むねのトマト煮',cat:'洋食',memo:'トマト缶で節約',recipe:['①むね肉に塩こしょうをして焼き色をつける','②にんにく・玉ねぎを炒める','③トマト缶・コンソメを加える','④むね肉を戻して20分煮込む','⑤ご飯またはパンと盛り付け'],ingredients:[{name:'鶏むね肉',amount:700,unit:'g'},{name:'トマト缶',amount:2,unit:'缶'},{name:'玉ねぎ',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1150},
+  {id:38,name:'豚こまと白菜の鍋定食',cat:'和食',memo:'冬の定番、体が温まる',recipe:['①白菜をざく切り、豚こまを一口大に','②鍋にだしを煮立てる','③白菜の芯から入れて煮る','④豚肉を加えてアクを取る','⑤ポン酢でご飯と食べる'],ingredients:[{name:'豚こま肉',amount:500,unit:'g'},{name:'白菜',amount:800,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1050},
+  {id:39,name:'えびチリ定食',cat:'中華',memo:'ケチャップで食べやすく',recipe:['①えびの殻をむいて背わたを取る','②片栗粉をまぶして炒める','③にんにく・生姜・豆板醤を炒める','④ケチャップ・スープ・砂糖を加える','⑤えびを戻してご飯と盛り付け'],ingredients:[{name:'えび',amount:500,unit:'g'},{name:'ケチャップ',amount:80,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1600},
+  {id:40,name:'豚こまの照り焼き丼',cat:'和食',memo:'甘辛タレが人気',recipe:['①豚こまをフライパンで炒める','②醤油・みりん・砂糖・酒で照り焼きダレを作る','③タレを加えて絡める','④ご飯の上に盛り付け','⑤白ごまを振る'],ingredients:[{name:'豚こま肉',amount:700,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1000},
+  {id:41,name:'チキンドリア',cat:'洋食',memo:'ホワイトソースが決め手',recipe:['①むね肉と玉ねぎをバターで炒める','②薄力粉を加えて炒める','③牛乳を少しずつ加えてホワイトソースを作る','④ご飯の上にソースをかける','⑤チーズをのせてオーブンで焼く'],ingredients:[{name:'鶏むね肉',amount:500,unit:'g'},{name:'牛乳',amount:600,unit:'ml'},{name:'チーズ',amount:150,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1350},
+  {id:42,name:'豚こまと春雨の炒め物定食',cat:'中華',memo:'春雨でボリュームアップ',recipe:['①春雨を水で戻す','②豚こまを炒める','③野菜・春雨を加えて炒める','④醤油・オイスターソース・ごま油で味付け','⑤ご飯と盛り付け'],ingredients:[{name:'豚こま肉',amount:400,unit:'g'},{name:'春雨',amount:100,unit:'g'},{name:'にんじん・ピーマン',amount:300,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1000},
+  {id:43,name:'豚こまと玉ねぎのスタミナ丼',cat:'和食',memo:'にんにく効かせて元気に',recipe:['①豚こまとにんにくを炒める','②玉ねぎを加えて炒める','③醤油・みりん・にんにく・生姜で味付け','④ごま油を回しかける','⑤ご飯の上に盛り付け'],ingredients:[{name:'豚こま肉',amount:700,unit:'g'},{name:'玉ねぎ',amount:400,unit:'g'},{name:'にんにく',amount:30,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1050},
+  {id:44,name:'鶏むねとブロッコリーの炒め物定食',cat:'洋食',memo:'栄養バランス抜群',recipe:['①むね肉を薄切りにして塩こしょう','②ブロッコリーを小房に分けて茹でる','③むね肉を炒める','④ブロッコリーを加えて炒める','⑤塩・こしょう・にんにくで味付け'],ingredients:[{name:'鶏むね肉',amount:700,unit:'g'},{name:'ブロッコリー',amount:400,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1200},
+  {id:45,name:'ツナとトマトのパスタ',cat:'洋食',memo:'ツナ缶で節約',recipe:['①にんにくをオリーブオイルで炒める','②ツナ缶を汁ごと加える','③トマト缶を加えて10分煮込む','④塩こしょうで味を整える','⑤茹でたパスタに絡めて完成'],ingredients:[{name:'スパゲッティ',amount:700,unit:'g'},{name:'ツナ缶',amount:4,unit:'缶'},{name:'トマト缶',amount:1,unit:'缶'}],cost:900},
+  {id:46,name:'豚こまとじゃがいもの煮物定食',cat:'和食',memo:'ほっくり仕上がる',recipe:['①豚こまとじゃがいもを炒める','②だし・醤油・みりん・砂糖を加える','③じゃがいもが柔らかくなるまで煮る','④インゲンを加えてさっと煮る','⑤ご飯と盛り付け'],ingredients:[{name:'豚こま肉',amount:400,unit:'g'},{name:'じゃがいも',amount:700,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1050},
+  {id:47,name:'炒飯（チャーシュー入り）',cat:'中華',memo:'チャーシューで本格的に',recipe:['①卵をご飯に混ぜておく','②チャーシューを角切りにする','③フライパンを強火で熱してご飯を炒める','④チャーシュー・ねぎを加える','⑤醤油・塩こしょうで味付け'],ingredients:[{name:'米（炊いたもの）',amount:1400,unit:'g'},{name:'卵',amount:7,unit:'個'},{name:'チャーシュー',amount:200,unit:'g'}],cost:1100},
+  {id:48,name:'豚バラ大根定食',cat:'和食',memo:'大根に味がしみて絶品',recipe:['①豚バラを一口大に切る','②大根を2cm厚に切る','③豚バラを炒め大根を加える','④だし・醤油・みりん・砂糖で20分煮込む','⑤ゆで卵を加えてさらに煮る'],ingredients:[{name:'豚バラ肉',amount:400,unit:'g'},{name:'大根',amount:700,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1200},
+  {id:49,name:'鶏むねのから揚げ南蛮',cat:'和食',memo:'タルタルソースで豪華に',recipe:['①むね肉を一口大に切り下味をつける','②片栗粉をまぶして揚げる','③甘酢に漬ける','④マヨ・ゆで卵・玉ねぎでタルタルを作る','⑤タルタルをかけてご飯と盛り付け'],ingredients:[{name:'鶏むね肉',amount:1000,unit:'g'},{name:'卵',amount:5,unit:'個'},{name:'マヨネーズ',amount:80,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:1350},
+  {id:50,name:'豆腐と豚こまの甘辛炒め丼',cat:'和食',memo:'豆腐でボリュームと節約',recipe:['①豆腐を水切りして一口大に切る','②豚こまを炒める','③豆腐を加えて焼き色をつける','④醤油・みりん・砂糖・生姜のタレで炒める','⑤ご飯の上に盛り付け白ごまを振る'],ingredients:[{name:'豆腐（木綿）',amount:700,unit:'g'},{name:'豚こま肉',amount:400,unit:'g'},{name:'米',amount:600,unit:'g'}],cost:900},
+];
+let sideMenus=[
+  {id:101,name:'もやしの和え物',cat:'副菜',memo:'ごま油で風味UP',recipe:['①もやしをさっと茹でる','②冷水で締めて水気を絞る','③ごま油・醤油・塩・白ごまで和える'],ingredients:[{name:'もやし',amount:500,unit:'g'},{name:'ごま油',amount:15,unit:'ml'}],cost:120},
+  {id:102,name:'ほうれん草のお浸し',cat:'副菜',memo:'だし醤油で和える',recipe:['①ほうれん草を根元から塩茹でする','②冷水で締めて水気を絞る','③4cm長さに切りだし醤油・白ごまで和える'],ingredients:[{name:'ほうれん草',amount:350,unit:'g'},{name:'だし醤油',amount:20,unit:'ml'}],cost:180},
+  {id:103,name:'きんぴらごぼう',cat:'副菜',memo:'ごまをたっぷり',recipe:['①ごぼうを細切りにして水にさらす','②にんじんも細切りにする','③ごま油で炒め醤油・みりん・砂糖で味付け','④白ごまをたっぷりかける'],ingredients:[{name:'ごぼう',amount:300,unit:'g'},{name:'にんじん',amount:100,unit:'g'}],cost:200},
+  {id:104,name:'冷奴',cat:'副菜',memo:'薬味を添えて',recipe:['①豆腐を食べやすい大きさに切る','②生姜・青ねぎをのせる','③醤油をかけて完成'],ingredients:[{name:'豆腐',amount:700,unit:'g'}],cost:150},
+  {id:105,name:'卵焼き',cat:'副菜',memo:'だし巻き風に',recipe:['①卵を溶きだし・塩・砂糖を加える','②卵焼き器に油をひいて熱する','③卵液を3回に分けて流し入れ巻く','④巻きすで形を整えて切り分ける'],ingredients:[{name:'卵',amount:7,unit:'個'}],cost:200},
+  {id:106,name:'キャベツの浅漬け',cat:'副菜',memo:'塩もみするだけ',recipe:['①キャベツをざく切りにする','②塩を振って10分置き水気を絞る','③酢・砂糖・ごま油で和える'],ingredients:[{name:'キャベツ',amount:400,unit:'g'}],cost:80},
+  {id:107,name:'かぼちゃの煮物',cat:'副菜',memo:'甘めに仕上げる',recipe:['①かぼちゃを一口大に切る','②だし・醤油・みりん・砂糖を煮立てる','③かぼちゃを加えて落とし蓋で15分煮る'],ingredients:[{name:'かぼちゃ',amount:600,unit:'g'}],cost:200},
+  {id:108,name:'切り干し大根',cat:'副菜',memo:'常備菜にもなる',recipe:['①切り干し大根を水で戻す','②にんじんを細切りにする','③ごま油で炒めだし・醤油・みりんで煮る','④汁気が飛んだら完成'],ingredients:[{name:'切り干し大根',amount:80,unit:'g'},{name:'にんじん',amount:80,unit:'g'}],cost:150},
+  {id:109,name:'ブロッコリーの和え物',cat:'副菜',memo:'マヨ醤油で',recipe:['①ブロッコリーを小房に分ける','②塩茹でして歯ごたえを残す','③冷水で締めてマヨネーズ・醤油で和える'],ingredients:[{name:'ブロッコリー',amount:400,unit:'g'}],cost:160},
+  {id:110,name:'なすの揚げ浸し',cat:'副菜',memo:'冷やすと絶品',recipe:['①なすを乱切りにする','②170℃で素揚げする','③だし・醤油・みりんの漬け汁に浸す','④冷蔵庫で冷やして完成'],ingredients:[{name:'なす',amount:500,unit:'g'},{name:'だし醤油',amount:50,unit:'ml'}],cost:200},
+  {id:111,name:'ひじきの煮物',cat:'副菜',memo:'鉄分たっぷり',recipe:['①乾燥ひじきを水で戻す','②にんじんを細切りにする','③ごま油で炒めだし・醤油・みりんで煮る','④汁気が飛んだら白ごまをかける'],ingredients:[{name:'ひじき（乾燥）',amount:40,unit:'g'},{name:'にんじん',amount:80,unit:'g'}],cost:180},
+  {id:112,name:'コールスロー',cat:'副菜',memo:'さっぱり仕上げ',recipe:['①キャベツを細切りにして塩もみ','②にんじんを細切りにする','③水気を絞りマヨネーズ・酢・砂糖で和える','④冷やして完成'],ingredients:[{name:'キャベツ',amount:400,unit:'g'},{name:'にんじん',amount:80,unit:'g'}],cost:120},
+  {id:113,name:'小松菜の炒め物',cat:'副菜',memo:'にんにく炒めで香ばしく',recipe:['①小松菜を4cm長さに切る','②にんにくを薄切りにして炒める','③小松菜を加えて強火でさっと炒める','④塩・こしょう・醤油で味付け'],ingredients:[{name:'小松菜',amount:400,unit:'g'}],cost:150},
+  {id:114,name:'大根のなます',cat:'副菜',memo:'酢で爽やかに',recipe:['①大根・にんじんを細切りにして塩もみ','②水気をしっかり絞る','③酢・砂糖・塩で甘酢を作り和える','④30分なじませて完成'],ingredients:[{name:'大根',amount:400,unit:'g'},{name:'にんじん',amount:80,unit:'g'}],cost:100},
+  {id:115,name:'ポテトサラダ',cat:'副菜',memo:'じゃがいもで満足感',recipe:['①じゃがいもを茹でて熱いうちに潰す','②きゅうりを薄切りにして塩もみ','③にんじんを茹でておく','④マヨネーズ・塩こしょう・酢で混ぜる','⑤冷やして完成'],ingredients:[{name:'じゃがいも',amount:600,unit:'g'},{name:'マヨネーズ',amount:60,unit:'g'}],cost:250},
+  {id:116,name:'白菜の浅漬け',cat:'副菜',memo:'あっさり箸休めに',recipe:['①白菜を一口大に切る','②塩を振って30分置く','③水気を絞る','④醤油・酢・砂糖・唐辛子で和える'],ingredients:[{name:'白菜',amount:500,unit:'g'}],cost:100},
+  {id:117,name:'ピーマンのじゃこ炒め',cat:'副菜',memo:'じゃこで旨味プラス',recipe:['①ピーマンを細切りにする','②ごま油でじゃこを炒める','③ピーマンを加えて炒める','④醤油・みりんで味付けして白ごまを振る'],ingredients:[{name:'ピーマン',amount:350,unit:'g'},{name:'ちりめんじゃこ',amount:50,unit:'g'}],cost:200},
+  {id:118,name:'さつまいもの甘煮',cat:'副菜',memo:'甘くてほっこり',recipe:['①さつまいもを一口大に切る','②砂糖・醤油・みりん・水で煮立てる','③さつまいもを加えて落とし蓋で煮る','④汁気が飛んだら黒ごまを振る'],ingredients:[{name:'さつまいも',amount:500,unit:'g'}],cost:150},
+  {id:119,name:'長ねぎの焼き浸し',cat:'副菜',memo:'とろっと甘い',recipe:['①長ねぎを斜め切りにする','②フライパンで焼き色をつける','③だし・醤油・みりんの漬け汁に浸す','④冷めたら完成'],ingredients:[{name:'長ねぎ',amount:400,unit:'g'}],cost:150},
+  {id:120,name:'春雨サラダ',cat:'副菜',memo:'さっぱりとした副菜',recipe:['①春雨を茹でて水気を切る','②きゅうりを細切りにして塩もみ','③にんじんを細切りにして茹でる','④醤油・酢・砂糖・ごま油・白ごまで和える'],ingredients:[{name:'春雨',amount:80,unit:'g'},{name:'きゅうり',amount:150,unit:'g'},{name:'にんじん',amount:80,unit:'g'}],cost:200},
+  {id:121,name:'かぶの甘酢漬け',cat:'副菜',memo:'箸休めにぴったり',recipe:['①かぶを薄切りにして塩もみ','②水気を絞る','③酢・砂糖・塩で甘酢を作り和える','④30分以上冷蔵庫でなじませる'],ingredients:[{name:'かぶ',amount:400,unit:'g'}],cost:150},
+  {id:122,name:'蒸しキャベツのごまポン酢',cat:'副菜',memo:'電子レンジで簡単',recipe:['①キャベツをざく切りにする','②ラップをして電子レンジで3分加熱','③水気を絞る','④ポン酢・白ごまで和える'],ingredients:[{name:'キャベツ',amount:500,unit:'g'}],cost:80},
+  {id:123,name:'里芋の煮物',cat:'副菜',memo:'ほっくり仕上がる',recipe:['①里芋を下茹でして皮をむく','②だし・醤油・みりん・砂糖を煮立てる','③里芋を加えて落とし蓋で15分煮る'],ingredients:[{name:'里芋',amount:600,unit:'g'}],cost:250},
+  {id:124,name:'ほうれん草と卵の炒め物',cat:'副菜',memo:'タンパク質もプラス',recipe:['①ほうれん草を4cm長さに切る','②卵を溶いておく','③油でほうれん草を炒める','④卵を加えてふんわり炒める','⑤塩・こしょう・醤油で味付け'],ingredients:[{name:'ほうれん草',amount:300,unit:'g'},{name:'卵',amount:4,unit:'個'}],cost:200},
+  {id:125,name:'なすの味噌炒め',cat:'副菜',memo:'みそとなすが相性抜群',recipe:['①なすを乱切りにして油で炒める','②みそ・みりん・砂糖・酒のタレを作る','③なすに火が通ったらタレを加えて炒める','④白ごまを振って完成'],ingredients:[{name:'なす',amount:500,unit:'g'}],cost:150},
+  {id:126,name:'トマトと卵の和え物',cat:'副菜',memo:'彩りが綺麗',recipe:['①トマトを角切りにする','②卵を茹でて刻む','③マヨネーズ・塩こしょうで和える','④冷蔵庫で冷やして完成'],ingredients:[{name:'トマト',amount:400,unit:'g'},{name:'卵',amount:3,unit:'個'}],cost:200},
+  {id:127,name:'わかめとねぎのスープ',cat:'副菜',memo:'温かい副菜として',recipe:['①乾燥わかめを水で戻す','②鍋にだし・水を煮立てる','③わかめ・ねぎを加える','④醤油・塩で味を整えごま油を回しかける'],ingredients:[{name:'乾燥わかめ',amount:20,unit:'g'},{name:'長ねぎ',amount:100,unit:'g'}],cost:100},
+  {id:128,name:'ごぼうのからしマヨ和え',cat:'副菜',memo:'ごぼうのシャキシャキ感',recipe:['①ごぼうを細切りにして水にさらす','②茹でて歯ごたえを残す','③マヨネーズ・からし・醤油で和える'],ingredients:[{name:'ごぼう',amount:300,unit:'g'}],cost:150},
+  {id:129,name:'枝豆の塩茹で',cat:'副菜',memo:'夏場の簡単副菜',recipe:['①枝豆を塩でこすり洗いする','②塩水で4〜5分茹でる','③そのまま冷ます'],ingredients:[{name:'枝豆（冷凍）',amount:300,unit:'g'}],cost:150},
+  {id:130,name:'れんこんのきんぴら',cat:'副菜',memo:'シャキシャキ食感',recipe:['①れんこんを薄い半月切りにして水にさらす','②ごま油で炒める','③醤油・みりん・砂糖で味付け','④唐辛子・白ごまを加えて完成'],ingredients:[{name:'れんこん',amount:300,unit:'g'}],cost:250},
+];
+
+let assigns={};
+let currentMonth=new Date();
+let editingId=null;
+let editingType='main';
+let filterCat='全て';
+let typeFilter='main';
+const catColors={和食:'badge-green',洋食:'badge-blue',中華:'badge-amber',その他:'badge-pink',副菜:'badge-coral'};
+
+function load(){try{const d=localStorage.getItem('makanai_v2');if(d){const p=JSON.parse(d);if(p.mainMenus)mainMenus=p.mainMenus;if(p.sideMenus)sideMenus=p.sideMenus;if(p.assigns)assigns=p.assigns;}}catch(e){}}
+function save(){try{localStorage.setItem('makanai_v2',JSON.stringify({mainMenus,sideMenus,assigns}));}catch(e){}}
+function perPerson(cost){return Math.round(cost/7);}
+
+function showTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['calendar','menus','cost'][i]===name);});
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  if(name==='cost')renderCost();
+  if(name==='menus'){renderFilters();renderMenus();}
+}
+function changeMonth(d){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+d,1);renderCalendar();}
+function renderCalendar(){
+  const y=currentMonth.getFullYear(),m=currentMonth.getMonth();
+  document.getElementById('month-label').textContent=`${y}年${m+1}月`;
+  const first=new Date(y,m,1).getDay(),last=new Date(y,m+1,0).getDate(),today=new Date();
+  const grid=document.getElementById('cal-body');grid.innerHTML='';
+  for(let i=0;i<first;i++)grid.innerHTML+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=last;d++){
+    const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
+    const a=assigns[key]||{};
+    const main=a.main?mainMenus.find(x=>x.id===a.main):null;
+    const side=a.side?sideMenus.find(x=>x.id===a.side):null;
+    const total=(main?main.cost:0)+(side?side.cost:0);
+    const over=main&&total>BUDGET;
+    grid.innerHTML+=`<div class="cal-day${isToday?' today':''}" onclick="openAssignModalDate('${key}')" style="${over?'border-color:#E24B4A':''}">
+      <div class="day-num">${d}${main?`<span style="font-size:9px;color:${over?'#A32D2D':'#0F6E56'}"> ¥${total}</span>`:''}</div>
+      ${main?`<div class="day-main">${main.name}</div>`:''}
+      ${side?`<div class="day-side">${side.name}</div>`:''}
+    </div>`;
+  }
+}
+function openAssignModal(){
+  document.getElementById('a-date').value=new Date().toISOString().slice(0,10);
+  populateAssignSelects();updateCostPreview();
+  document.getElementById('modal-assign').classList.add('open');
+}
+function openAssignModalDate(dateStr){
+  document.getElementById('a-date').value=dateStr;
+  populateAssignSelects();
+  const a=assigns[dateStr]||{};
+  if(a.main)document.getElementById('a-main').value=a.main;
+  if(a.side)document.getElementById('a-side').value=a.side||'';
+  updateCostPreview();
+  document.getElementById('modal-assign').classList.add('open');
+}
+function populateAssignSelects(){
+  document.getElementById('a-main').innerHTML=mainMenus.map(m=>`<option value="${m.id}">${m.name} ¥${m.cost}</option>`).join('');
+  document.getElementById('a-side').innerHTML=`<option value="">なし</option>`+sideMenus.map(m=>`<option value="${m.id}">${m.name} +¥${m.cost}</option>`).join('');
+}
+function updateCostPreview(){
+  const main=mainMenus.find(x=>x.id===parseInt(document.getElementById('a-main').value));
+  const sv=document.getElementById('a-side').value;
+  const side=sv?sideMenus.find(x=>x.id===parseInt(sv)):null;
+  const total=(main?main.cost:0)+(side?side.cost:0);
+  const per=perPerson(total),ok=total<=BUDGET;
+  document.getElementById('assign-cost-preview').innerHTML=`合計 ¥${total.toLocaleString()} ／ 1人あたり <strong style="color:${ok?'#0F6E56':'#A32D2D'}">¥${per}</strong> ${ok?'✓ 目標内':'⚠ 目標超過'}`;
+}
+function saveAssign(){
+  const date=document.getElementById('a-date').value;
+  const mainId=parseInt(document.getElementById('a-main').value);
+  const sv=document.getElementById('a-side').value;
+  if(date){assigns[date]={main:mainId,side:sv?parseInt(sv):null};}
+  save();closeModal('modal-assign');renderCalendar();
+}
+function toggleDetail(id){
+  const d=document.getElementById('detail-'+id),a=document.getElementById('arrow-'+id);
+  if(!d)return;
+  const open=d.classList.contains('open');
+  d.classList.toggle('open',!open);
+  if(a)a.classList.toggle('open',!open);
+}
+function setTypeFilter(t){
+  typeFilter=t;filterCat='全て';
+  document.getElementById('ttype-main').className='type-btn'+(t==='main'?' active-main':'');
+  document.getElementById('ttype-side').className='type-btn'+(t==='side'?' active-side':'');
+  renderFilters();renderMenus();
+}
+function updateTypeCounts(){
+  document.getElementById('ttype-main').textContent=`主菜 (${mainMenus.length})`;
+  document.getElementById('ttype-side').textContent=`副菜 (${sideMenus.length})`;
+}
+function renderFilters(){
+  const cats=typeFilter==='main'?['全て','和食','洋食','中華','その他']:['全て'];
+  document.getElementById('filter-row').innerHTML=cats.map(c=>`<button class="filter-btn${filterCat===c?' active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+}
+function setFilter(cat){filterCat=cat;renderFilters();renderMenus();}
+function renderMenus(){
+  const q=(document.getElementById('search')?.value||'').toLowerCase();
+  const list=typeFilter==='main'?mainMenus:sideMenus;
+  const filtered=list.filter(m=>{
+    const matchQ=m.name.toLowerCase().includes(q)||(m.memo||'').toLowerCase().includes(q);
+    return matchQ&&(filterCat==='全て'||m.cat===filterCat);
+  });
+  document.getElementById('menu-list').innerHTML=filtered.map(m=>{
+    const per=perPerson(m.cost),ok=typeFilter==='side'||(m.cost<=BUDGET);
+    const steps=Array.isArray(m.recipe)?m.recipe:[];
+    return`<div class="menu-item">
+      <div class="menu-header" onclick="toggleDetail(${m.id})">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:3px">
+            <span class="menu-name">${m.name}</span>
+            <span class="badge ${catColors[m.cat]||''}">${m.cat}</span>
+            <span class="cost-pill ${ok?'cost-ok':'cost-over'}">¥${m.cost}(1人¥${per})</span>
+          </div>
+          <div class="menu-meta">${m.memo||''}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+          <span class="menu-arrow" id="arrow-${m.id}">▼</span>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-sm" onclick="event.stopPropagation();editMenu(${m.id},'${typeFilter}')">編集</button>
+            <button class="btn-danger-sm btn" onclick="event.stopPropagation();deleteMenu(${m.id},'${typeFilter}')">削除</button>
+          </div>
+        </div>
+      </div>
+      <div class="menu-detail" id="detail-${m.id}">
+        <div class="recipe-section">
+          <div class="recipe-title">食材（7名分）</div>
+          <table class="ing-table">${m.ingredients.map(i=>`<tr><td>${i.name}</td><td>${i.amount}${i.unit}</td></tr>`).join('')}</table>
+        </div>
+        ${steps.length>0?`<div class="recipe-section">
+          <div class="recipe-title">作り方</div>
+          <ol class="recipe-steps">${steps.map(s=>`<li>${s.replace(/^[①②③④⑤⑥⑦⑧⑨⑩]/,'').trim()}</li>`).join('')}</ol>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('')||'<div style="color:#888;font-size:14px;padding:16px 0;text-align:center">該当するメニューがありません</div>';
+}
+function openMenuModal(){
+  editingId=null;editingType=typeFilter||'main';
+  document.getElementById('modal-title').textContent='メニューを登録';
+  document.getElementById('f-type').value=editingType;
+  ['f-name','f-memo','f-recipe'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-cat').value='和食';
+  document.getElementById('ing-list').innerHTML='';
+  document.getElementById('f-total').textContent='¥0';
+  onTypeChange();addIng();
+  document.getElementById('modal-menu').classList.add('open');
+}
+function editMenu(id,type){
+  const list=type==='main'?mainMenus:sideMenus;
+  const m=list.find(x=>x.id===id);if(!m)return;
+  editingId=id;editingType=type;
+  document.getElementById('modal-title').textContent='メニューを編集';
+  document.getElementById('f-type').value=type;
+  document.getElementById('f-name').value=m.name;
+  document.getElementById('f-cat').value=m.cat;
+  document.getElementById('f-memo').value=m.memo||'';
+  document.getElementById('f-recipe').value=Array.isArray(m.recipe)?m.recipe.join('\n'):m.recipe||'';
+  document.getElementById('ing-list').innerHTML='';
+  m.ingredients.forEach(ing=>addIng(ing));
+  onTypeChange();calcCost();
+  document.getElementById('modal-menu').classList.add('open');
+}
+function deleteMenu(id,type){
+  if(!confirm('このメニューを削除しますか？'))return;
+  if(type==='main')mainMenus=mainMenus.filter(m=>m.id!==id);
+  else sideMenus=sideMenus.filter(m=>m.id!==id);
+  save();updateTypeCounts();renderMenus();
+}
+function onTypeChange(){document.getElementById('f-cat-group').style.display=document.getElementById('f-type').value==='side'?'none':'block';}
+function addIng(ing){
+  const list=document.getElementById('ing-list');
+  const div=document.createElement('div');div.className='ing-row';
+  div.innerHTML=`<input type="text" placeholder="食材名" value="${ing?.name||''}" oninput="calcCost()">
+    <input type="number" class="amt" placeholder="¥" value="${ing?.amount||''}" oninput="calcCost()" inputmode="numeric">
+    <input type="text" class="unit" placeholder="単位" value="${ing?.unit||''}">
+    <button class="del-btn" onclick="this.parentElement.remove();calcCost()">✕</button>`;
+  list.appendChild(div);calcCost();
+}
+function calcCost(){
+  let t=0;document.querySelectorAll('.ing-row').forEach(r=>{t+=parseFloat(r.querySelectorAll('input')[1].value)||0;});
+  const per=perPerson(t),ok=t<=BUDGET;
+  document.getElementById('f-total').innerHTML=`¥${Math.round(t).toLocaleString()} <span style="font-size:13px;color:${ok?'#0F6E56':'#A32D2D'}">(1人¥${per} ${ok?'✓':'⚠'})</span>`;
+}
+function saveMenu(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('メニュー名を入力してください');return;}
+  const ingredients=[];let cost=0;
+  document.querySelectorAll('.ing-row').forEach(r=>{
+    const inputs=r.querySelectorAll('input');
+    const n=inputs[0].value.trim(),a=parseFloat(inputs[1].value)||0,u=inputs[2].value.trim();
+    if(n){ingredients.push({name:n,amount:a,unit:u});cost+=a;}
+  });
+  const type=document.getElementById('f-type').value;
+  const recipeText=document.getElementById('f-recipe').value;
+  const recipe=recipeText.split('\n').filter(s=>s.trim());
+  const cat=type==='side'?'副菜':document.getElementById('f-cat').value;
+  const data={name,cat,memo:document.getElementById('f-memo').value,recipe,ingredients,cost:Math.round(cost)};
+  const list=type==='main'?mainMenus:sideMenus;
+  if(editingId){const idx=list.findIndex(m=>m.id===editingId);if(idx>-1)list[idx]={...list[idx],...data};}
+  else list.push({id:Date.now(),...data});
+  save();closeModal('modal-menu');updateTypeCounts();renderMenus();
+}
+function renderCost(){
+  const y=currentMonth.getFullYear(),m=currentMonth.getMonth();
+  const keys=Object.keys(assigns).filter(k=>{const d=new Date(k);return d.getFullYear()===y&&d.getMonth()===m;});
+  let total=0;const costMap={};
+  keys.forEach(k=>{
+    const a=assigns[k]||{};
+    const main=a.main?mainMenus.find(x=>x.id===a.main):null;
+    const side=a.side?sideMenus.find(x=>x.id===a.side):null;
+    if(main){total+=main.cost;costMap[main.name]=(costMap[main.name]||0)+main.cost;}
+    if(side){total+=side.cost;costMap[side.name]=(costMap[side.name]||0)+side.cost;}
+  });
+  const per=perPerson(total),ok=per<=250;
+  document.getElementById('stat-total').textContent='¥'+Math.round(total).toLocaleString();
+  const perEl=document.getElementById('stat-per');perEl.textContent='¥'+per.toLocaleString();
+  perEl.className='stat-val '+(keys.length===0?'':(ok?'ok':'over'));
+  document.getElementById('stat-count').textContent=keys.length+'回';
+  const maxCost=Math.max(...Object.values(costMap),1);
+  document.getElementById('cost-list').innerHTML=Object.entries(costMap).sort((a,b)=>b[1]-a[1]).map(([name,c])=>{
+    const isOver=c>BUDGET;
+    return`<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:14px">${name}</span>
+        <span style="font-size:14px;font-weight:500;color:${isOver?'#A32D2D':'#1a1a1a'}">¥${Math.round(c).toLocaleString()}</span>
+      </div>
+      <div class="cost-bar-wrap"><div class="cost-bar" style="width:${Math.round(c/maxCost*100)}%;background:${isOver?'#E24B4A':'#1D9E75'}"></div></div>
+    </div>`;
+  }).join('')||'<div style="color:#888;font-size:14px;text-align:center;padding:16px 0">今月の割り当てはありません</div>';
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(bg=>{bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open');});});
+load();renderCalendar();renderFilters();renderMenus();updateTypeCounts();
+</script>
+</body>
+</html>
