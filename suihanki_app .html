@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>炊飯器レシピ管理</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#f5f7f5;color:#1a3a2a;min-height:100vh}
+.header{background:#2D6A4F;color:#fff;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:500}
+.serving-wrap{display:flex;align-items:center;gap:8px;font-size:13px}
+.serving-wrap select{padding:4px 10px;border-radius:6px;border:none;font-size:13px;background:#fff;color:#1a3a2a}
+.data-bar{background:#1e5038;padding:6px 1.5rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.data-btn{padding:5px 14px;border-radius:6px;border:none;font-size:12px;cursor:pointer;font-weight:500;transition:opacity .2s}
+.data-btn:hover{opacity:.85}
+.data-btn.export{background:#52B788;color:#fff}
+.data-btn.import{background:#fff;color:#1e5038}
+.data-btn.reset{background:transparent;color:#fca5a5;border:1px solid #fca5a5}
+.data-label{font-size:11px;color:#a7d4bc;margin-left:auto}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a3a2a;color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+.tabs{background:#fff;border-bottom:1px solid #e0ede6;display:flex}
+.tab{padding:14px 24px;border:none;background:none;cursor:pointer;font-size:14px;color:#6b8f7a;border-bottom:2px solid transparent;transition:all .2s}
+.tab.active{color:#2D6A4F;border-bottom-color:#2D6A4F;font-weight:500}
+.content{padding:1.5rem;max-width:1000px;margin:0 auto}
+.view{display:none}.view.active{display:block}
+
+/* カレンダー */
+.cal-header{display:flex;align-items:center;gap:16px;margin-bottom:1rem}
+.cal-nav{background:#fff;border:1px solid #c8ddd2;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:16px;color:#2D6A4F}
+.cal-month{font-size:18px;font-weight:500;color:#1a3a2a}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-dow{text-align:center;font-size:12px;color:#6b8f7a;padding:6px 0;font-weight:500}
+.cal-day{border-radius:8px;border:1px solid #e0ede6;padding:6px;cursor:pointer;background:#fff;min-height:70px;display:flex;flex-direction:column;gap:2px;transition:border-color .15s}
+.cal-day:hover{border-color:#52B788}
+.cal-day.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-day.today{border-color:#52B788;background:#f0faf4}
+.cal-day.has-menu{background:#e8f5ee}
+.dnum{font-size:11px;color:#6b8f7a;font-weight:500}
+.today .dnum{color:#2D6A4F;font-weight:700}
+.dmain{font-size:10px;color:#1a3a2a;line-height:1.3;margin-top:2px}
+.dsub{font-size:9px;color:#6b8f7a;line-height:1.3}
+
+/* スライドパネル */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200}
+.overlay.open{display:block}
+.panel{position:fixed;top:0;right:-460px;width:460px;height:100vh;background:#fff;overflow-y:auto;transition:right .3s;z-index:201;box-shadow:-4px 0 20px rgba(0,0,0,.1)}
+.panel.open{right:0}
+.panel-inner{padding:1.5rem}
+.panel h2{font-size:17px;font-weight:500;color:#1a3a2a;margin-bottom:4px}
+.panel-sub{font-size:12px;color:#6b8f7a;margin-bottom:1.2rem}
+.close-btn{position:absolute;top:1rem;right:1rem;background:none;border:1px solid #e0ede6;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6b8f7a}
+.sec-label{font-size:12px;color:#6b8f7a;margin-bottom:6px;margin-top:1.2rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.recipe-sel{width:100%;padding:10px;border:1px solid #e0ede6;border-radius:8px;font-size:14px;color:#1a3a2a;background:#f8faf8;margin-bottom:10px}
+.recipe-card{background:#f5f9f6;border:1px solid #e0ede6;border-radius:10px;padding:1rem;margin-bottom:10px}
+.recipe-card h3{font-size:15px;font-weight:500;color:#1a3a2a;margin-bottom:8px}
+.badges{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.badge.cat{background:#d8f3dc;color:#1b5e38}
+.badge.time{background:#fff3e0;color:#c45a0a}
+.acc{border:1px solid #e0ede6;border-radius:8px;overflow:hidden;margin-top:8px}
+.acc-btn{width:100%;text-align:left;padding:10px 14px;background:#e8f5ee;border:none;cursor:pointer;font-size:13px;font-weight:500;color:#2D6A4F;display:flex;justify-content:space-between;align-items:center}
+.acc-body{padding:10px 14px;display:none;font-size:13px}
+.acc-body.open{display:block}
+.ing-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #eef3ef}
+.ing-row:last-child{border-bottom:none}
+.steps-list{padding-left:1.2rem}
+.steps-list li{margin-bottom:6px;line-height:1.6}
+.save-btn{width:100%;padding:14px;background:#2D6A4F;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;margin-top:1.2rem}
+.save-btn:hover{background:#1e5038}
+.clear-btn{width:100%;padding:9px;background:none;border:1px solid #e55;color:#e55;border-radius:8px;font-size:13px;cursor:pointer;margin-top:8px}
+
+/* レシピ一覧 */
+.filter-bar{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
+.chip{padding:6px 16px;border-radius:16px;border:1px solid #e0ede6;background:#fff;cursor:pointer;font-size:13px;color:#6b8f7a;transition:all .15s}
+.chip.active{background:#2D6A4F;color:#fff;border-color:#2D6A4F}
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.r-card{background:#fff;border:1px solid #e0ede6;border-radius:10px;padding:1rem;cursor:pointer;transition:all .15s}
+.r-card:hover{border-color:#52B788;box-shadow:0 2px 10px rgba(45,106,79,.1)}
+.r-card h3{font-size:14px;font-weight:500;margin-bottom:6px}
+.r-card p{font-size:12px;color:#6b8f7a}
+
+/* まとめ */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}
+.stat{background:#fff;border:1px solid #e0ede6;border-radius:10px;padding:1rem}
+.stat-label{font-size:12px;color:#6b8f7a;margin-bottom:4px}
+.stat-val{font-size:26px;font-weight:500;color:#2D6A4F}
+.stat-unit{font-size:13px;color:#6b8f7a}
+.sum-list{display:grid;gap:8px}
+.sum-item{background:#fff;border:1px solid #e0ede6;border-radius:10px;padding:12px;display:flex;gap:12px;align-items:center}
+.sum-day{font-size:20px;font-weight:600;color:#2D6A4F;min-width:44px}
+.sum-info{}
+.sum-main{font-size:14px;font-weight:500}
+.sum-sub{font-size:12px;color:#6b8f7a}
+.empty-msg{text-align:center;padding:3rem;color:#6b8f7a;font-size:14px}
+
+/* 印刷テーブル */
+.print-table{width:100%;border-collapse:collapse;font-size:13px}
+.print-table th{background:#2D6A4F;color:#fff;padding:8px 6px;text-align:center;font-weight:500;border:1px solid #1e5038}
+.print-table td{border:1px solid #c8ddd2;padding:8px 6px;vertical-align:top}
+.print-table tr:nth-child(even) td{background:#f5faf7}
+.pt-day{font-weight:600;color:#2D6A4F;font-size:14px;text-align:center;width:36px}
+.pt-dow{font-size:11px;color:#6b8f7a;text-align:center}
+.pt-main{font-size:12px;color:#1a3a2a;margin-bottom:2px}
+.pt-sub{font-size:11px;color:#6b8f7a}
+.pt-empty{color:#c8ddd2;font-size:11px;text-align:center}
+
+@media print{
+  .header,.data-bar,.tabs,.panel,.overlay,.toast{display:none!important}
+  .view{display:none!important}
+  #v-print{display:block!important}
+  .content{padding:0;max-width:100%}
+  body{background:#fff}
+  .print-table th{background:#2D6A4F!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .print-table tr:nth-child(even) td{background:#f5faf7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+@media(max-width:600px){
+.panel{width:100%}
+.content{padding:1rem}
+.cal-grid{gap:3px}
+.cal-day{min-height:55px;padding:4px}
+.tab{padding:12px 14px;font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🍚 炊飯器レシピ管理</h1>
+  <div class="serving-wrap">
+    <span>人数：</span>
+    <select id="serving-sel" onchange="renderCalendar()">
+      <option value="2">2人家族</option>
+      <option value="5" selected>5人家族</option>
+    </select>
+  </div>
+</div>
+
+<div class="data-bar">
+  <button class="data-btn export" onclick="exportData()">📥 データを書き出す（JSON）</button>
+  <label class="data-btn import" style="cursor:pointer;">📂 データを読み込む
+    <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+  </label>
+  <button class="data-btn reset" onclick="resetData()">🗑 全データ削除</button>
+  <span class="data-label" id="data-label">ブラウザに自動保存されます</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showView('calendar',this)">📅 カレンダー</button>
+  <button class="tab" onclick="showView('recipes',this)">📖 レシピ一覧</button>
+  <button class="tab" onclick="showView('summary',this)">📊 月間まとめ</button>
+  <button class="tab" onclick="showView('print',this)">🖨️ 印刷</button>
+</div>
+
+<div class="content">
+
+<div id="v-calendar" class="view active">
+  <div class="cal-header">
+    <button class="cal-nav" onclick="changeMonth(-1)">◀</button>
+    <span class="cal-month" id="cal-label"></span>
+    <button class="cal-nav" onclick="changeMonth(1)">▶</button>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<div id="v-recipes" class="view">
+  <div class="filter-bar" id="filter-bar"></div>
+  <div class="recipe-grid" id="recipe-grid"></div>
+</div>
+
+<div id="v-summary" class="view">
+  <div class="stats">
+    <div class="stat"><div class="stat-label">登録済み日数</div><div class="stat-val" id="s-days">0<span class="stat-unit">日</span></div></div>
+    <div class="stat"><div class="stat-label">総献立数</div><div class="stat-val" id="s-dishes">0<span class="stat-unit">品</span></div></div>
+    <div class="stat"><div class="stat-label">月間カバー率</div><div class="stat-val" id="s-cover">0<span class="stat-unit">%</span></div></div>
+    <div class="stat"><div class="stat-label">設定人数</div><div class="stat-val" id="s-srv">5<span class="stat-unit">人</span></div></div>
+  </div>
+  <div class="sum-list" id="sum-list"></div>
+</div>
+
+<div id="v-print" class="view">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;flex-wrap:wrap">
+    <h2 style="font-size:17px;font-weight:500;color:#1a3a2a">月間献立表</h2>
+    <span id="print-month-label" style="font-size:15px;color:#2D6A4F;font-weight:500"></span>
+    <button onclick="window.print()" style="margin-left:auto;padding:10px 24px;background:#2D6A4F;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;">🖨️ 印刷する</button>
+  </div>
+  <div id="print-table-wrap"></div>
+</div>
+
+</div>
+
+<!-- パネル -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-inner">
+    <button class="close-btn" onclick="closePanel()">×</button>
+    <h2 id="p-title">献立を設定</h2>
+    <div class="panel-sub" id="p-sub"></div>
+
+    <div class="sec-label">主菜（炊飯器料理）</div>
+    <select class="recipe-sel" id="main-sel" onchange="showCard('main',this.value)">
+      <option value="">── 主菜を選ぶ ──</option>
+    </select>
+    <div id="main-card"></div>
+
+    <div class="sec-label">副菜（簡単・炊飯器不要）</div>
+    <select class="recipe-sel" id="sub-sel" onchange="showCard('sub',this.value)">
+      <option value="">── 副菜を選ぶ ──</option>
+    </select>
+    <div id="sub-card"></div>
+
+    <button class="save-btn" onclick="saveMenu()">✓ この日の献立を保存</button>
+    <button class="clear-btn" onclick="clearMenu()">献立をクリア</button>
+  </div>
+</div>
+
+<script>
+var curY=new Date().getFullYear(), curM=new Date().getMonth();
+var menus={}, selDate=null, activeFilter='all';
+
+var MAINS=[
+  {id:'m01',name:'鶏の照り焼き',cat:'鶏肉',time:60,desc:'甘辛タレがご飯に合う定番',
+   i5:[['鶏もも肉','600g'],['醤油','大3'],['みりん','大3'],['砂糖','大2'],['酒','大2']],
+   i2:[['鶏もも肉','250g'],['醤油','大1.5'],['みりん','大1.5'],['砂糖','大1'],['酒','大1']],
+   s:['鶏肉を一口大に切る','タレを合わせて炊飯器に入れる','普通炊飯でスイッチオン','炊き上がったら少し蒸らす']},
+  {id:'m02',name:'豚の角煮',cat:'豚肉',time:90,desc:'トロトロ柔らかく仕上がる',
+   i5:[['豚バラ塊','700g'],['醤油','大4'],['砂糖','大3'],['酒','100ml'],['生姜','1かけ']],
+   i2:[['豚バラ塊','300g'],['醤油','大2'],['砂糖','大1.5'],['酒','50ml'],['生姜','1かけ']],
+   s:['豚バラを5cm角に切る','フライパンで表面を焼く','炊飯器に全材料を入れる','保温モードで2時間おく']},
+  {id:'m03',name:'チキンカレー',cat:'カレー',time:60,desc:'野菜も肉もホロホロ',
+   i5:[['鶏肉','400g'],['じゃがいも','3個'],['にんじん','2本'],['玉ねぎ','2個'],['カレールー','4皿分']],
+   i2:[['鶏肉','200g'],['じゃがいも','2個'],['にんじん','1本'],['玉ねぎ','1個'],['カレールー','2皿分']],
+   s:['材料を切って炊飯器へ','水300mlを加える','炊飯スイッチを押す','炊けたらルーを割り入れ混ぜる']},
+  {id:'m04',name:'鶏の炊き込みご飯',cat:'ご飯もの',time:60,desc:'具材の旨みが染みたご飯',
+   i5:[['米','3合'],['鶏肉','200g'],['ごぼう','1本'],['にんじん','1本'],['醤油・みりん','各大2']],
+   i2:[['米','2合'],['鶏肉','100g'],['ごぼう','1/2本'],['にんじん','1/2本'],['醤油・みりん','各大1']],
+   s:['米を洗って炊飯器に入れる','調味料と水加減を合わせる','具材を並べて炊飯','炊き上がったらよく混ぜる']},
+  {id:'m05',name:'ビーフシチュー',cat:'牛肉',time:90,desc:'市販ルーで本格的な仕上がり',
+   i5:[['牛肉','500g'],['じゃがいも','3個'],['にんじん','2本'],['玉ねぎ','2個'],['ビーフシチュールー','4皿分']],
+   i2:[['牛肉','200g'],['じゃがいも','2個'],['にんじん','1本'],['玉ねぎ','1個'],['ビーフシチュールー','2皿分']],
+   s:['材料を切る','牛肉は表面を炒める','炊飯器に全材料と水を入れる','炊飯後にルーを溶かす']},
+  {id:'m06',name:'さばの味噌煮',cat:'魚',time:60,desc:'生臭みなくホロホロに',
+   i5:[['さば','5切れ'],['味噌','大4'],['みりん','大3'],['砂糖','大2'],['生姜','2かけ']],
+   i2:[['さば','2切れ'],['味噌','大2'],['みりん','大1.5'],['砂糖','大1'],['生姜','1かけ']],
+   s:['さばに切り込みを入れる','調味料を混ぜ合わせる','炊飯器にさばとタレを入れる','普通炊飯で完成']},
+  {id:'m07',name:'豚汁',cat:'汁物',time:60,desc:'具だくさんで栄養満点',
+   i5:[['豚肉','200g'],['大根','1/4本'],['にんじん','1本'],['ごぼう','1/2本'],['味噌','大5']],
+   i2:[['豚肉','80g'],['大根','1/8本'],['にんじん','1/2本'],['ごぼう','1/4本'],['味噌','大2']],
+   s:['材料を切って炊飯器へ','水800ml(2人:400ml)加える','炊飯する','炊けたら味噌を溶かす']},
+  {id:'m08',name:'ローストビーフ',cat:'牛肉',time:80,desc:'保温機能で絶妙な仕上がり',
+   i5:[['牛もも塊','600g'],['醤油','大3'],['にんにく','2片'],['塩こしょう','適量'],['ローズマリー','適量']],
+   i2:[['牛もも塊','300g'],['醤油','大1.5'],['にんにく','1片'],['塩こしょう','適量'],['ローズマリー','適量']],
+   s:['肉を常温に戻す','塩こしょうを塗って表面を焼く','アルミホイルで包んで炊飯器に入れる','保温で50分→休ませてスライス']},
+  {id:'m09',name:'鶏ハム',cat:'鶏肉',time:70,desc:'しっとり仕上がる低温調理',
+   i5:[['鶏むね肉','3枚'],['塩','小2'],['砂糖','小1'],['にんにく','1片'],['オリーブオイル','大1']],
+   i2:[['鶏むね肉','1枚'],['塩','小1'],['砂糖','少々'],['にんにく','少々'],['オリーブオイル','小1']],
+   s:['鶏肉に塩砂糖を揉み込み一晩おく','ラップでロール状に巻く','炊飯器に湯を張り入れる','保温1時間→冷蔵庫で冷やしてスライス']},
+  {id:'m10',name:'肉じゃが',cat:'豚肉',time:60,desc:'懐かしい家庭の味',
+   i5:[['じゃがいも','5個'],['豚肉','300g'],['玉ねぎ','2個'],['にんじん','2本'],['醤油・砂糖・みりん','各大3']],
+   i2:[['じゃがいも','2個'],['豚肉','120g'],['玉ねぎ','1個'],['にんじん','1本'],['醤油・砂糖・みりん','各大1.5']],
+   s:['材料を切る','炊飯器に材料と調味料を入れる','普通炊飯','炊き上がったら蓋を開けて蒸らす']},
+  {id:'m11',name:'白菜と豚肉の重ね煮',cat:'豚肉',time:60,desc:'旨みが凝縮したシンプル蒸し',
+   i5:[['白菜','1/2株'],['豚バラ','400g'],['塩','小1'],['鶏ガラ','小2'],['ごま油','大1']],
+   i2:[['白菜','1/4株'],['豚バラ','180g'],['塩','少々'],['鶏ガラ','小1'],['ごま油','小1']],
+   s:['白菜と豚肉を交互に重ねる','炊飯器に入れ調味料をかける','炊飯する','食べやすく切り分ける']},
+  {id:'m12',name:'スープカレー',cat:'カレー',time:60,desc:'野菜の旨みたっぷり',
+   i5:[['鶏もも','4本'],['じゃがいも','3個'],['なす','3本'],['ピーマン','5個'],['カレー粉・トマト缶','適量']],
+   i2:[['鶏もも','2本'],['じゃがいも','2個'],['なす','1本'],['ピーマン','2個'],['カレー粉・トマト缶','適量']],
+   s:['野菜を大きめに切る','鶏肉を炒める','炊飯器に全部入れる','炊飯してカレー粉で調整']},
+  {id:'m13',name:'おでん',cat:'汁物',time:90,desc:'じっくり染みたおでん',
+   i5:[['大根','1本'],['卵','5個'],['こんにゃく','2枚'],['ちくわ','5本'],['出汁・醤油・みりん','適量']],
+   i2:[['大根','1/2本'],['卵','2個'],['こんにゃく','1枚'],['ちくわ','2本'],['出汁・醤油・みりん','適量']],
+   s:['大根は下茹でする','卵を茹でて剥く','炊飯器に出汁と具材を入れる','保温モードで3時間']},
+  {id:'m14',name:'チキンライス',cat:'ご飯もの',time:60,desc:'子どもが大好き',
+   i5:[['米','3合'],['鶏肉','250g'],['玉ねぎ','1個'],['トマト缶','1缶'],['ケチャップ・コンソメ','適量']],
+   i2:[['米','2合'],['鶏肉','100g'],['玉ねぎ','1/2個'],['トマト缶','1/2缶'],['ケチャップ・コンソメ','適量']],
+   s:['米を洗う','材料と調味料を全て炊飯器へ','普通炊飯','炊けたらよく混ぜる']},
+  {id:'m15',name:'豚キムチ煮',cat:'豚肉',time:60,desc:'ピリ辛で食欲増進',
+   i5:[['豚バラ','400g'],['キムチ','300g'],['豆腐','1丁'],['醤油','大2'],['ごま油','大1']],
+   i2:[['豚バラ','180g'],['キムチ','150g'],['豆腐','1/2丁'],['醤油','大1'],['ごま油','小1']],
+   s:['材料を切る','炊飯器に全材料を入れる','普通炊飯','炊き上がったらごま油を回す']},
+  {id:'m16',name:'牛すじ煮込み',cat:'牛肉',time:90,desc:'コラーゲンたっぷり',
+   i5:[['牛すじ','500g'],['こんにゃく','2枚'],['大根','1/2本'],['醤油・みりん','各大4'],['砂糖','大2']],
+   i2:[['牛すじ','200g'],['こんにゃく','1枚'],['大根','1/4本'],['醤油・みりん','各大2'],['砂糖','大1']],
+   s:['牛すじを下茹でする','材料を切る','炊飯器に全材料を入れる','保温2時間でとろとろに']},
+  {id:'m17',name:'ぶり大根',cat:'魚',time:60,desc:'ふっくら煮えて美味しい',
+   i5:[['ぶり','5切れ'],['大根','1/2本'],['醤油','大4'],['みりん','大4'],['砂糖','大2']],
+   i2:[['ぶり','2切れ'],['大根','1/4本'],['醤油','大2'],['みりん','大2'],['砂糖','大1']],
+   s:['ぶりは霜降りにする','大根を輪切りにする','炊飯器に材料と調味料を入れる','普通炊飯']},
+  {id:'m18',name:'ポトフ',cat:'洋食',time:60,desc:'野菜がとろとろ',
+   i5:[['ウインナー','10本'],['じゃがいも','4個'],['にんじん','2本'],['キャベツ','1/4個'],['コンソメ','3個']],
+   i2:[['ウインナー','4本'],['じゃがいも','2個'],['にんじん','1本'],['キャベツ','1/8個'],['コンソメ','1個']],
+   s:['野菜を大きめに切る','炊飯器に全材料と水を入れる','普通炊飯','塩こしょうで味調整']},
+  {id:'m19',name:'鶏と根菜の煮物',cat:'鶏肉',time:60,desc:'和風ほっこり煮物',
+   i5:[['鶏もも','3枚'],['れんこん','1節'],['ごぼう','1本'],['にんじん','2本'],['醤油・みりん・砂糖','各大3']],
+   i2:[['鶏もも','1枚'],['れんこん','1/2節'],['ごぼう','1/2本'],['にんじん','1本'],['醤油・みりん・砂糖','各大1.5']],
+   s:['材料を乱切りにする','炊飯器に入れる','普通炊飯','炊けたら混ぜて蒸らす']},
+  {id:'m20',name:'麻婆豆腐',cat:'豚肉',time:60,desc:'本格的な辛さ',
+   i5:[['豆腐','2丁'],['豚ひき肉','300g'],['豆板醤','小2'],['ニラ','1束'],['醤油・鶏ガラ','適量']],
+   i2:[['豆腐','1丁'],['豚ひき肉','120g'],['豆板醤','小1'],['ニラ','1/2束'],['醤油・鶏ガラ','適量']],
+   s:['ひき肉を炒める','炊飯器に全材料を入れる','早炊きモード','片栗粉でとろみをつける']},
+  {id:'m21',name:'タコライス',cat:'ご飯もの',time:60,desc:'沖縄風ご飯もの',
+   i5:[['米','3合'],['合いびき肉','400g'],['玉ねぎ','1個'],['トマト缶','1缶'],['チリパウダー・ケチャップ','適量']],
+   i2:[['米','2合'],['合いびき肉','180g'],['玉ねぎ','1/2個'],['トマト缶','1/2缶'],['チリパウダー・ケチャップ','適量']],
+   s:['ひき肉と玉ねぎを炒める','炊飯器に米と炒めたものを入れる','普通炊飯','混ぜてトッピングで盛り付け']},
+  {id:'m22',name:'豚肉と大根の煮物',cat:'豚肉',time:60,desc:'シンプルで飽きない',
+   i5:[['豚バラ','350g'],['大根','1/2本'],['醤油','大3'],['みりん','大3'],['砂糖','大1.5']],
+   i2:[['豚バラ','150g'],['大根','1/4本'],['醤油','大1.5'],['みりん','大1.5'],['砂糖','大1']],
+   s:['材料を切る','炊飯器に全材料を入れる','普通炊飯','味を確認して完成']},
+  {id:'m23',name:'クリームシチュー',cat:'洋食',time:60,desc:'まろやかミルク仕立て',
+   i5:[['鶏肉','400g'],['じゃがいも','4個'],['にんじん','2本'],['牛乳','400ml'],['シチュールー','4皿分']],
+   i2:[['鶏肉','180g'],['じゃがいも','2個'],['にんじん','1本'],['牛乳','200ml'],['シチュールー','2皿分']],
+   s:['材料を切る','炊飯器に肉と野菜と水を入れる','炊飯','ルーと牛乳を加えよく混ぜる']},
+  {id:'m24',name:'炊飯器蒸しパン',cat:'おやつ',time:50,desc:'ふわふわもちもち',
+   i5:[['ホットケーキMix','300g'],['卵','3個'],['牛乳','200ml'],['砂糖','大2'],['バター','40g']],
+   i2:[['ホットケーキMix','150g'],['卵','1個'],['牛乳','100ml'],['砂糖','大1'],['バター','20g']],
+   s:['材料を混ぜる','炊飯釜にバターを塗る','生地を流し込む','普通炊飯（2回繰り返す）']},
+  {id:'m25',name:'スペアリブ煮',cat:'豚肉',time:90,desc:'骨までほろほろ',
+   i5:[['スペアリブ','1kg'],['醤油','大5'],['みりん','大4'],['砂糖','大3'],['にんにく・生姜','各適量']],
+   i2:[['スペアリブ','400g'],['醤油','大2.5'],['みりん','大2'],['砂糖','大1.5'],['にんにく・生姜','各少量']],
+   s:['スペアリブを表面焼く','炊飯器に全材料を入れる','炊飯','保温に切り替えて30分']},
+  {id:'m26',name:'かぼちゃ煮',cat:'野菜',time:50,desc:'甘くてほくほく',
+   i5:[['かぼちゃ','1個'],['砂糖','大4'],['醤油','大3'],['みりん','大3'],['だし汁','100ml']],
+   i2:[['かぼちゃ','1/2個'],['砂糖','大2'],['醤油','大1.5'],['みりん','大1.5'],['だし汁','50ml']],
+   s:['かぼちゃを一口大に切る','炊飯器に全材料を入れる','早炊きモードで調理','崩れすぎないよう注意']},
+  {id:'m27',name:'鶏ガラスープ',cat:'汁物',time:80,desc:'丁寧にとった本格スープ',
+   i5:[['鶏ガラ','2羽分'],['長ねぎ','1本'],['生姜','2かけ'],['塩・醤油','適量'],['水','1.5L']],
+   i2:[['鶏ガラ','1羽分'],['長ねぎ','1/2本'],['生姜','1かけ'],['塩・醤油','適量'],['水','700ml']],
+   s:['鶏ガラを洗う','炊飯器に全材料を入れる','保温モード3時間','濾してスープを取る']},
+  {id:'m28',name:'チャーシュー',cat:'豚肉',time:80,desc:'ラーメンの具にも',
+   i5:[['豚バラ塊','700g'],['醤油','100ml'],['みりん','100ml'],['砂糖','大3'],['にんにく・生姜','各1かけ']],
+   i2:[['豚バラ塊','300g'],['醤油','50ml'],['みりん','50ml'],['砂糖','大1.5'],['にんにく・生姜','各少量']],
+   s:['豚バラをロール状に縛る','表面を焼く','炊飯器に調味料と肉を入れる','保温2時間後冷やしてスライス']},
+  {id:'m29',name:'ミートソース',cat:'洋食',time:60,desc:'パスタやご飯に合う',
+   i5:[['合いびき肉','500g'],['トマト缶','2缶'],['玉ねぎ','2個'],['にんにく','2片'],['コンソメ・ケチャップ','適量']],
+   i2:[['合いびき肉','200g'],['トマト缶','1缶'],['玉ねぎ','1個'],['にんにく','1片'],['コンソメ・ケチャップ','適量']],
+   s:['玉ねぎとにんにくを炒める','ひき肉を加えて炒める','炊飯器に全部入れる','普通炊飯してよく混ぜる']},
+  {id:'m30',name:'さんまの甘露煮',cat:'魚',time:70,desc:'頭から食べられる柔らかさ',
+   i5:[['さんま','5尾'],['醤油','大4'],['みりん','大4'],['砂糖','大3'],['酢','大2']],
+   i2:[['さんま','2尾'],['醤油','大2'],['みりん','大2'],['砂糖','大1.5'],['酢','大1']],
+   s:['さんまを3〜4等分に切る','炊飯器に全材料を入れる','保温モードで2時間','骨まで柔らかく仕上げる']},
+  {id:'m31',name:'豆腐と鶏ひきの煮',cat:'鶏肉',time:50,desc:'あっさりヘルシー',
+   i5:[['豆腐','2丁'],['鶏ひき肉','300g'],['だし汁','300ml'],['醤油・みりん','各大3'],['片栗粉','大2']],
+   i2:[['豆腐','1丁'],['鶏ひき肉','120g'],['だし汁','150ml'],['醤油・みりん','各大1.5'],['片栗粉','大1']],
+   s:['ひき肉をほぐす','炊飯器に全材料を入れる','早炊きモード','片栗粉でとろみをつける']},
+  {id:'m32',name:'ロールキャベツ',cat:'洋食',time:70,desc:'包むだけで本格的',
+   i5:[['キャベツ','8枚'],['合いびき肉','400g'],['トマト缶','1缶'],['コンソメ','2個'],['玉ねぎ','1個']],
+   i2:[['キャベツ','4枚'],['合いびき肉','180g'],['トマト缶','1/2缶'],['コンソメ','1個'],['玉ねぎ','1/2個']],
+   s:['キャベツを茹でて柔らかくする','ひき肉と玉ねぎを混ぜて包む','炊飯器にスープと一緒に入れる','普通炊飯']},
+  {id:'m33',name:'栗ご飯',cat:'ご飯もの',time:60,desc:'秋の季節ご飯',
+   i5:[['米','3合'],['栗','400g'],['塩','小2'],['みりん','大1'],['酒','大1']],
+   i2:[['米','2合'],['栗','200g'],['塩','小1'],['みりん','小1.5'],['酒','小1.5']],
+   s:['栗の皮を剥く','米を洗って炊飯器へ','栗と調味料を加える','普通炊飯']},
+  {id:'m34',name:'高野豆腐の煮物',cat:'野菜',time:50,desc:'出汁を含んだヘルシー煮',
+   i5:[['高野豆腐','10枚'],['だし汁','500ml'],['醤油','大3'],['みりん','大3'],['砂糖','大2']],
+   i2:[['高野豆腐','4枚'],['だし汁','200ml'],['醤油','大1.5'],['みりん','大1.5'],['砂糖','大1']],
+   s:['高野豆腐を戻す','炊飯器に全材料を入れる','早炊きモード','出汁を染み込ませる']},
+  {id:'m35',name:'豚肉のポン酢煮',cat:'豚肉',time:60,desc:'さっぱり爽やか',
+   i5:[['豚ロース','500g'],['玉ねぎ','3個'],['ポン酢','100ml'],['みりん','大3'],['砂糖','大1']],
+   i2:[['豚ロース','200g'],['玉ねぎ','1個'],['ポン酢','50ml'],['みりん','大1.5'],['砂糖','小2']],
+   s:['豚肉を切る','玉ねぎを薄切りにする','炊飯器に全部入れる','普通炊飯']},
+  {id:'m36',name:'レバーの甘辛煮',cat:'鶏肉',time:50,desc:'臭みなく食べやすく',
+   i5:[['鶏レバー','500g'],['醤油・みりん','各大4'],['砂糖','大2'],['生姜','2かけ'],['酒','大2']],
+   i2:[['鶏レバー','200g'],['醤油・みりん','各大2'],['砂糖','大1'],['生姜','1かけ'],['酒','大1']],
+   s:['レバーを水にさらす','炊飯器に全材料を入れる','早炊きモード','生姜が臭みを消す']},
+  {id:'m37',name:'鶏とトマトの洋風煮',cat:'鶏肉',time:60,desc:'洋風ワンポット',
+   i5:[['鶏もも','4枚'],['トマト缶','2缶'],['じゃがいも','3個'],['ピーマン','4個'],['コンソメ','2個']],
+   i2:[['鶏もも','2枚'],['トマト缶','1缶'],['じゃがいも','2個'],['ピーマン','2個'],['コンソメ','1個']],
+   s:['材料を切る','炊飯器に全部入れる','普通炊飯','塩こしょうで味調整']},
+  {id:'m38',name:'黒豆煮',cat:'野菜',time:90,desc:'おせちにも普段にも',
+   i5:[['黒豆','300g'],['砂糖','200g'],['醤油','大3'],['塩','小1'],['重曹','少々']],
+   i2:[['黒豆','150g'],['砂糖','100g'],['醤油','大1.5'],['塩','少々'],['重曹','少々']],
+   s:['黒豆を一晩水に浸す','炊飯器に黒豆と調味料と水を入れる','炊飯','保温1時間でしっとり']},
+  {id:'m39',name:'アクアパッツァ',cat:'魚',time:60,desc:'イタリアン風炊飯器料理',
+   i5:[['鯛','2尾'],['あさり','300g'],['トマト','3個'],['にんにく','3片'],['白ワイン','100ml']],
+   i2:[['鯛','1尾'],['あさり','150g'],['トマト','1個'],['にんにく','1片'],['白ワイン','50ml']],
+   s:['魚に塩をする','あさりを砂抜きする','炊飯器に全部入れる','普通炊飯']},
+  {id:'m40',name:'鶏の塩麹煮',cat:'鶏肉',time:70,desc:'麹の旨みが深い',
+   i5:[['鶏もも','4枚'],['塩麹','大4'],['酒','大2'],['にんにく','2片'],['オリーブオイル','大1']],
+   i2:[['鶏もも','2枚'],['塩麹','大2'],['酒','大1'],['にんにく','1片'],['オリーブオイル','小1']],
+   s:['鶏肉に塩麹を塗って30分おく','炊飯器に入れる','普通炊飯','仕上げにオイルをかける']},
+  {id:'m41',name:'牛肉とごぼうの甘辛煮',cat:'牛肉',time:60,desc:'ご飯が進む一品',
+   i5:[['牛切り落とし','400g'],['ごぼう','2本'],['醤油・みりん','各大4'],['砂糖','大2'],['酒','大2']],
+   i2:[['牛切り落とし','180g'],['ごぼう','1本'],['醤油・みりん','各大2'],['砂糖','大1'],['酒','大1']],
+   s:['ごぼうをささがきにする','炊飯器に全材料を入れる','普通炊飯','煮汁が少なくなるまで混ぜる']},
+  {id:'m42',name:'野菜スープ',cat:'汁物',time:60,desc:'冷蔵庫の残り野菜で',
+   i5:[['キャベツ','1/4個'],['玉ねぎ','2個'],['にんじん','2本'],['ベーコン','100g'],['コンソメ','3個']],
+   i2:[['キャベツ','1/8個'],['玉ねぎ','1個'],['にんじん','1本'],['ベーコン','50g'],['コンソメ','1個']],
+   s:['野菜を切る','炊飯器に全部と水を入れる','普通炊飯','塩こしょうで味を整える']},
+  {id:'m43',name:'牛丼の具',cat:'牛肉',time:50,desc:'甘辛タレで本格牛丼',
+   i5:[['牛薄切り','500g'],['玉ねぎ','3個'],['醤油','大5'],['みりん','大4'],['砂糖','大3']],
+   i2:[['牛薄切り','200g'],['玉ねぎ','1個'],['醤油','大2.5'],['みりん','大2'],['砂糖','大1.5']],
+   s:['玉ねぎを薄切りにする','全材料を炊飯器へ','普通炊飯','ご飯の上に盛る']},
+  {id:'m44',name:'ぶりの生姜煮',cat:'魚',time:60,desc:'生姜香るさっぱり煮魚',
+   i5:[['ぶり','5切れ'],['生姜','3かけ'],['醤油','大4'],['みりん','大3'],['酒','大3']],
+   i2:[['ぶり','2切れ'],['生姜','1かけ'],['醤油','大2'],['みりん','大1.5'],['酒','大1.5']],
+   s:['ぶりに切り込みを入れる','炊飯器に調味料を入れる','ぶりと生姜を加える','普通炊飯']},
+  {id:'m45',name:'鶏とかぼちゃの甘煮',cat:'鶏肉',time:60,desc:'ほっこり甘い煮物',
+   i5:[['鶏もも','3枚'],['かぼちゃ','1/2個'],['醤油','大3'],['砂糖','大3'],['みりん','大2']],
+   i2:[['鶏もも','1枚'],['かぼちゃ','1/4個'],['醤油','大1.5'],['砂糖','大1.5'],['みりん','大1']],
+   s:['かぼちゃを切る','炊飯器に全材料を入れる','普通炊飯','崩れないよう優しく混ぜる']},
+  {id:'m46',name:'ハヤシライス',cat:'洋食',time:60,desc:'濃厚なデミグラス',
+   i5:[['牛肉','400g'],['玉ねぎ','3個'],['マッシュルーム','1P'],['ハヤシルー','4皿分'],['トマト缶','1缶']],
+   i2:[['牛肉','180g'],['玉ねぎ','1個'],['マッシュルーム','5個'],['ハヤシルー','2皿分'],['トマト缶','1/2缶']],
+   s:['材料を切る','炊飯器に全部と水を入れる','普通炊飯','ルーを加えよく溶かす']},
+  {id:'m47',name:'豚と大豆の煮物',cat:'豚肉',time:70,desc:'食物繊維たっぷり',
+   i5:[['豚バラ','300g'],['大豆水煮','2缶'],['にんじん','2本'],['醤油・みりん','各大4'],['砂糖','大2']],
+   i2:[['豚バラ','130g'],['大豆水煮','1缶'],['にんじん','1本'],['醤油・みりん','各大2'],['砂糖','大1']],
+   s:['豚肉を切る','炊飯器に全材料を入れる','普通炊飯','味をなじませる']},
+  {id:'m48',name:'いわしの梅煮',cat:'魚',time:60,desc:'梅の酸味が食欲をそそる',
+   i5:[['いわし','10尾'],['梅干し','5個'],['醤油','大4'],['みりん','大3'],['砂糖','大2']],
+   i2:[['いわし','4尾'],['梅干し','2個'],['醤油','大2'],['みりん','大1.5'],['砂糖','大1']],
+   s:['いわしを3枚におろす','梅干しは種を取る','炊飯器に全材料を入れる','保温1.5時間']},
+  {id:'m49',name:'豆乳スープ',cat:'汁物',time:50,desc:'まろやかヘルシー',
+   i5:[['豆乳','600ml'],['鶏肉','200g'],['白菜','1/4株'],['えのき','1袋'],['味噌・塩','適量']],
+   i2:[['豆乳','300ml'],['鶏肉','80g'],['白菜','1/8株'],['えのき','1/2袋'],['味噌・塩','適量']],
+   s:['材料を切る','炊飯器に全材料を入れる','早炊きモード','豆乳は最後に加える']},
+  {id:'m50',name:'鶏の梅しそ蒸し',cat:'鶏肉',time:60,desc:'さっぱり夏向け',
+   i5:[['鶏むね肉','4枚'],['梅干し','5個'],['青じそ','20枚'],['酒','大2'],['塩','少々']],
+   i2:[['鶏むね肉','2枚'],['梅干し','2個'],['青じそ','10枚'],['酒','大1'],['塩','少々']],
+   s:['梅干しをたたく','鶏肉に梅としそを塗る','ラップで包む','炊飯器で保温45分']}
+];
+
+var SUBS=[
+  {id:'s1',name:'きゅうりの塩もみ',cat:'副菜',time:5,desc:'さっぱり簡単',i5:[['きゅうり','3本'],['塩','小1'],['ごま油','小1']],i2:[['きゅうり','1本'],['塩','少々'],['ごま油','少々']],s:['きゅうりを薄切り','塩で揉む','水気を絞りごま油をかける']},
+  {id:'s2',name:'ほうれん草のお浸し',cat:'副菜',time:10,desc:'定番副菜',i5:[['ほうれん草','2袋'],['だし醤油','大2'],['かつお節','適量']],i2:[['ほうれん草','1袋'],['だし醤油','大1'],['かつお節','適量']],s:['ほうれん草を茹でる','水にさらして絞る','だし醤油をかける']},
+  {id:'s3',name:'トマトサラダ',cat:'副菜',time:5,desc:'彩り鮮やか',i5:[['トマト','4個'],['バジル','適量'],['オリーブオイル','大2'],['塩こしょう','適量']],i2:[['トマト','2個'],['バジル','適量'],['オリーブオイル','大1'],['塩こしょう','適量']],s:['トマトを切る','調味料をかける','バジルをのせる']},
+  {id:'s4',name:'もやしナムル',cat:'副菜',time:8,desc:'ヘルシーで安価',i5:[['もやし','2袋'],['ごま油','大2'],['醤油','大1'],['塩・ごま','適量']],i2:[['もやし','1袋'],['ごま油','大1'],['醤油','小2'],['塩・ごま','適量']],s:['もやしをさっと茹でる','水気を切る','調味料で和える']},
+  {id:'s5',name:'卵焼き',cat:'副菜',time:10,desc:'甘さ調整可能',i5:[['卵','5個'],['砂糖','大2'],['醤油','小1'],['だし汁','大2']],i2:[['卵','2個'],['砂糖','大1'],['醤油','少々'],['だし汁','大1']],s:['卵を溶いて調味料を混ぜる','フライパンで巻きながら焼く','切り分ける']},
+  {id:'s6',name:'大根の即席漬け',cat:'副菜',time:10,desc:'箸休めにぴったり',i5:[['大根','1/2本'],['塩','小1'],['酢','大2'],['砂糖','大1']],i2:[['大根','1/4本'],['塩','少々'],['酢','大1'],['砂糖','小1']],s:['大根を薄切りにする','塩で揉んで水気を切る','酢と砂糖で和える']},
+  {id:'s7',name:'冷奴',cat:'副菜',time:3,desc:'最速副菜',i5:[['豆腐','3丁'],['ネギ','適量'],['かつお節','適量'],['醤油','適量']],i2:[['豆腐','1丁'],['ネギ','適量'],['かつお節','適量'],['醤油','適量']],s:['豆腐を切って盛る','薬味をのせる','醤油をかける']},
+  {id:'s8',name:'ブロッコリーのごま和え',cat:'副菜',time:10,desc:'栄養豊富',i5:[['ブロッコリー','2株'],['白ごま','大3'],['醤油','大2'],['砂糖','大1']],i2:[['ブロッコリー','1株'],['白ごま','大1.5'],['醤油','大1'],['砂糖','小2']],s:['ブロッコリーを茹でる','ごまと調味料を混ぜる','和える']},
+  {id:'s9',name:'ピクルス',cat:'副菜',time:15,desc:'常備菜として便利',i5:[['きゅうり・にんじん','各2本'],['酢','200ml'],['砂糖','大4'],['塩','大1']],i2:[['きゅうり・にんじん','各1本'],['酢','100ml'],['砂糖','大2'],['塩','小1']],s:['野菜を切る','漬け液を作る','一晩漬ける']},
+  {id:'s10',name:'みそ汁',cat:'副菜',time:5,desc:'手軽な温かい汁物',i5:[['豆腐','1丁'],['わかめ','適量'],['味噌','大5'],['だし汁','1L']],i2:[['豆腐','1/2丁'],['わかめ','適量'],['味噌','大2'],['だし汁','500ml']],s:['だし汁を沸かす','具材を入れる','火を止めて味噌を溶く']}
+];
+
+function getSrv(){return parseInt(document.getElementById('serving-sel').value)||5;}
+
+function renderCalendar(){
+  document.getElementById('cal-label').textContent=curY+'年'+(curM+1)+'月';
+  var g=document.getElementById('cal-grid');
+  g.innerHTML='';
+  ['日','月','火','水','木','金','土'].forEach(function(d){
+    var el=document.createElement('div');el.className='cal-dow';el.textContent=d;g.appendChild(el);
+  });
+  var first=new Date(curY,curM,1).getDay();
+  var days=new Date(curY,curM+1,0).getDate();
+  var td=new Date();
+  for(var i=0;i<first;i++){var el=document.createElement('div');el.className='cal-day empty';g.appendChild(el);}
+  for(var d=1;d<=days;d++){
+    var key=curY+'-'+(curM+1)+'-'+d;
+    var menu=menus[key];
+    var el=document.createElement('div');
+    el.className='cal-day'+(menu?' has-menu':'');
+    if(td.getFullYear()===curY&&td.getMonth()===curM&&td.getDate()===d) el.className+=' today';
+    var html='<div class="dnum">'+d+'</div>';
+    if(menu&&menu.main){var m=MAINS.find(function(r){return r.id===menu.main;});if(m)html+='<div class="dmain">'+m.name+'</div>';}
+    if(menu&&menu.sub){var s=SUBS.find(function(r){return r.id===menu.sub;});if(s)html+='<div class="dsub">'+s.name+'</div>';}
+    el.innerHTML=html;
+    (function(k,day){el.onclick=function(){openPanel(k,day);};})(key,d);
+    g.appendChild(el);
+  }
+}
+
+function changeMonth(d){
+  curM+=d;
+  if(curM>11){curM=0;curY++;}
+  if(curM<0){curM=11;curY--;}
+  renderCalendar();
+}
+
+function openPanel(key,day){
+  selDate=key;
+  document.getElementById('p-title').textContent=curY+'年'+(curM+1)+'月'+day+'日の献立';
+  document.getElementById('p-sub').textContent='家族'+getSrv()+'人分の材料を表示';
+  var menu=menus[key]||{};
+  document.getElementById('main-sel').value=menu.main||'';
+  document.getElementById('sub-sel').value=menu.sub||'';
+  if(menu.main)showCard('main',menu.main);else document.getElementById('main-card').innerHTML='';
+  if(menu.sub)showCard('sub',menu.sub);else document.getElementById('sub-card').innerHTML='';
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closePanel(){
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+function showCard(type,id){
+  var list=type==='main'?MAINS:SUBS;
+  var r=list.find(function(x){return x.id===id;});
+  var el=document.getElementById(type+'-card');
+  if(!r){el.innerHTML='';return;}
+  var srv=getSrv();
+  var ing=srv>=5?r.i5:r.i2;
+  var rows=ing.map(function(i){return '<div class="ing-row"><span>'+i[0]+'</span><span>'+i[1]+'</span></div>';}).join('');
+  var steps=r.s.map(function(s,i){return '<li>'+(i+1)+'. '+s+'</li>';}).join('');
+  el.innerHTML='<div class="recipe-card"><h3>'+r.name+'</h3>'
+    +'<div class="badges"><span class="badge cat">'+r.cat+'</span><span class="badge time">約'+r.time+'分</span></div>'
+    +'<p style="font-size:12px;color:#6b8f7a;margin-bottom:8px">'+r.desc+'</p>'
+    +'<div class="acc">'
+    +'<button class="acc-btn" onclick="toggleAcc(\''+type+'-ing\')">材料（'+getSrv()+'人分） <span>▾</span></button>'
+    +'<div class="acc-body" id="'+type+'-ing">'+rows+'</div>'
+    +'<button class="acc-btn" onclick="toggleAcc(\''+type+'-step\')">作り方 <span>▾</span></button>'
+    +'<div class="acc-body" id="'+type+'-step"><ol class="steps-list">'+steps+'</ol></div>'
+    +'</div></div>';
+}
+
+function toggleAcc(id){
+  var el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
+
+function saveToStorage(){
+  try{localStorage.setItem('suihanki_menus',JSON.stringify(menus));}catch(e){}
+}
+
+function loadFromStorage(){
+  try{
+    var d=localStorage.getItem('suihanki_menus');
+    if(d)menus=JSON.parse(d);
+  }catch(e){}
+}
+
+function exportData(){
+  var data={menus:menus,saved:new Date().toLocaleDateString('ja-JP')};
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([new Uint8Array(Array.from(json).map(function(c){return c.charCodeAt(0);}))],{type:'application/octet-stream'});
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var a=document.createElement('a');
+    a.href=e.target.result;
+    a.download='suihanki_data_'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('データを書き出しました！');
+  };
+  reader.readAsDataURL(blob);
+}
+
+function importData(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(data.menus){
+        menus=data.menus;
+        saveToStorage();
+        renderCalendar();
+        updateSummary();
+        showToast('データを読み込みました！');
+      }
+    }catch(err){showToast('読み込みに失敗しました');}
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function resetData(){
+  if(!confirm('全ての献立データを削除しますか？この操作は元に戻せません。'))return;
+  menus={};
+  saveToStorage();
+  renderCalendar();
+  updateSummary();
+  showToast('データを削除しました');
+}
+
+function saveMenu(){
+  if(!selDate)return;
+  var main=document.getElementById('main-sel').value;
+  var sub=document.getElementById('sub-sel').value;
+  if(!menus[selDate])menus[selDate]={};
+  menus[selDate].main=main;
+  menus[selDate].sub=sub;
+  saveToStorage();
+  closePanel();
+  renderCalendar();
+  updateSummary();
+}
+
+function clearMenu(){
+  if(selDate)delete menus[selDate];
+  saveToStorage();
+  document.getElementById('main-sel').value='';
+  document.getElementById('sub-sel').value='';
+  document.getElementById('main-card').innerHTML='';
+  document.getElementById('sub-card').innerHTML='';
+  renderCalendar();
+  updateSummary();
+}
+
+function showView(name,btn){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('v-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='recipes')renderRecipes();
+  if(name==='summary')updateSummary();
+  if(name==='print')renderPrint();
+}
+
+function renderPrint(){
+  var dow=['日','月','火','水','木','金','土'];
+  document.getElementById('print-month-label').textContent=curY+'年'+(curM+1)+'月';
+  var days=new Date(curY,curM+1,0).getDate();
+  var rows='';
+  for(var d=1;d<=days;d++){
+    var key=curY+'-'+(curM+1)+'-'+d;
+    var menu=menus[key]||{};
+    var date=new Date(curY,curM,d);
+    var dowStr=dow[date.getDay()];
+    var dowColor=date.getDay()===0?'color:#e55':date.getDay()===6?'color:#55a':''
+    var m=menu.main?MAINS.find(function(r){return r.id===menu.main;}):null;
+    var s=menu.sub?SUBS.find(function(r){return r.id===menu.sub;}):null;
+    rows+='<tr>'
+      +'<td class="pt-day">'+d+'<br><span class="pt-dow" style="'+dowColor+'">'+dowStr+'</span></td>'
+      +'<td>'+(m?'<div class="pt-main">'+m.name+'</div>':'<div class="pt-empty">未設定</div>')+'</td>'
+      +'<td>'+(s?'<div class="pt-sub">'+s.name+'</div>':'<div class="pt-empty">未設定</div>')+'</td>'
+      +'</tr>';
+  }
+  document.getElementById('print-table-wrap').innerHTML=
+    '<table class="print-table">'
+    +'<thead><tr><th style="width:50px">日</th><th>主菜（炊飯器）</th><th>副菜</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table>';
+}
+
+var activeFilter='all';
+function renderRecipes(){
+  var cats=['all'].concat([...new Set(MAINS.map(function(r){return r.cat;}))]);
+  var bar=document.getElementById('filter-bar');
+  bar.innerHTML='';
+  cats.forEach(function(c){
+    var b=document.createElement('button');
+    b.className='chip'+(c===activeFilter?' active':'');
+    b.textContent=c==='all'?'すべて':c;
+    b.onclick=function(){activeFilter=c;renderRecipes();};
+    bar.appendChild(b);
+  });
+  var list=activeFilter==='all'?MAINS:MAINS.filter(function(r){return r.cat===activeFilter;});
+  document.getElementById('recipe-grid').innerHTML=list.map(function(r){
+    return '<div class="r-card" onclick="openRecipeFromList(\''+r.id+'\')">'
+      +'<h3>'+r.name+'</h3>'
+      +'<div class="badges"><span class="badge cat">'+r.cat+'</span><span class="badge time">'+r.time+'分</span></div>'
+      +'<p>'+r.desc+'</p></div>';
+  }).join('');
+}
+
+function openRecipeFromList(id){
+  document.getElementById('main-sel').value=id;
+  showCard('main',id);
+  document.getElementById('sub-sel').value='';
+  document.getElementById('sub-card').innerHTML='';
+  document.getElementById('p-title').textContent='レシピ詳細';
+  document.getElementById('p-sub').textContent='カレンダーから日付を選んで設定してください';
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function updateSummary(){
+  var prefix=curY+'-'+(curM+1)+'-';
+  var days=Object.keys(menus).filter(function(k){return k.startsWith(prefix);});
+  var totalDays=new Date(curY,curM+1,0).getDate();
+  document.getElementById('s-days').innerHTML=days.length+'<span class="stat-unit">日</span>';
+  document.getElementById('s-dishes').innerHTML=(days.length*2)+'<span class="stat-unit">品</span>';
+  document.getElementById('s-cover').innerHTML=Math.round(days.length/totalDays*100)+'<span class="stat-unit">%</span>';
+  document.getElementById('s-srv').innerHTML=getSrv()+'<span class="stat-unit">人</span>';
+  var list=document.getElementById('sum-list');
+  if(days.length===0){list.innerHTML='<div class="empty-msg">まだ献立が登録されていません<br>カレンダーから日付を選んで設定してください</div>';return;}
+  list.innerHTML=days.sort().map(function(k){
+    var menu=menus[k];var d=parseInt(k.split('-')[2]);
+    var m=menu.main?MAINS.find(function(r){return r.id===menu.main;}):null;
+    var s=menu.sub?SUBS.find(function(r){return r.id===menu.sub;}):null;
+    return '<div class="sum-item"><div class="sum-day">'+d+'日</div>'
+      +'<div class="sum-info"><div class="sum-main">'+(m?m.name:'主菜未設定')+'</div>'
+      +'<div class="sum-sub">'+(s?s.name:'副菜未設定')+'</div></div></div>';
+  }).join('');
+}
+
+function downloadApp(){
+  var a=document.createElement('a');
+  a.href=window.location.href;
+  a.download='suihanki_app.html';
+  a.click();
+}
+
+// 初期化
+(function(){
+  loadFromStorage();
+  var ms=document.getElementById('main-sel');
+  var ss=document.getElementById('sub-sel');
+  MAINS.forEach(function(r){var o=document.createElement('option');o.value=r.id;o.textContent=r.name;ms.appendChild(o);});
+  SUBS.forEach(function(r){var o=document.createElement('option');o.value=r.id;o.textContent=r.name;ss.appendChild(o);});
+  renderCalendar();
+})();
+</script>
+</body>
+</html>
