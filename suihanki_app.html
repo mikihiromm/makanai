@@ -99,6 +99,7 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
 
 <div class="header">
   <h1>🍚 炊飯器レシピ管理</h1>
+  <button onclick="downloadApp()" style="background:#52B788;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;border:none;cursor:pointer;font-weight:500;">⬇ 保存する</button>
   <div class="serving-wrap">
     <span>人数：</span>
     <select id="serving-sel" onchange="renderCalendar()">
@@ -546,6 +547,13 @@ function updateSummary(){
       +'<div class="sum-info"><div class="sum-main">'+(m?m.name:'主菜未設定')+'</div>'
       +'<div class="sum-sub">'+(s?s.name:'副菜未設定')+'</div></div></div>';
   }).join('');
+}
+
+function downloadApp(){
+  var a=document.createElement('a');
+  a.href=window.location.href;
+  a.download='suihanki_app.html';
+  a.click();
 }
 
 // 初期化
