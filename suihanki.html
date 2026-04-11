@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>炊飯器レシピ献立</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic Pro','Meiryo','Yu Gothic',sans-serif;background:#fff8f0;color:#222;font-size:15px}
+.app{max-width:980px;margin:0 auto;padding:1rem}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;background:#fff;border-radius:10px;padding:12px 16px;border:1px solid #fde8cc}
+.title{font-size:19px;font-weight:700;color:#2d2d2d}
+.title span{font-size:13px;font-weight:400;color:#888;margin-left:8px}
+.persons-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.persons-group label{font-size:13px;color:#777}
+.toggle-group{display:flex;border:1px solid #e0c090;border-radius:8px;overflow:hidden}
+.toggle-btn{padding:6px 13px;font-size:13px;background:#fff;border:none;cursor:pointer;color:#777;transition:all 0.15s}
+.toggle-btn.active{background:#c07020;color:#fff;font-weight:600}
+.nav{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.nav-btn{background:#fff;border:1px solid #e0c090;border-radius:8px;padding:5px 12px;cursor:pointer;font-size:14px;color:#555}
+.nav-btn:hover{background:#fff8f0}
+.month-label{font-size:17px;font-weight:700;color:#2d2d2d;min-width:120px;text-align:center}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
+.day-header{text-align:center;font-size:12px;color:#888;padding:4px 0;font-weight:600}
+.day-header.sun{color:#e24b4a}.day-header.sat{color:#378add}
+.day-cell{min-height:90px;background:#fff;border:1px solid #fde8cc;border-radius:8px;padding:5px;cursor:pointer;transition:all 0.15s}
+.day-cell:hover{border-color:#c07020;background:#fff8f0}
+.day-cell.empty{background:transparent;border-color:transparent;cursor:default}
+.day-cell.today{border-color:#c07020;border-width:2px}
+.day-num{font-size:12px;font-weight:600;color:#888;margin-bottom:3px}
+.day-num.sun{color:#e24b4a}.day-num.sat{color:#378add}
+.meal-tag{font-size:10px;padding:2px 5px;border-radius:4px;margin-bottom:2px;line-height:1.4;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.main-tag{background:#fed7aa;color:#9a3412}
+.side-tag{background:#fef9c3;color:#854d0e}
+.tool-btn{padding:6px 14px;font-size:13px;border:1px solid #e0c090;border-radius:8px;cursor:pointer;background:#fff;color:#555}
+.tool-btn:hover{background:#fff8f0}
+.bottom-nav{display:flex;gap:8px;margin-top:1rem;border-top:1px solid #fde8cc;padding-top:1rem}
+.bottom-nav-btn{flex:1;padding:9px;font-size:14px;border:1px solid #e0c090;border-radius:8px;cursor:pointer;background:#fff;color:#777}
+.bottom-nav-btn.active{background:#c07020;color:#fff;font-weight:600}
+.view-body{min-height:300px}
+.mgmt-section{margin-bottom:1.5rem}
+.mgmt-title{font-size:15px;font-weight:700;color:#2d2d2d;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #fde8cc}
+.dish-list{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;margin-bottom:10px}
+.dish-item{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border:1px solid #fde8cc;border-radius:8px;font-size:13px;background:#fff}
+.dish-item-name{color:#222;flex:1}
+.dish-item-cat{font-size:11px;color:#888;margin:0 8px}
+.add-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;border:1px solid #fde8cc;border-radius:10px;background:#fff8f0}
+.add-form input,.add-form select,.add-form textarea{padding:7px 10px;border:1px solid #e0c090;border-radius:8px;font-size:13px;background:#fff;color:#222;font-family:inherit}
+.add-form textarea{grid-column:1/-1;resize:vertical;min-height:60px}
+.add-form .full{grid-column:1/-1}
+.save-btn{grid-column:1/-1;padding:8px;background:#c07020;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:#fff}
+.save-btn:hover{background:#a05010}
+.section-label{font-size:13px;color:#555;margin-bottom:5px;font-weight:600}
+.recipe-box{background:#fff8f0;border:1px solid #fde8cc;border-radius:8px;padding:11px;margin-bottom:8px;font-size:13px;line-height:1.8;color:#222}
+.recipe-title{font-size:12px;font-weight:600;color:#a05010;margin-bottom:4px}
+.portion-badge{font-size:12px;color:#fff;background:#c07020;border-radius:6px;padding:3px 10px;display:inline-block;margin-left:6px}
+.tip-badge{font-size:11px;background:#fef9c3;color:#854d0e;border:1px solid #fde68a;border-radius:4px;padding:2px 8px;display:inline-block;margin-left:6px}
+.shuffle-btn{padding:5px 13px;font-size:12px;border:1px solid #e0c090;border-radius:6px;cursor:pointer;background:#fff;color:#555}
+.shuffle-btn:hover{background:#fff8f0}
+.meal-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.divider{border:none;border-top:1px solid #fde8cc;margin:12px 0}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:20px;width:100%;max-width:620px;max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal-title{font-size:17px;font-weight:700;color:#2d2d2d}
+.close-btn{background:#f0f0f0;border:none;font-size:18px;cursor:pointer;color:#555;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.close-btn:hover{background:#e0e0e0}
+.rice-icon{display:inline-block;font-size:16px;margin-right:4px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="title">🍚 炊飯器レシピ献立 <span>炊飯器まかせ</span></div>
+    <div class="persons-group">
+      <label>人数：</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-2" onclick="setPersons(2)">2人</button>
+        <button class="toggle-btn" id="btn-3" onclick="setPersons(3)">3人</button>
+        <button class="toggle-btn" id="btn-4" onclick="setPersons(4)">4人</button>
+        <button class="toggle-btn" id="btn-5" onclick="setPersons(5)">5人</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="bottom-nav-btn active" onclick="showView('calendar')">カレンダー</button>
+    <button class="bottom-nav-btn" onclick="showView('manage')">レシピ管理</button>
+  </div>
+
+  <div id="view-calendar" class="view-body" style="margin-top:1rem">
+    <div class="nav">
+      <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
+      <div class="month-label" id="month-label"></div>
+      <button class="nav-btn" onclick="changeMonth(1)">▶</button>
+      <button class="tool-btn" onclick="regen()">再生成</button>
+      <button class="tool-btn" onclick="printMonth()">印刷</button>
+      <button class="tool-btn" onclick="downloadJSON()">保存</button>
+      <button class="tool-btn" onclick="document.getElementById('import-file').click()">読込</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+    <div class="calendar" id="calendar"></div>
+  </div>
+
+  <div id="view-manage" class="view-body" style="margin-top:1rem;display:none">
+    <div class="mgmt-section">
+      <div class="mgmt-title">主菜レシピ一覧（<span id="main-count">0</span>品）</div>
+      <div class="dish-list" id="main-list"></div>
+    </div>
+    <div class="mgmt-section">
+      <div class="mgmt-title">副菜レシピ一覧（<span id="side-count">0</span>品）</div>
+      <div class="dish-list" id="side-list"></div>
+    </div>
+    <div class="mgmt-section">
+      <div class="mgmt-title">レシピを追加</div>
+      <div class="add-form">
+        <input type="text" id="new-name" placeholder="料理名">
+        <select id="new-type"><option value="main">主菜</option><option value="side">副菜（おかず）</option></select>
+        <select id="new-cat">
+          <option value="肉">肉料理</option><option value="魚">魚介</option><option value="豆腐">豆腐・豆</option>
+          <option value="野菜">野菜</option><option value="卵">卵料理</option><option value="ご飯">炊き込みご飯</option>
+          <option value="スープ">スープ・汁物</option><option value="スイーツ">スイーツ・デザート</option>
+        </select>
+        <input type="text" id="new-ing2" placeholder="材料（2人分）" class="full">
+        <input type="text" id="new-ing5" placeholder="材料（5人分）" class="full">
+        <textarea id="new-recipe" placeholder="炊飯器での作り方（①②③…）"></textarea>
+        <input type="text" id="new-tip" placeholder="炊飯器のコツ（任意）" class="full">
+        <select id="new-mode">
+          <option value="普通炊飯">普通炊飯モード</option>
+          <option value="早炊き">早炊きモード</option>
+          <option value="煮込み">煮込みモード</option>
+          <option value="蒸し">蒸しモード</option>
+          <option value="保温">保温機能</option>
+        </select>
+        <button class="save-btn full" onclick="addDish()">追加する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-date"></div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+let persons=2,currentYear=new Date().getFullYear(),currentMonth=new Date().getMonth(),schedule={};
+
+// 炊飯器レシピ 主菜50品＋α（2人分と5人分を基準）
+const mainDishes=[
+  {id:1,name:"炊き込みご飯（鶏とごぼう）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・鶏もも150g・ごぼう半本・にんじん半本・醤油大2・みりん大1・酒大1・だし350ml",ing5:"米5合・鶏もも375g・ごぼう1本・にんじん1本・醤油大5・みりん大3・酒大3・だし875ml",tip:"具材は米の上にのせてスイッチオン。混ぜずに炊くのがコツ。",recipe:"①米を研いで炊飯器に入れる。②だしと調味料を合わせて内釜に入れる。③具材を上にのせて普通炊飯する。④炊き上がったら底からよく混ぜる。"},
+  {id:2,name:"サバの味噌煮",cat:"魚",mode:"煮込み",ing2:"さば2切れ・味噌大2・みりん大2・砂糖大1・生姜1片・酒大2・水100ml",ing5:"さば5切れ・味噌大5・みりん大5・砂糖大2・生姜2片・酒大5・水250ml",tip:"煮込みモードなら焦がす心配なし。",recipe:"①さばに熱湯をかける。②調味料と水を炊飯器に入れる。③さばと生姜を加えて煮込みモードで炊く。"},
+  {id:3,name:"鶏の照り焼き",cat:"肉",mode:"普通炊飯",ing2:"鶏もも300g・醤油大2・みりん大2・砂糖大1・にんにく少々",ing5:"鶏もも750g・醤油大5・みりん大5・砂糖大2・にんにく少々",tip:"皮目を上にして入れるとジューシーに仕上がる。",recipe:"①鶏もも肉に調味料を揉み込み30分置く。②炊飯器に入れてスイッチオン。③炊き上がったら食べやすく切る。"},
+  {id:4,name:"豚の角煮",cat:"肉",mode:"煮込み",ing2:"豚バラブロック400g・醤油大3・みりん大2・砂糖大2・酒大3・生姜1片・ゆで卵2個",ing5:"豚バラブロック1kg・醤油大7・みりん大5・砂糖大5・酒大7・生姜2片・ゆで卵5個",tip:"煮込みモードを2回繰り返すとトロトロになる。",recipe:"①豚バラを大きめに切る。②炊飯器に全材料を入れる。③煮込みモードで1〜2回炊く。④ゆで卵を加えて保温で30分。"},
+  {id:5,name:"炊き込みご飯（きのこ）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・しめじ1袋・えのき1袋・しいたけ4枚・醤油大2・みりん大1・酒大1・だし350ml",ing5:"米5合・しめじ2袋・えのき2袋・しいたけ8枚・醤油大5・みりん大3・酒大3・だし875ml",tip:"きのこは石突きを取って手でほぐして入れる。",recipe:"①米を研いでだし・調味料を入れる。②きのこを上にのせて普通炊飯する。③炊き上がったら混ぜる。"},
+  {id:6,name:"チキンカレー",cat:"肉",mode:"煮込み",ing2:"鶏もも300g・じゃがいも2個・玉ねぎ1個・にんじん1本・カレールー2皿・水300ml",ing5:"鶏もも750g・じゃがいも5個・玉ねぎ2個・にんじん2本・カレールー5皿・水750ml",tip:"ルーは炊き上がってから加えてよく混ぜる。",recipe:"①材料を切って炊飯器に入れる。②水を加えて煮込みモードで炊く。③炊き上がったらカレールーを加えてよく混ぜる。"},
+  {id:7,name:"ローストチキン風",cat:"肉",mode:"普通炊飯",ing2:"鶏もも骨付き2本・塩こしょう少々・にんにく2片・ローズマリー少々・オリーブオイル大1",ing5:"鶏もも骨付き5本・塩こしょう少々・にんにく4片・ローズマリー少々・オリーブオイル大2",tip:"焼き色はトースターで追加するとより美味しい。",recipe:"①鶏もも肉に塩こしょうとにんにく・ハーブを揉み込む。②炊飯器に入れてスイッチオン。③炊き上がったらトースターで3〜5分焼く。"},
+  {id:8,name:"豚汁",cat:"スープ",mode:"普通炊飯",ing2:"豚バラ100g・大根100g・にんじん1本・ごぼう半本・こんにゃく半枚・味噌大3・だし600ml",ing5:"豚バラ250g・大根250g・にんじん2本・ごぼう1本・こんにゃく1枚・味噌大7・だし1.5L",tip:"味噌は炊き上がってから加える。",recipe:"①野菜を切って炊飯器に入れる。②だしを加えてスイッチオン。③炊き上がったら味噌を溶かす。"},
+  {id:9,name:"炊き込みご飯（おこわ風）",cat:"ご飯",mode:"普通炊飯",ing2:"もち米1合・米1合・ひじき乾燥10g・枝豆50g・醤油大2・みりん大1・酒大1・だし350ml",ing5:"もち米2.5合・米2.5合・ひじき乾燥25g・枝豆125g・醤油大5・みりん大3・酒大3・だし875ml",tip:"もち米は水に30分浸けてから。",recipe:"①もち米と米を研いで水に浸ける。②ひじきを戻す。③炊飯器に全材料を入れて普通炊飯する。"},
+  {id:10,name:"ポトフ",cat:"スープ",mode:"普通炊飯",ing2:"ウインナー4本・じゃがいも2個・にんじん1本・キャベツ二分の一・玉ねぎ1個・コンソメ2個・水500ml",ing5:"ウインナー10本・じゃがいも5個・にんじん2本・キャベツ1個・玉ねぎ2個・コンソメ4個・水1.2L",tip:"野菜は大きめに切ると食感が残る。",recipe:"①野菜を大きめに切る。②炊飯器に全材料を入れてスイッチオン。③塩こしょうで味を調える。"},
+  {id:11,name:"塩豚",cat:"肉",mode:"普通炊飯",ing2:"豚バラブロック400g・塩大1・にんにく2片・ローリエ1枚・水100ml",ing5:"豚バラブロック1kg・塩大2・にんにく4片・ローリエ2枚・水250ml",tip:"前日に塩をまぶして冷蔵庫に入れておくと旨味がUP。",recipe:"①豚バラに塩をまぶして冷蔵庫で一晩置く。②炊飯器ににんにく・ローリエ・水と一緒に入れる。③普通炊飯する。④冷ましてスライスする。"},
+  {id:12,name:"サーモンの蒸し煮",cat:"魚",mode:"普通炊飯",ing2:"サーモン2切れ・玉ねぎ半個・バター10g・白ワイン大2・塩こしょう少々・レモン半個",ing5:"サーモン5切れ・玉ねぎ1個・バター25g・白ワイン大5・塩こしょう少々・レモン1個",tip:"白ワインの代わりに酒でもOK。",recipe:"①玉ねぎを薄切りにして炊飯器に敷く。②サーモンを乗せてバター・ワイン・塩こしょうをかける。③普通炊飯する。④レモンを絞って完成。"},
+  {id:13,name:"おでん",cat:"その他",mode:"煮込み",ing2:"大根・こんにゃく・はんぺん・ちくわ・卵各2個・だし600ml・醤油大2・みりん大2・塩少々",ing5:"大根・こんにゃく・はんぺん・ちくわ・卵各5個・だし1.5L・醤油大5・みりん大5・塩少々",tip:"煮込みモードを2回繰り返すと味が染みる。",recipe:"①大根は下茹でする。②炊飯器に全材料を入れる。③煮込みモードで1〜2回炊く。"},
+  {id:14,name:"クリームシチュー",cat:"肉",mode:"煮込み",ing2:"鶏もも200g・じゃがいも2個・にんじん1本・玉ねぎ1個・シチューのルー2皿・水300ml・牛乳100ml",ing5:"鶏もも500g・じゃがいも5個・にんじん2本・玉ねぎ2個・シチューのルー5皿・水750ml・牛乳250ml",tip:"牛乳はルーを入れた後に加える。",recipe:"①材料を切って炊飯器に入れる。②水を加えて煮込みモードで炊く。③ルーと牛乳を加えてよく混ぜる。"},
+  {id:15,name:"炊き込みご飯（五目）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・鶏もも100g・ごぼう半本・にんじん半本・しいたけ3枚・こんにゃく半枚・醤油大3・みりん大2・酒大1・だし350ml",ing5:"米5合・鶏もも250g・ごぼう1本・にんじん1本・しいたけ7枚・こんにゃく1枚・醤油大7・みりん大5・酒大3・だし875ml",tip:"こんにゃくは下茹でして臭みを取る。",recipe:"①米を研いで調味料とだしを入れる。②全具材を上にのせて普通炊飯する。③炊き上がったら底から混ぜる。"},
+  {id:16,name:"骨つき鶏のスープ煮",cat:"肉",mode:"普通炊飯",ing2:"鶏手羽元4本・大根100g・にんじん1本・長ねぎ1本・醤油大2・塩少々・水400ml",ing5:"鶏手羽元10本・大根250g・にんじん2本・長ねぎ2本・醤油大5・塩少々・水1L",tip:"手羽元はコラーゲンたっぷり。スープも美味しい。",recipe:"①材料を切る。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:17,name:"ビーフシチュー",cat:"肉",mode:"煮込み",ing2:"牛すね肉300g・じゃがいも2個・にんじん1本・玉ねぎ1個・デミグラスソース缶半缶・赤ワイン100ml",ing5:"牛すね肉750g・じゃがいも5個・にんじん2本・玉ねぎ2個・デミグラスソース缶1缶・赤ワイン250ml",tip:"煮込みモードを2〜3回繰り返すと柔らかくなる。",recipe:"①材料を切る。②炊飯器に全材料を入れる。③煮込みモードを2〜3回繰り返す。"},
+  {id:18,name:"サバのトマト煮",cat:"魚",mode:"煮込み",ing2:"さば2切れ・トマト缶半缶・玉ねぎ半個・にんにく1片・塩こしょう少々・オリーブオイル大1",ing5:"さば5切れ・トマト缶1缶・玉ねぎ1個・にんにく2片・塩こしょう少々・オリーブオイル大2",tip:"さばに塩をふって10分置いてから使うと臭みが減る。",recipe:"①さばに塩をふって水気を拭く。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:19,name:"炊き込みご飯（さつまいも）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・さつまいも1本・塩小1・酒大1・水適量",ing5:"米5合・さつまいも2本・塩大1・酒大3・水適量",tip:"さつまいもは角切りにして水にさらしてから入れる。",recipe:"①米を研ぐ。②さつまいもを角切りにして水にさらす。③炊飯器に全材料を入れて普通炊飯する。"},
+  {id:20,name:"鶏レバーの甘辛煮",cat:"肉",mode:"煮込み",ing2:"鶏レバー200g・醤油大3・みりん大2・砂糖大1・生姜1片・酒大2",ing5:"鶏レバー500g・醤油大7・みりん大5・砂糖大2・生姜2片・酒大5",tip:"レバーは牛乳に30分浸けて臭みを取る。",recipe:"①レバーを牛乳に30分浸けて水洗いする。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:21,name:"ヤンニョムチキン",cat:"肉",mode:"普通炊飯",ing2:"鶏もも300g・コチュジャン大2・醤油大1・みりん大2・砂糖大1・にんにく・生姜各少々",ing5:"鶏もも750g・コチュジャン大5・醤油大3・みりん大5・砂糖大2・にんにく・生姜各少々",tip:"炊き上がり後トースターで焼くとカリッとする。",recipe:"①鶏肉にタレを揉み込む。②炊飯器に入れてスイッチオン。③お好みでトースターで焼く。"},
+  {id:22,name:"豚バラ大根",cat:"肉",mode:"煮込み",ing2:"豚バラ薄切り200g・大根半本・醤油大3・みりん大2・砂糖大1・だし300ml",ing5:"豚バラ薄切り500g・大根1本・醤油大7・みりん大5・砂糖大2・だし750ml",tip:"大根は厚めに切ると食感が残る。",recipe:"①大根をいちょう切りにする。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:23,name:"炊き込みご飯（赤飯風）",cat:"ご飯",mode:"普通炊飯",ing2:"もち米2合・ゆであずき100g・塩小1",ing5:"もち米5合・ゆであずき250g・塩大1",tip:"もち米は2時間水に浸けてから。",recipe:"①もち米を2時間水に浸ける。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:24,name:"魚の西京焼き風",cat:"魚",mode:"普通炊飯",ing2:"白身魚2切れ・西京味噌大3・みりん大1・酒大1",ing5:"白身魚5切れ・西京味噌大7・みりん大3・酒大3",tip:"炊き上がり後にトースターで2〜3分焼くと香ばしい。",recipe:"①魚に味噌を塗って半日置く。②炊飯器に入れてスイッチオン。③トースターで軽く焼く。"},
+  {id:25,name:"手羽先のコーラ煮",cat:"肉",mode:"煮込み",ing2:"鶏手羽先4本・コーラ200ml・醤油大3・みりん大1",ing5:"鶏手羽先10本・コーラ500ml・醤油大7・みりん大3",tip:"コーラの糖分で柔らかく仕上がる。",recipe:"①炊飯器に全材料を入れる。②煮込みモードで炊く。③煮汁を煮詰めて絡める。"},
+  {id:26,name:"炊き込みご飯（ツナ缶）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・ツナ缶1缶・にんじん半本・醤油大2・みりん大1・酒大1・水350ml",ing5:"米5合・ツナ缶2缶・にんじん1本・醤油大5・みりん大3・酒大3・水875ml",tip:"ツナは汁ごと入れると旨味UP。",recipe:"①米を研いで調味料と水を入れる。②ツナとにんじんを上にのせてスイッチオン。③炊き上がったら混ぜる。"},
+  {id:27,name:"牛すじ煮込み",cat:"肉",mode:"煮込み",ing2:"牛すじ300g・こんにゃく半枚・醤油大4・みりん大3・砂糖大2・酒大3・生姜1片",ing5:"牛すじ750g・こんにゃく1枚・醤油大10・みりん大7・砂糖大5・酒大7・生姜2片",tip:"煮込みモードを3〜4回繰り返すとトロトロになる。",recipe:"①牛すじを下茹でする。②こんにゃくを下茹でする。③炊飯器に全材料を入れて煮込みモードを繰り返す。"},
+  {id:28,name:"炊き込みご飯（鮭）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・塩鮭2切れ・醤油大1・酒大1・塩少々・水350ml",ing5:"米5合・塩鮭5切れ・醤油大3・酒大3・塩少々・水875ml",tip:"鮭は焼かずにそのまま入れてOK。骨に注意。",recipe:"①米を研いで調味料と水を入れる。②鮭を上にのせてスイッチオン。③炊き上がったら骨を取り除き混ぜる。"},
+  {id:29,name:"プリン",cat:"スイーツ",mode:"蒸し",ing2:"卵3個・牛乳300ml・砂糖大4・バニラエッセンス少々",ing5:"卵8個・牛乳750ml・砂糖大10・バニラエッセンス少々",tip:"炊飯器のカップに水を入れて蒸す。",recipe:"①卵・牛乳・砂糖を混ぜて濾す。②耐熱容器に入れる。③炊飯器に水を1cm入れて容器を置く。④普通炊飯する。⑤冷やして完成。"},
+  {id:30,name:"炊き込みご飯（栗）",cat:"ご飯",mode:"普通炊飯",ing2:"米1.5合・もち米0.5合・栗10個・塩小1・酒大1",ing5:"米3.5合・もち米1.5合・栗25個・塩大1・酒大3",tip:"栗は市販の甘露煮でも美味しい。",recipe:"①米ともち米を研いで水に浸ける。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:31,name:"チャーシュー",cat:"肉",mode:"煮込み",ing2:"豚バラブロック400g・醤油大4・みりん大3・砂糖大2・酒大3・にんにく2片・生姜1片",ing5:"豚バラブロック1kg・醤油大10・みりん大7・砂糖大5・酒大7・にんにく4片・生姜2片",tip:"炊飯器で作るからほっておくだけ。",recipe:"①豚バラを巻いてたこ糸で縛る。②炊飯器に全材料を入れる。③煮込みモードを2回繰り返す。④冷ましてスライスする。"},
+  {id:32,name:"ミルクリゾット",cat:"その他",mode:"普通炊飯",ing2:"米1合・牛乳400ml・水100ml・コンソメ1個・塩こしょう少々・チーズ適量",ing5:"米2.5合・牛乳1L・水250ml・コンソメ2個・塩こしょう少々・チーズ適量",tip:"炊き上がってすぐ食べないと固まる。",recipe:"①米を研がずに炊飯器に入れる。②全材料を加えてスイッチオン。③炊き上がったらよく混ぜる。"},
+  {id:33,name:"炊き込みご飯（中華風）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・チャーシュー100g・しいたけ3枚・たけのこ水煮80g・醤油大2・オイスターソース大1・ごま油少々・水350ml",ing5:"米5合・チャーシュー250g・しいたけ7枚・たけのこ水煮200g・醤油大5・オイスターソース大3・ごま油少々・水875ml",tip:"炊き上がったらごま油を回しかける。",recipe:"①米を研いで調味料と水を入れる。②具材を上にのせてスイッチオン。③炊き上がったらごま油を加えて混ぜる。"},
+  {id:34,name:"スペアリブ煮込み",cat:"肉",mode:"煮込み",ing2:"スペアリブ4本・醤油大4・みりん大3・砂糖大2・酒大3・生姜1片・にんにく2片",ing5:"スペアリブ10本・醤油大10・みりん大7・砂糖大5・酒大7・生姜2片・にんにく4片",tip:"煮込みモードを2〜3回繰り返すと骨から外れやすくなる。",recipe:"①スペアリブを下茹でする。②炊飯器に全材料を入れる。③煮込みモードを繰り返す。"},
+  {id:35,name:"鶏むね肉のしっとり蒸し",cat:"肉",mode:"普通炊飯",ing2:"鶏むね肉2枚・塩こしょう少々・酒大2・にんにく1片・生姜少々",ing5:"鶏むね肉5枚・塩こしょう少々・酒大5・にんにく2片・生姜少々",tip:"保温で余熱調理するとしっとり仕上がる。",recipe:"①鶏むね肉に塩こしょうと酒を揉み込む。②炊飯器に入れてスイッチオン。③炊き上がったら保温で15分置く。④冷ましてスライスする。"},
+  {id:36,name:"炊き込みご飯（えびとコーン）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・むきえび100g・コーン缶半缶・バター10g・塩小1・水350ml",ing5:"米5合・むきえび250g・コーン缶1缶・バター25g・塩大1・水875ml",tip:"バターはあとで加えるとコクが出る。",recipe:"①米を研いで塩と水を入れる。②えびとコーンを上にのせてスイッチオン。③炊き上がったらバターを加えて混ぜる。"},
+  {id:37,name:"豆腐と野菜のスープ",cat:"スープ",mode:"普通炊飯",ing2:"絹豆腐1丁・白菜3枚・えのき半袋・鶏がらスープ400ml・醤油大1・塩少々",ing5:"絹豆腐2丁・白菜7枚・えのき1袋・鶏がらスープ1L・醤油大2・塩少々",tip:"豆腐は煮崩れしにくい木綿でもOK。",recipe:"①材料を切る。②炊飯器に全材料を入れる。③普通炊飯する。④塩で味を調える。"},
+  {id:38,name:"サバ缶の味噌汁",cat:"スープ",mode:"普通炊飯",ing2:"サバ缶（水煮）1缶・大根100g・長ねぎ1本・味噌大2・だし500ml",ing5:"サバ缶（水煮）2缶・大根250g・長ねぎ2本・味噌大5・だし1.2L",tip:"サバ缶汁ごと使うと旨味UP。",recipe:"①野菜を切る。②炊飯器にだし・野菜・サバ缶を入れる。③普通炊飯する。④味噌を溶かして完成。"},
+  {id:39,name:"炊き込みご飯（たこ）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・ゆでだこ150g・生姜1片・醤油大2・みりん大1・酒大1・水350ml",ing5:"米5合・ゆでだこ375g・生姜2片・醤油大5・みりん大3・酒大3・水875ml",tip:"たこは炊き上がってから混ぜるとゴムにならない。",recipe:"①米を研いで調味料と水を入れる。②たこと生姜を上にのせてスイッチオン。③炊き上がったら混ぜる。"},
+  {id:40,name:"ヘルシー蒸し豚",cat:"肉",mode:"普通炊飯",ing2:"豚もも薄切り200g・レタス適量・ポン酢大2・ごま油少々",ing5:"豚もも薄切り500g・レタス適量・ポン酢大5・ごま油少々",tip:"豚肉だけ入れてスイッチオン、驚くほど簡単。",recipe:"①豚もも薄切りを炊飯器に入れる。②スイッチオン。③炊き上がったらレタスの上に乗せポン酢・ごま油で食べる。"},
+  {id:41,name:"かぼちゃのポタージュ",cat:"スープ",mode:"普通炊飯",ing2:"かぼちゃ四分の一・玉ねぎ半個・バター10g・コンソメ1個・水200ml・牛乳100ml・塩こしょう少々",ing5:"かぼちゃ1個・玉ねぎ1個・バター25g・コンソメ2個・水500ml・牛乳250ml・塩こしょう少々",tip:"炊き上がったらブレンダーで滑らかにする。",recipe:"①かぼちゃと玉ねぎを切る。②炊飯器に全材料（牛乳以外）を入れる。③普通炊飯する。④ブレンダーで滑らかにして牛乳を加える。"},
+  {id:42,name:"炊き込みご飯（梅じゃこ）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・じゃこ大4・梅干し2個・醤油大1・水360ml",ing5:"米5合・じゃこ大10・梅干し5個・醤油大3・水900ml",tip:"梅干しは種ごと入れてOK。炊き上がりに取り出す。",recipe:"①米を研いで調味料と水を入れる。②じゃこと梅干しを上にのせてスイッチオン。③炊き上がったら混ぜる。"},
+  {id:43,name:"里芋の煮物",cat:"野菜",mode:"煮込み",ing2:"里芋6個・だし300ml・醤油大3・みりん大2・砂糖大1",ing5:"里芋15個・だし750ml・醤油大7・みりん大5・砂糖大2",tip:"里芋は皮をむいて下茹でしておく。",recipe:"①里芋を下茹でして皮をむく。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:44,name:"鶏と野菜のトマトスープ",cat:"スープ",mode:"普通炊飯",ing2:"鶏もも200g・トマト缶半缶・玉ねぎ半個・にんじん1本・コンソメ1個・水200ml・塩こしょう少々",ing5:"鶏もも500g・トマト缶1缶・玉ねぎ1個・にんじん2本・コンソメ2個・水500ml・塩こしょう少々",tip:"仕上げにバジルを散らすと香りUP。",recipe:"①材料を切る。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:45,name:"炊き込みご飯（豚キムチ）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・豚バラ薄切り100g・キムチ100g・醤油大1・ごま油少々・水320ml",ing5:"米5合・豚バラ薄切り250g・キムチ250g・醤油大3・ごま油少々・水800ml",tip:"水はキムチの水分を考えて少なめに。",recipe:"①米を研いで醤油と水を入れる。②豚肉とキムチを上にのせてスイッチオン。③炊き上がったらごま油を加えて混ぜる。"},
+  {id:46,name:"レモンチキン",cat:"肉",mode:"普通炊飯",ing2:"鶏もも300g・レモン1個・はちみつ大2・醤油大1・塩こしょう少々",ing5:"鶏もも750g・レモン2個・はちみつ大5・醤油大3・塩こしょう少々",tip:"爽やかな酸味で食欲UP。",recipe:"①鶏肉に塩こしょうをする。②レモン・はちみつ・醤油を混ぜて炊飯器に入れる。③鶏肉を加えてスイッチオン。"},
+  {id:47,name:"カオマンガイ",cat:"肉",mode:"普通炊飯",ing2:"米2合・鶏もも1枚・生姜1片・にんにく1片・塩少々・水350ml・ナンプラー大1",ing5:"米5合・鶏もも2〜3枚・生姜2片・にんにく2片・塩少々・水875ml・ナンプラー大3",tip:"鶏肉は米の上にのせて炊くだけ。",recipe:"①米を研いでナンプラー・塩・水を入れる。②生姜・にんにく・鶏もも肉を上にのせてスイッチオン。③炊き上がったら鶏肉をスライスして乗せる。"},
+  {id:48,name:"ふかしいも",cat:"スイーツ",mode:"蒸し",ing2:"さつまいも2本・水200ml",ing5:"さつまいも5本・水300ml",tip:"水を入れて炊飯器のスイッチオンするだけ。",recipe:"①さつまいもをよく洗う。②炊飯器に水を入れてさつまいもを置く。③普通炊飯する。"},
+  {id:49,name:"炊き込みご飯（枝豆とベーコン）",cat:"ご飯",mode:"普通炊飯",ing2:"米2合・枝豆50g・ベーコン2枚・塩小1・バター10g・水350ml",ing5:"米5合・枝豆125g・ベーコン5枚・塩大1・バター25g・水875ml",tip:"ベーコンのうまみが染みて絶品。",recipe:"①米を研いで塩と水を入れる。②ベーコンと枝豆を上にのせてスイッチオン。③炊き上がったらバターを加えて混ぜる。"},
+  {id:50,name:"ほったらかし麻婆豆腐",cat:"豆腐",mode:"普通炊飯",ing2:"絹豆腐1丁・豚ひき肉100g・豆板醤大1・醤油大1・鶏がらスープ100ml・片栗粉大1・にんにく少々",ing5:"絹豆腐2丁・豚ひき肉250g・豆板醤大3・醤油大3・鶏がらスープ250ml・片栗粉大2・にんにく少々",tip:"片栗粉は最後に加えてよく混ぜる。",recipe:"①豆腐を切る。②炊飯器に豆腐以外の全材料を入れる。③豆腐を加えてスイッチオン。④炊き上がったら片栗粉を加えてよく混ぜる。"}
+];
+
+const sideDishes=[
+  {id:101,name:"炊飯器蒸しじゃがいも",cat:"野菜",mode:"普通炊飯",ing2:"じゃがいも3個・水200ml・塩少々・バター適量",ing5:"じゃがいも7個・水300ml・塩少々・バター適量",tip:"皮ごと洗って入れるだけ。",recipe:"①じゃがいもをよく洗う。②炊飯器に水と塩を入れてじゃがいもを置く。③普通炊飯する。④バターをつけて食べる。"},
+  {id:102,name:"かぼちゃの甘煮",cat:"野菜",mode:"煮込み",ing2:"かぼちゃ四分の一・だし100ml・醤油大1・みりん大1・砂糖大1",ing5:"かぼちゃ1個・だし250ml・醤油大3・みりん大3・砂糖大3",tip:"煮崩れを防ぐため煮込みは一回にする。",recipe:"①かぼちゃを切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:103,name:"蒸しとうもろこし",cat:"野菜",mode:"蒸し",ing2:"とうもろこし2本・水200ml・塩少々",ing5:"とうもろこし5本・水300ml・塩少々",tip:"炊飯器で蒸すと甘みが増す。",recipe:"①とうもろこしを半分に切る。②炊飯器に水を入れてとうもろこしを置く。③普通炊飯する。"},
+  {id:104,name:"ほうれん草の卵蒸し",cat:"野菜",mode:"普通炊飯",ing2:"ほうれん草半束・卵2個・だし100ml・醤油小1",ing5:"ほうれん草1束・卵5個・だし250ml・醤油大1",tip:"電子レンジより炊飯器の方がしっとり仕上がる。",recipe:"①ほうれん草を切る。②卵を溶いてだし・醤油と混ぜる。③炊飯器にほうれん草と卵液を入れる。④普通炊飯する。"},
+  {id:105,name:"里芋の塩煮",cat:"野菜",mode:"煮込み",ing2:"里芋6個・水200ml・塩少々・だし少々",ing5:"里芋15個・水500ml・塩少々・だし少々",tip:"里芋は下茹でして皮をむいてから入れる。",recipe:"①里芋を下茹でして皮をむく。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:106,name:"大根の煮物",cat:"野菜",mode:"煮込み",ing2:"大根半本・だし300ml・醤油大2・みりん大2・砂糖大1",ing5:"大根1本・だし750ml・醤油大5・みりん大5・砂糖大3",tip:"大根は厚めに切ると食感が残る。",recipe:"①大根を厚切りにする。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:107,name:"ブロッコリーの蒸し物",cat:"野菜",mode:"普通炊飯",ing2:"ブロッコリー1株・水200ml・塩少々・オリーブオイル少々",ing5:"ブロッコリー2株・水300ml・塩少々・オリーブオイル少々",tip:"蒸した後にドレッシングをかけてもOK。",recipe:"①ブロッコリーを小房に分ける。②炊飯器に水を入れてブロッコリーを置く。③普通炊飯する。④塩・オリーブオイルをかける。"},
+  {id:108,name:"温泉卵",cat:"卵",mode:"保温",ing2:"卵4個・水100ml",ing5:"卵10個・水200ml",tip:"炊飯器の保温機能で作る。蓋を閉めて30分。",recipe:"①炊飯器に水を入れる。②卵を静かに入れる。③保温スイッチを入れて30分待つ。④そのまま盛り付ける。"},
+  {id:109,name:"じゃがいもの甘煮",cat:"野菜",mode:"煮込み",ing2:"じゃがいも3個・砂糖大2・醤油大1・みりん大1・バター10g",ing5:"じゃがいも7個・砂糖大5・醤油大3・みりん大3・バター25g",tip:"バターを最後に加えるとコクが出る。",recipe:"①じゃがいもを切る。②炊飯器に全材料（バター以外）を入れる。③煮込みモードで炊く。④バターを加えて混ぜる。"},
+  {id:110,name:"炊飯器で白和え",cat:"豆腐",mode:"普通炊飯",ing2:"木綿豆腐半丁・ほうれん草半束・にんじん少々・白すりごま大2・砂糖大1・醤油大1",ing5:"木綿豆腐1丁・ほうれん草1束・にんじん少々・白すりごま大5・砂糖大3・醤油大3",tip:"豆腐はしっかり水切りする。",recipe:"①豆腐を水切りしてつぶす。②ほうれん草・にんじんを炊飯器で蒸す。③冷ましてから豆腐・ごま・調味料で和える。"},
+  {id:111,name:"さつまいもの甘煮",cat:"野菜",mode:"煮込み",ing2:"さつまいも1本・砂糖大2・みりん大1・塩少々",ing5:"さつまいも2本・砂糖大5・みりん大3・塩少々",tip:"水を少なめにすると甘みが濃くなる。",recipe:"①さつまいもを輪切りにして水にさらす。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:112,name:"炊飯器蒸しカボチャ",cat:"野菜",mode:"蒸し",ing2:"かぼちゃ四分の一・水100ml",ing5:"かぼちゃ1個・水200ml",tip:"蒸し上がったらバターや塩で食べても美味しい。",recipe:"①かぼちゃを切る。②炊飯器に水を入れてかぼちゃを置く。③普通炊飯する。"},
+  {id:113,name:"ひじきの煮物",cat:"野菜",mode:"煮込み",ing2:"乾燥ひじき20g・油揚げ1枚・にんじん半本・醤油大2・みりん大1・砂糖大1",ing5:"乾燥ひじき50g・油揚げ2枚・にんじん1本・醤油大5・みりん大3・砂糖大3",tip:"ひじきは戻してから入れる。",recipe:"①ひじきを戻す。②材料を切る。③炊飯器に全材料を入れて煮込みモードで炊く。"},
+  {id:114,name:"蒸しキャベツ",cat:"野菜",mode:"普通炊飯",ing2:"キャベツ四分の一・水100ml・塩少々・ポン酢大2",ing5:"キャベツ半個・水200ml・塩少々・ポン酢大5",tip:"シンプルだけど甘みが出て美味しい。",recipe:"①キャベツをざく切りにする。②炊飯器に水と塩を入れてキャベツを置く。③普通炊飯する。④ポン酢をかける。"},
+  {id:115,name:"れんこんのきんぴら煮",cat:"野菜",mode:"煮込み",ing2:"れんこん200g・醤油大2・みりん大1・砂糖大1・唐辛子少々",ing5:"れんこん500g・醤油大5・みりん大3・砂糖大3・唐辛子少々",tip:"ごま油を最後に加えると風味UP。",recipe:"①れんこんを薄切りにする。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:116,name:"炊飯器プリン",cat:"スイーツ",mode:"普通炊飯",ing2:"卵2個・牛乳200ml・砂糖大3・バニラエッセンス少々",ing5:"卵5個・牛乳500ml・砂糖大7・バニラエッセンス少々",tip:"型に流し込んで炊飯器に水を入れて蒸す。",recipe:"①卵・牛乳・砂糖を混ぜて濾す。②耐熱容器に入れる。③炊飯器に水を1cm入れて普通炊飯する。④冷やして完成。"},
+  {id:117,name:"蒸しあさり",cat:"魚",mode:"普通炊飯",ing2:"あさり200g・酒大2・水50ml・バター10g",ing5:"あさり500g・酒大5・水100ml・バター25g",tip:"あさりは砂抜きしてから入れる。",recipe:"①あさりを砂抜きする。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:118,name:"冬瓜の含め煮",cat:"野菜",mode:"煮込み",ing2:"冬瓜四分の一・だし300ml・醤油大1・みりん大1・塩少々",ing5:"冬瓜半個・だし750ml・醤油大3・みりん大3・塩少々",tip:"冬瓜は皮をむいて大きめに切る。",recipe:"①冬瓜の皮をむいて切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:119,name:"炊飯器で高野豆腐煮",cat:"豆腐",mode:"煮込み",ing2:"高野豆腐4枚・だし400ml・醤油大2・みりん大2・砂糖大1",ing5:"高野豆腐10枚・だし1L・醤油大5・みりん大5・砂糖大3",tip:"高野豆腐は水で戻してよく絞る。",recipe:"①高野豆腐を水で戻して絞る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:120,name:"蒸しエビ",cat:"魚",mode:"普通炊飯",ing2:"有頭えび6尾・酒大1・塩少々・水100ml",ing5:"有頭えび15尾・酒大3・塩少々・水200ml",tip:"蒸し上がったらレモンや塩で食べる。",recipe:"①えびをよく洗う。②炊飯器に水・酒・塩を入れてえびを置く。③普通炊飯する。"},
+  {id:121,name:"炊飯器ガパオ風炒め",cat:"肉",mode:"普通炊飯",ing2:"鶏ひき肉200g・パプリカ1個・バジル少々・オイスターソース大2・ナンプラー大1",ing5:"鶏ひき肉500g・パプリカ2個・バジル少々・オイスターソース大5・ナンプラー大3",tip:"炊き上がったらバジルを混ぜる。",recipe:"①材料を切る。②炊飯器に全材料（バジル以外）を入れる。③普通炊飯する。④バジルを混ぜる。"},
+  {id:122,name:"にんじんのラペ（炊飯器蒸し）",cat:"野菜",mode:"普通炊飯",ing2:"にんじん2本・水100ml・オリーブオイル大1・酢大1・塩少々",ing5:"にんじん5本・水200ml・オリーブオイル大3・酢大3・塩少々",tip:"蒸し上がったら冷ましてから和える。",recipe:"①にんじんを千切りにする。②炊飯器に水を入れてにんじんを置く。③普通炊飯する。④冷ましてオリーブオイル・酢・塩で和える。"},
+  {id:123,name:"ほたてのバター蒸し",cat:"魚",mode:"普通炊飯",ing2:"ほたて貝柱6個・バター15g・醤油大1・酒大1",ing5:"ほたて貝柱15個・バター35g・醤油大3・酒大3",tip:"汁ごとかけると美味しい。",recipe:"①炊飯器にほたてとバター・調味料を入れる。②普通炊飯する。"},
+  {id:124,name:"切り干し大根の煮物",cat:"野菜",mode:"煮込み",ing2:"切り干し大根30g・油揚げ半枚・だし200ml・醤油大2・みりん大1・砂糖大1",ing5:"切り干し大根75g・油揚げ1枚・だし500ml・醤油大5・みりん大3・砂糖大3",tip:"切り干し大根は水で戻してから入れる。",recipe:"①切り干し大根を戻す。②材料を切る。③炊飯器に全材料を入れて煮込みモードで炊く。"},
+  {id:125,name:"蒸しサツマイモのバター和え",cat:"野菜",mode:"普通炊飯",ing2:"さつまいも1本・水100ml・バター10g・塩少々",ing5:"さつまいも2本・水200ml・バター25g・塩少々",tip:"甘みが増してホクホクに。",recipe:"①さつまいもを輪切りにする。②炊飯器に水を入れてさつまいもを置く。③普通炊飯する。④バターと塩で和える。"},
+  {id:126,name:"大豆の甘辛煮",cat:"豆腐",mode:"煮込み",ing2:"水煮大豆150g・醤油大2・みりん大1・砂糖大1",ing5:"水煮大豆375g・醤油大5・みりん大3・砂糖大3",tip:"煮込みモードで味がよく染みる。",recipe:"①炊飯器に全材料を入れる。②煮込みモードで炊く。"},
+  {id:127,name:"玉ねぎのコンソメスープ",cat:"スープ",mode:"普通炊飯",ing2:"玉ねぎ2個・コンソメ1個・水400ml・塩こしょう少々・バター10g",ing5:"玉ねぎ5個・コンソメ2個・水1L・塩こしょう少々・バター25g",tip:"玉ねぎを薄切りにするとトロトロになる。",recipe:"①玉ねぎを薄切りにする。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:128,name:"炊飯器ポテサラ",cat:"野菜",mode:"普通炊飯",ing2:"じゃがいも3個・水200ml・マヨネーズ大3・塩こしょう少々・きゅうり1本",ing5:"じゃがいも7個・水300ml・マヨネーズ大7・塩こしょう少々・きゅうり2本",tip:"じゃがいもは炊き上がったらすぐつぶす。",recipe:"①じゃがいもを洗う。②炊飯器に水とじゃがいもを入れる。③普通炊飯する。④熱いうちにつぶして冷ます。⑤きゅうり・マヨネーズ・塩こしょうで和える。"},
+  {id:129,name:"カボチャスープ",cat:"スープ",mode:"普通炊飯",ing2:"かぼちゃ四分の一・牛乳150ml・水100ml・コンソメ1個・塩こしょう少々",ing5:"かぼちゃ1個・牛乳375ml・水250ml・コンソメ2個・塩こしょう少々",tip:"ブレンダーで滑らかにするとより美味しい。",recipe:"①かぼちゃを切る。②炊飯器に全材料（牛乳以外）を入れる。③普通炊飯する。④ブレンダーで滑らかにして牛乳を加える。"},
+  {id:130,name:"もち米とあずきのおこわ",cat:"ご飯",mode:"普通炊飯",ing2:"もち米2合・ゆであずき缶半缶・塩小1",ing5:"もち米5合・ゆであずき缶1缶・塩大1",tip:"もち米は2時間水に浸けてから。",recipe:"①もち米を2時間水に浸ける。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:131,name:"鶏ガラスープ",cat:"スープ",mode:"普通炊飯",ing2:"鶏手羽元4本・長ねぎ1本・生姜1片・塩少々・水600ml",ing5:"鶏手羽元10本・長ねぎ2本・生姜2片・塩少々・水1.5L",tip:"炊き上がったら塩で味を調える。",recipe:"①材料を入れる。②普通炊飯する。③塩で味を調える。"},
+  {id:132,name:"蒸しとうふ",cat:"豆腐",mode:"普通炊飯",ing2:"絹豆腐1丁・水100ml・ポン酢大2・ねぎ少々",ing5:"絹豆腐2丁・水200ml・ポン酢大5・ねぎ少々",tip:"炊き上がったらポン酢をかけて食べる。",recipe:"①豆腐をそのまま炊飯器に入れる。②水を加えてスイッチオン。③炊き上がったらポン酢とねぎをかける。"},
+  {id:133,name:"アスパラの蒸し物",cat:"野菜",mode:"普通炊飯",ing2:"アスパラ1束・水100ml・塩少々・バター10g",ing5:"アスパラ2束・水200ml・塩少々・バター25g",tip:"蒸し上がったらバターを乗せるだけ。",recipe:"①アスパラを洗う。②炊飯器に水と塩を入れてアスパラを置く。③普通炊飯する。④バターを乗せる。"},
+  {id:134,name:"白菜のクタクタ煮",cat:"野菜",mode:"煮込み",ing2:"白菜半個・ベーコン3枚・コンソメ1個・水200ml・塩こしょう少々",ing5:"白菜1個・ベーコン7枚・コンソメ2個・水500ml・塩こしょう少々",tip:"白菜はくたくたに煮えると甘みが出る。",recipe:"①白菜とベーコンを切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:135,name:"卵豆腐",cat:"卵",mode:"普通炊飯",ing2:"卵3個・だし250ml・醤油小1・塩少々・みりん小1",ing5:"卵8個・だし625ml・醤油大1・塩少々・みりん大1",tip:"低温でゆっくり蒸すのがコツ。",recipe:"①卵を溶いてだし・調味料を混ぜて濾す。②型に流し込む。③炊飯器に水を入れて型を置く。④普通炊飯する。⑤冷やして完成。"},
+  {id:136,name:"にんじんの丸ごと蒸し",cat:"野菜",mode:"普通炊飯",ing2:"にんじん2本・水200ml・バター10g・塩少々",ing5:"にんじん5本・水300ml・バター25g・塩少々",tip:"丸ごと蒸すと甘みが増す。",recipe:"①にんじんをよく洗う。②炊飯器に水を入れてにんじんをそのまま置く。③普通炊飯する。④バターと塩で食べる。"},
+  {id:137,name:"豆腐のほったらかし煮",cat:"豆腐",mode:"煮込み",ing2:"木綿豆腐1丁・だし200ml・醤油大2・みりん大2・砂糖大1",ing5:"木綿豆腐2丁・だし500ml・醤油大5・みりん大5・砂糖大3",tip:"炊飯器だから煮崩れしにくい。",recipe:"①豆腐を切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:138,name:"枝豆の蒸し物",cat:"野菜",mode:"普通炊飯",ing2:"枝豆200g・水200ml・塩大1",ing5:"枝豆500g・水300ml・塩大2",tip:"蒸した後に塩をふると美味しい。",recipe:"①枝豆を塩でもみ洗いする。②炊飯器に水を入れて枝豆を置く。③普通炊飯する。④塩をふる。"},
+  {id:139,name:"サバ缶と大根の煮物",cat:"魚",mode:"煮込み",ing2:"サバ缶1缶・大根四分の一・醤油大2・みりん大1・生姜少々",ing5:"サバ缶2缶・大根半本・醤油大5・みりん大3・生姜少々",tip:"サバ缶の汁ごと使う。",recipe:"①大根を切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:140,name:"チョコレートケーキ",cat:"スイーツ",mode:"普通炊飯",ing2:"ホットケーキミックス100g・卵1個・牛乳50ml・チョコレート50g・バター20g",ing5:"ホットケーキミックス250g・卵3個・牛乳125ml・チョコレート125g・バター50g",tip:"型なしで炊飯器の釜に直接入れてもOK。",recipe:"①チョコとバターを溶かす。②ホットケーキミックス・卵・牛乳を混ぜる。③チョコを加えて炊飯器に入れる。④普通炊飯する（2回）。"},
+  {id:141,name:"ごぼうのきんぴら煮",cat:"野菜",mode:"煮込み",ing2:"ごぼう1本・にんじん半本・醤油大2・みりん大1・砂糖大1",ing5:"ごぼう2本・にんじん1本・醤油大5・みりん大3・砂糖大3",tip:"ごまを最後に混ぜると香り良し。",recipe:"①ごぼうとにんじんを細切りにする。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:142,name:"蒸しかぼちゃのサラダ",cat:"野菜",mode:"普通炊飯",ing2:"かぼちゃ四分の一・水100ml・マヨネーズ大2・塩こしょう少々",ing5:"かぼちゃ1個・水200ml・マヨネーズ大5・塩こしょう少々",tip:"炊き上がったらすぐつぶす。",recipe:"①かぼちゃを切る。②炊飯器に水を入れてかぼちゃを置く。③普通炊飯する。④熱いうちにつぶしてマヨネーズ・塩こしょうで和える。"},
+  {id:143,name:"こんにゃくの甘辛煮",cat:"野菜",mode:"煮込み",ing2:"こんにゃく1枚・醤油大2・みりん大1・砂糖大1・唐辛子少々",ing5:"こんにゃく2枚・醤油大5・みりん大3・砂糖大3・唐辛子少々",tip:"こんにゃくは下茹でして臭みを取る。",recipe:"①こんにゃくを下茹でして切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:144,name:"豆乳スープ",cat:"スープ",mode:"普通炊飯",ing2:"豆乳200ml・野菜（白菜・ねぎ等）適量・コンソメ1個・水200ml・塩こしょう少々",ing5:"豆乳500ml・野菜（白菜・ねぎ等）適量・コンソメ2個・水500ml・塩こしょう少々",tip:"豆乳は炊き上がってから加える。",recipe:"①野菜を切る。②炊飯器に野菜・水・コンソメを入れる。③普通炊飯する。④豆乳を加えて塩こしょうで調える。"},
+  {id:145,name:"焼き芋（炊飯器版）",cat:"スイーツ",mode:"普通炊飯",ing2:"さつまいも2本・水100ml",ing5:"さつまいも5本・水200ml",tip:"低温でじっくり加熱すると甘みが増す。",recipe:"①さつまいもをよく洗いアルミホイルで包む。②炊飯器に水を入れてさつまいもを置く。③普通炊飯する。④保温で30分置く。"},
+  {id:146,name:"もやしスープ",cat:"スープ",mode:"普通炊飯",ing2:"もやし1袋・卵2個・鶏がらスープ400ml・ごま油少々・塩こしょう少々",ing5:"もやし2袋・卵5個・鶏がらスープ1L・ごま油少々・塩こしょう少々",tip:"炊き上がったら溶き卵を加えてよく混ぜる。",recipe:"①炊飯器にもやし・スープを入れる。②普通炊飯する。③炊き上がったら溶き卵を加えてごま油で仕上げる。"},
+  {id:147,name:"厚揚げの煮物",cat:"豆腐",mode:"煮込み",ing2:"厚揚げ2枚・だし200ml・醤油大2・みりん大1・砂糖大1",ing5:"厚揚げ5枚・だし500ml・醤油大5・みりん大3・砂糖大3",tip:"厚揚げは油抜きしてから入れる。",recipe:"①厚揚げを油抜きして切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:148,name:"炊飯器バナナケーキ",cat:"スイーツ",mode:"普通炊飯",ing2:"ホットケーキミックス150g・バナナ2本・卵1個・牛乳50ml・バター20g",ing5:"ホットケーキミックス375g・バナナ5本・卵3個・牛乳125ml・バター50g",tip:"バナナは完熟のものが甘くて美味しい。",recipe:"①バナナをつぶす。②全材料を混ぜる。③炊飯器に流し込んでスイッチオン。④竹串を刺して確認。生地がつくならもう一度炊飯。"},
+  {id:149,name:"玉ねぎのトロトロ蒸し",cat:"野菜",mode:"普通炊飯",ing2:"玉ねぎ2個・コンソメ1個・水200ml・塩こしょう少々",ing5:"玉ねぎ5個・コンソメ2個・水500ml・塩こしょう少々",tip:"丸ごと入れるとトロトロに仕上がる。",recipe:"①玉ねぎを丸ごと炊飯器に入れる。②水とコンソメを加える。③普通炊飯する。"},
+  {id:150,name:"さつまいもの茶巾",cat:"スイーツ",mode:"普通炊飯",ing2:"さつまいも1本・砂糖大2・バター10g・生クリーム大2",ing5:"さつまいも2本・砂糖大5・バター25g・生クリーム大5",tip:"炊飯器で蒸したさつまいもで作る。",recipe:"①さつまいもを炊飯器で蒸す。②熱いうちにつぶして砂糖・バター・生クリームで混ぜる。③ラップで包んで形を整える。"},
+  {id:151,name:"もやしのナムル（炊飯器蒸し）",cat:"野菜",mode:"普通炊飯",ing2:"もやし1袋・水100ml・ごま油大1・塩少々・白ごま少々",ing5:"もやし2袋・水200ml・ごま油大2・塩少々・白ごま少々",tip:"蒸した後に和えるだけ。",recipe:"①もやしを炊飯器に入れて水を加える。②普通炊飯する。③ごま油・塩・白ごまで和える。"},
+  {id:152,name:"炊飯器かきたま汁",cat:"スープ",mode:"普通炊飯",ing2:"卵2個・だし400ml・醤油小1・塩少々・三つ葉少々",ing5:"卵5個・だし1L・醤油大1・塩少々・三つ葉少々",tip:"炊き上がったら溶き卵を加えてよく混ぜる。",recipe:"①炊飯器にだし・醤油・塩を入れる。②普通炊飯する。③炊き上がったら溶き卵を流し込んで混ぜる。④三つ葉を散らす。"},
+  {id:153,name:"ほうれん草の蒸し物",cat:"野菜",mode:"普通炊飯",ing2:"ほうれん草1束・水100ml・醤油少々・かつお節少々",ing5:"ほうれん草2束・水200ml・醤油少々・かつお節少々",tip:"蒸した後に水気をしっかり絞る。",recipe:"①ほうれん草をざく切りにする。②炊飯器に水を入れてほうれん草を置く。③普通炊飯する。④水気を絞って醤油・かつお節をかける。"},
+  {id:154,name:"長ねぎの焼き煮",cat:"野菜",mode:"煮込み",ing2:"長ねぎ3本・醤油大2・みりん大1・だし200ml",ing5:"長ねぎ7本・醤油大5・みりん大3・だし500ml",tip:"長ねぎを丸ごと入れてOK。",recipe:"①長ねぎを5cm長さに切る。②炊飯器に全材料を入れる。③煮込みモードで炊く。"},
+  {id:155,name:"炊飯器チーズケーキ",cat:"スイーツ",mode:"普通炊飯",ing2:"クリームチーズ200g・卵2個・砂糖大4・生クリーム100ml・レモン汁大1",ing5:"クリームチーズ500g・卵5個・砂糖大10・生クリーム250ml・レモン汁大3",tip:"竹串で確認して生ならもう一度炊飯。",recipe:"①クリームチーズを室温に戻す。②全材料を混ぜる。③炊飯器に流し込んでスイッチオン。④冷やして完成。"},
+  {id:156,name:"蒸しにんじんのポタージュ",cat:"スープ",mode:"普通炊飯",ing2:"にんじん3本・水200ml・牛乳100ml・コンソメ1個・塩こしょう少々",ing5:"にんじん7本・水500ml・牛乳250ml・コンソメ2個・塩こしょう少々",tip:"ブレンダーで滑らかにする。",recipe:"①にんじんを切る。②炊飯器に全材料（牛乳以外）を入れる。③普通炊飯する。④ブレンダーで滑らかにして牛乳を加える。"},
+  {id:157,name:"ブロッコリーのスープ",cat:"スープ",mode:"普通炊飯",ing2:"ブロッコリー1株・玉ねぎ半個・コンソメ1個・水400ml・塩こしょう少々",ing5:"ブロッコリー2株・玉ねぎ1個・コンソメ2個・水1L・塩こしょう少々",tip:"ブレンダーにかけてもOK。",recipe:"①材料を切る。②炊飯器に全材料を入れる。③普通炊飯する。"},
+  {id:158,name:"炊飯器プディング",cat:"スイーツ",mode:"普通炊飯",ing2:"食パン2枚・牛乳200ml・卵2個・砂糖大3・バター少々",ing5:"食パン5枚・牛乳500ml・卵5個・砂糖大7・バター少々",tip:"パンの代わりにクロワッサンでも美味しい。",recipe:"①パンをちぎって炊飯器に入れる。②卵・牛乳・砂糖を混ぜてかける。③普通炊飯する。"},
+  {id:159,name:"蒸し大豆サラダ",cat:"豆腐",mode:"普通炊飯",ing2:"乾燥大豆150g（一晩浸水）・水200ml・塩少々・オリーブオイル大1・酢大1・塩こしょう少々",ing5:"乾燥大豆375g（一晩浸水）・水400ml・塩少々・オリーブオイル大3・酢大3・塩こしょう少々",tip:"一晩浸けると柔らかく仕上がる。",recipe:"①大豆を一晩水に浸ける。②炊飯器に水・塩・大豆を入れる。③普通炊飯する。④冷ましてドレッシングで和える。"},
+  {id:160,name:"塩麹蒸しとり",cat:"肉",mode:"普通炊飯",ing2:"鶏むね肉2枚・塩麹大2・酒大1",ing5:"鶏むね肉5枚・塩麹大5・酒大3",tip:"塩麹に一晩漬けるとより美味しい。",recipe:"①鶏むね肉に塩麹を塗って一晩置く。②炊飯器に入れてスイッチオン。③炊き上がったら保温で15分置く。④冷ましてスライスする。"}
+];
+
+function getIng(dish, n) {
+  if (n <= 2) return dish.ing2;
+  if (n >= 5) return dish.ing5;
+  return dish.ing2 + `（${n}人分：約${Math.round(n/2*10)/10}倍を目安に）`;
+}
+
+function setPersons(n){
+  persons=n;
+  [2,3,4,5].forEach(i=>{
+    document.getElementById(`btn-${i}`).classList.toggle('active',i===n);
+  });
+}
+function showView(v){
+  document.getElementById('view-calendar').style.display=v==='calendar'?'block':'none';
+  document.getElementById('view-manage').style.display=v==='manage'?'block':'none';
+  document.querySelectorAll('.bottom-nav-btn').forEach((b,i)=>{
+    b.classList.toggle('active',(i===0&&v==='calendar')||(i===1&&v==='manage'));
+  });
+  if(v==='manage') renderManage();
+}
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function getFirstDay(y,m){return new Date(y,m,1).getDay();}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function generateSchedule(y,m){
+  const days=getDaysInMonth(y,m),sm=shuffle(mainDishes),ss=shuffle(sideDishes),sch={};
+  for(let d=1;d<=days;d++) sch[d]={main:sm[(d-1)%sm.length],sides:[ss[(d*2-2)%ss.length],ss[(d*2-1)%ss.length]]};
+  schedule[`${y}-${m}`]=sch;
+}
+function getSchedule(y,m){const k=`${y}-${m}`;if(!schedule[k])generateSchedule(y,m);return schedule[k];}
+
+function modeBadge(mode){
+  const colors={
+    '普通炊飯':'background:#d1fae5;color:#065f46',
+    '早炊き':'background:#fef9c3;color:#854d0e',
+    '煮込み':'background:#fed7aa;color:#9a3412',
+    '蒸し':'background:#dbeafe;color:#1e40af',
+    '保温':'background:#f3e8ff;color:#6b21a8'
+  };
+  return `<span style="font-size:11px;padding:2px 8px;border-radius:4px;${colors[mode]||''}">${mode}</span>`;
+}
+
+function renderCalendar(){
+  document.getElementById('month-label').textContent=`${currentYear}年${currentMonth+1}月`;
+  const cal=document.getElementById('calendar');
+  const dn=['日','月','火','水','木','金','土'],dc=['sun','','','','','','sat'];
+  let html=dn.map((d,i)=>`<div class="day-header ${dc[i]}">${d}</div>`).join('');
+  const first=getFirstDay(currentYear,currentMonth),total=getDaysInMonth(currentYear,currentMonth);
+  const sch=getSchedule(currentYear,currentMonth),today=new Date();
+  for(let i=0;i<first;i++) html+=`<div class="day-cell empty"></div>`;
+  for(let d=1;d<=total;d++){
+    const dow=(first+d-1)%7,isToday=today.getFullYear()===currentYear&&today.getMonth()===currentMonth&&today.getDate()===d;
+    const meal=sch[d],nc=dow===0?'sun':dow===6?'sat':'';
+    html+=`<div class="day-cell${isToday?' today':''}" onclick="openDay(${d})">
+      <div class="day-num ${nc}">${d}</div>
+      ${meal?`<span class="meal-tag main-tag">${meal.main.name}</span><span class="meal-tag side-tag">${meal.sides[0].name}</span><span class="meal-tag side-tag">${meal.sides[1].name}</span>`:''}
+    </div>`;
+  }
+  cal.innerHTML=html;
+}
+function openDay(d){
+  const sch=getSchedule(currentYear,currentMonth),meal=sch[d];
+  if(!meal) return;
+  const pLabel=`${persons}人分`;
+  document.getElementById('modal-date').textContent=`${currentMonth+1}月${d}日のメニュー`;
+  const sidesHtml=meal.sides.map((s,idx)=>`
+    <div style="margin-bottom:12px">
+      <div class="meal-section-header">
+        <div class="section-label">副菜${idx+1}：${s.name} ${modeBadge(s.mode)}</div>
+        <button class="shuffle-btn" onclick="swapSide(${d},${idx})">変える</button>
+      </div>
+      <div class="recipe-box">
+        <div class="recipe-title">材料（${pLabel}目安）</div><div>${getIng(s,persons)}</div>
+        ${s.tip?`<div class="recipe-title" style="margin-top:6px">炊飯器のコツ</div><div style="color:#c07020">${s.tip}</div>`:''}
+        <div class="recipe-title" style="margin-top:6px">作り方</div><div>${s.recipe.replace(/。(?!$)/g,'。<br>')}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('modal-body').innerHTML=`
+    <div class="meal-section-header">
+      <div class="section-label">主菜：${meal.main.name} ${modeBadge(meal.main.mode)} <span class="portion-badge">${pLabel}</span></div>
+      <button class="shuffle-btn" onclick="swapMain(${d})">変える</button>
+    </div>
+    <div class="recipe-box">
+      <div class="recipe-title">材料</div><div>${getIng(meal.main,persons)}</div>
+      ${meal.main.tip?`<div class="recipe-title" style="margin-top:6px">炊飯器のコツ</div><div style="color:#c07020">${meal.main.tip}</div>`:''}
+      <div class="recipe-title" style="margin-top:6px">作り方</div><div>${meal.main.recipe.replace(/。(?!$)/g,'。<br>')}</div>
+    </div>
+    <div class="divider"></div>
+    ${sidesHtml}`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function swapMain(d){
+  const k=`${currentYear}-${currentMonth}`,sch=schedule[k],cur=sch[d].main;
+  const others=mainDishes.filter(m=>m.id!==cur.id);
+  if(others.length){sch[d].main=others[Math.floor(Math.random()*others.length)];renderCalendar();openDay(d);}
+}
+function swapSide(d,idx){
+  const k=`${currentYear}-${currentMonth}`,sch=schedule[k],cur=sch[d].sides[idx];
+  const avail=sideDishes.filter(s=>s.id!==cur.id&&s.id!==sch[d].sides[1-idx].id);
+  if(avail.length){sch[d].sides[idx]=avail[Math.floor(Math.random()*avail.length)];renderCalendar();openDay(d);}
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay')) closeModal();}
+function changeMonth(dir){
+  currentMonth+=dir;
+  if(currentMonth<0){currentMonth=11;currentYear--;}
+  if(currentMonth>11){currentMonth=0;currentYear++;}
+  renderCalendar();
+}
+function regen(){delete schedule[`${currentYear}-${currentMonth}`];renderCalendar();}
+function renderManage(){
+  document.getElementById('main-count').textContent=mainDishes.length;
+  document.getElementById('side-count').textContent=sideDishes.length;
+  document.getElementById('main-list').innerHTML=mainDishes.map(d=>`<div class="dish-item"><span class="dish-item-name">${d.name}</span><span class="dish-item-cat">${d.cat}</span><span style="font-size:11px;color:#c07020">${d.mode}</span></div>`).join('');
+  document.getElementById('side-list').innerHTML=sideDishes.map(d=>`<div class="dish-item"><span class="dish-item-name">${d.name}</span><span class="dish-item-cat">${d.cat}</span><span style="font-size:11px;color:#c07020">${d.mode}</span></div>`).join('');
+}
+function addDish(){
+  const name=document.getElementById('new-name').value.trim();
+  if(!name){alert('料理名を入力してください');return;}
+  const dish={id:Date.now(),name,cat:document.getElementById('new-cat').value,mode:document.getElementById('new-mode').value,
+    ing2:document.getElementById('new-ing2').value.trim(),
+    ing5:document.getElementById('new-ing5').value.trim(),
+    tip:document.getElementById('new-tip').value.trim(),
+    recipe:document.getElementById('new-recipe').value.trim()};
+  if(document.getElementById('new-type').value==='main') mainDishes.push(dish); else sideDishes.push(dish);
+  ['new-name','new-ing2','new-ing5','new-recipe','new-tip'].forEach(id=>document.getElementById(id).value='');
+  renderManage();
+  alert(`「${name}」を追加しました！`);
+}
+function downloadJSON(){
+  const sch=getSchedule(currentYear,currentMonth);
+  const data={version:1,year:currentYear,month:currentMonth+1,persons,mainDishes,sideDishes,
+    schedule:Object.fromEntries(Object.entries(sch).map(([d,m])=>([d,{mainId:m.main.id,sideIds:m.sides.map(s=>s.id)}])))};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download=`炊飯器献立_${currentYear}年${currentMonth+1}月.json`;
+  a.click();
+}
+function importJSON(event){
+  const file=event.target.files[0];if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.version!==1) throw new Error();
+      data.mainDishes.forEach(d=>{if(!mainDishes.find(m=>m.id===d.id)) mainDishes.push(d);});
+      data.sideDishes.forEach(d=>{if(!sideDishes.find(s=>s.id===d.id)) sideDishes.push(d);});
+      const y=data.year,m=data.month-1,rebuilt={};
+      for(const [day,ids] of Object.entries(data.schedule)){
+        const main=mainDishes.find(d=>d.id===ids.mainId);
+        const sides=ids.sideIds.map(id=>sideDishes.find(d=>d.id===id));
+        if(main&&sides.every(Boolean)) rebuilt[day]={main,sides};
+      }
+      schedule[`${y}-${m}`]=rebuilt;
+      currentYear=y;currentMonth=m;renderCalendar();
+      alert(`${y}年${m+1}月の献立を読み込みました！`);
+    }catch{alert('読み込みに失敗しました。');}
+  };
+  reader.readAsText(file);event.target.value='';
+}
+function printMonth(){
+  const sch=getSchedule(currentYear,currentMonth);
+  const days=getDaysInMonth(currentYear,currentMonth),first=getFirstDay(currentYear,currentMonth);
+  let rows='';
+  for(let d=1;d<=days;d++){
+    const m=sch[d];if(!m) continue;
+    const dow=['日','月','火','水','木','金','土'][(first+d-1)%7];
+    rows+=`<tr><td>${d}日（${dow}）</td><td>${m.main.name}<br><small style="color:#c07020">${m.main.mode}</small></td><td style="font-size:11px;color:#555">${getIng(m.main,persons)}</td><td>${m.sides[0].name}<br><small style="color:#c07020">${m.sides[0].mode}</small></td><td>${m.sides[1].name}<br><small style="color:#c07020">${m.sides[1].mode}</small></td></tr>`;
+  }
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>${currentYear}年${currentMonth+1}月 炊飯器献立</title><style>body{font-family:'Hiragino Kaku Gothic Pro','Meiryo',sans-serif;padding:20px;font-size:13px}h1{font-size:18px;font-weight:700;margin-bottom:4px}.sub{font-size:12px;color:#666;margin-bottom:16px}table{width:100%;border-collapse:collapse}th,td{padding:7px 8px;border:1px solid #ccc;text-align:left;vertical-align:top}th{background:#fde8cc;font-weight:700;font-size:12px}tr:nth-child(even){background:#fff8f0}@media print{button{display:none}}</style></head><body><h1>🍚 ${currentYear}年${currentMonth+1}月 炊飯器レシピ献立</h1><div class="sub">${persons}人分目安 ／ 炊飯器まかせ</div><button onclick="window.print()" style="margin-bottom:16px;padding:6px 16px;cursor:pointer;font-size:13px">印刷する</button><table><thead><tr><th style="width:80px">日付</th><th style="width:140px">主菜</th><th>材料目安</th><th style="width:130px">副菜1</th><th style="width:130px">副菜2</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
+  win.document.close();
+}
+renderCalendar();
+</script>
+</body>
+</html>
