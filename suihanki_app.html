@@ -11,6 +11,15 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
 .header h1{font-size:20px;font-weight:500}
 .serving-wrap{display:flex;align-items:center;gap:8px;font-size:13px}
 .serving-wrap select{padding:4px 10px;border-radius:6px;border:none;font-size:13px;background:#fff;color:#1a3a2a}
+.data-bar{background:#1e5038;padding:6px 1.5rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.data-btn{padding:5px 14px;border-radius:6px;border:none;font-size:12px;cursor:pointer;font-weight:500;transition:opacity .2s}
+.data-btn:hover{opacity:.85}
+.data-btn.export{background:#52B788;color:#fff}
+.data-btn.import{background:#fff;color:#1e5038}
+.data-btn.reset{background:transparent;color:#fca5a5;border:1px solid #fca5a5}
+.data-label{font-size:11px;color:#a7d4bc;margin-left:auto}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a3a2a;color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
 .tabs{background:#fff;border-bottom:1px solid #e0ede6;display:flex}
 .tab{padding:14px 24px;border:none;background:none;cursor:pointer;font-size:14px;color:#6b8f7a;border-bottom:2px solid transparent;transition:all .2s}
 .tab.active{color:#2D6A4F;border-bottom-color:#2D6A4F;font-weight:500}
@@ -86,6 +95,27 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
 .sum-sub{font-size:12px;color:#6b8f7a}
 .empty-msg{text-align:center;padding:3rem;color:#6b8f7a;font-size:14px}
 
+/* 印刷テーブル */
+.print-table{width:100%;border-collapse:collapse;font-size:13px}
+.print-table th{background:#2D6A4F;color:#fff;padding:8px 6px;text-align:center;font-weight:500;border:1px solid #1e5038}
+.print-table td{border:1px solid #c8ddd2;padding:8px 6px;vertical-align:top}
+.print-table tr:nth-child(even) td{background:#f5faf7}
+.pt-day{font-weight:600;color:#2D6A4F;font-size:14px;text-align:center;width:36px}
+.pt-dow{font-size:11px;color:#6b8f7a;text-align:center}
+.pt-main{font-size:12px;color:#1a3a2a;margin-bottom:2px}
+.pt-sub{font-size:11px;color:#6b8f7a}
+.pt-empty{color:#c8ddd2;font-size:11px;text-align:center}
+
+@media print{
+  .header,.data-bar,.tabs,.panel,.overlay,.toast{display:none!important}
+  .view{display:none!important}
+  #v-print{display:block!important}
+  .content{padding:0;max-width:100%}
+  body{background:#fff}
+  .print-table th{background:#2D6A4F!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .print-table tr:nth-child(even) td{background:#f5faf7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
 @media(max-width:600px){
 .panel{width:100%}
 .content{padding:1rem}
@@ -99,7 +129,6 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
 
 <div class="header">
   <h1>🍚 炊飯器レシピ管理</h1>
-  <button onclick="downloadApp()" style="background:#52B788;color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;border:none;cursor:pointer;font-weight:500;">⬇ 保存する</button>
   <div class="serving-wrap">
     <span>人数：</span>
     <select id="serving-sel" onchange="renderCalendar()">
@@ -109,10 +138,22 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
   </div>
 </div>
 
+<div class="data-bar">
+  <button class="data-btn export" onclick="exportData()">📥 データを書き出す（JSON）</button>
+  <label class="data-btn import" style="cursor:pointer;">📂 データを読み込む
+    <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+  </label>
+  <button class="data-btn reset" onclick="resetData()">🗑 全データ削除</button>
+  <span class="data-label" id="data-label">ブラウザに自動保存されます</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <div class="tabs">
   <button class="tab active" onclick="showView('calendar',this)">📅 カレンダー</button>
   <button class="tab" onclick="showView('recipes',this)">📖 レシピ一覧</button>
   <button class="tab" onclick="showView('summary',this)">📊 月間まとめ</button>
+  <button class="tab" onclick="showView('print',this)">🖨️ 印刷</button>
 </div>
 
 <div class="content">
@@ -139,6 +180,15 @@ body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;backgroun
     <div class="stat"><div class="stat-label">設定人数</div><div class="stat-val" id="s-srv">5<span class="stat-unit">人</span></div></div>
   </div>
   <div class="sum-list" id="sum-list"></div>
+</div>
+
+<div id="v-print" class="view">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;flex-wrap:wrap">
+    <h2 style="font-size:17px;font-weight:500;color:#1a3a2a">月間献立表</h2>
+    <span id="print-month-label" style="font-size:15px;color:#2D6A4F;font-weight:500"></span>
+    <button onclick="window.print()" style="margin-left:auto;padding:10px 24px;background:#2D6A4F;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;">🖨️ 印刷する</button>
+  </div>
+  <div id="print-table-wrap"></div>
 </div>
 
 </div>
@@ -466,6 +516,69 @@ function toggleAcc(id){
   el.classList.toggle('open');
 }
 
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
+
+function saveToStorage(){
+  try{localStorage.setItem('suihanki_menus',JSON.stringify(menus));}catch(e){}
+}
+
+function loadFromStorage(){
+  try{
+    var d=localStorage.getItem('suihanki_menus');
+    if(d)menus=JSON.parse(d);
+  }catch(e){}
+}
+
+function exportData(){
+  var data={menus:menus,saved:new Date().toLocaleDateString('ja-JP')};
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([new Uint8Array(Array.from(json).map(function(c){return c.charCodeAt(0);}))],{type:'application/octet-stream'});
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var a=document.createElement('a');
+    a.href=e.target.result;
+    a.download='suihanki_data_'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('データを書き出しました！');
+  };
+  reader.readAsDataURL(blob);
+}
+
+function importData(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(data.menus){
+        menus=data.menus;
+        saveToStorage();
+        renderCalendar();
+        updateSummary();
+        showToast('データを読み込みました！');
+      }
+    }catch(err){showToast('読み込みに失敗しました');}
+  };
+  reader.readAsText(file);
+  event.target.value='';
+}
+
+function resetData(){
+  if(!confirm('全ての献立データを削除しますか？この操作は元に戻せません。'))return;
+  menus={};
+  saveToStorage();
+  renderCalendar();
+  updateSummary();
+  showToast('データを削除しました');
+}
+
 function saveMenu(){
   if(!selDate)return;
   var main=document.getElementById('main-sel').value;
@@ -473,6 +586,7 @@ function saveMenu(){
   if(!menus[selDate])menus[selDate]={};
   menus[selDate].main=main;
   menus[selDate].sub=sub;
+  saveToStorage();
   closePanel();
   renderCalendar();
   updateSummary();
@@ -480,6 +594,7 @@ function saveMenu(){
 
 function clearMenu(){
   if(selDate)delete menus[selDate];
+  saveToStorage();
   document.getElementById('main-sel').value='';
   document.getElementById('sub-sel').value='';
   document.getElementById('main-card').innerHTML='';
@@ -495,6 +610,32 @@ function showView(name,btn){
   btn.classList.add('active');
   if(name==='recipes')renderRecipes();
   if(name==='summary')updateSummary();
+  if(name==='print')renderPrint();
+}
+
+function renderPrint(){
+  var dow=['日','月','火','水','木','金','土'];
+  document.getElementById('print-month-label').textContent=curY+'年'+(curM+1)+'月';
+  var days=new Date(curY,curM+1,0).getDate();
+  var rows='';
+  for(var d=1;d<=days;d++){
+    var key=curY+'-'+(curM+1)+'-'+d;
+    var menu=menus[key]||{};
+    var date=new Date(curY,curM,d);
+    var dowStr=dow[date.getDay()];
+    var dowColor=date.getDay()===0?'color:#e55':date.getDay()===6?'color:#55a':''
+    var m=menu.main?MAINS.find(function(r){return r.id===menu.main;}):null;
+    var s=menu.sub?SUBS.find(function(r){return r.id===menu.sub;}):null;
+    rows+='<tr>'
+      +'<td class="pt-day">'+d+'<br><span class="pt-dow" style="'+dowColor+'">'+dowStr+'</span></td>'
+      +'<td>'+(m?'<div class="pt-main">'+m.name+'</div>':'<div class="pt-empty">未設定</div>')+'</td>'
+      +'<td>'+(s?'<div class="pt-sub">'+s.name+'</div>':'<div class="pt-empty">未設定</div>')+'</td>'
+      +'</tr>';
+  }
+  document.getElementById('print-table-wrap').innerHTML=
+    '<table class="print-table">'
+    +'<thead><tr><th style="width:50px">日</th><th>主菜（炊飯器）</th><th>副菜</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table>';
 }
 
 var activeFilter='all';
@@ -558,6 +699,7 @@ function downloadApp(){
 
 // 初期化
 (function(){
+  loadFromStorage();
   var ms=document.getElementById('main-sel');
   var ss=document.getElementById('sub-sel');
   MAINS.forEach(function(r){var o=document.createElement('option');o.value=r.id;o.textContent=r.name;ms.appendChild(o);});
