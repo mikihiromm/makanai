@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>賄い献立</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Kaku Gothic Pro','Meiryo','Yu Gothic',sans-serif;background:#f7f6f3;color:#222;font-size:15px}
+.app{max-width:980px;margin:0 auto;padding:1rem}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;background:#fff;border-radius:10px;padding:12px 16px;border:1px solid #e8e8e0}
+.title{font-size:19px;font-weight:700;color:#2d2d2d}
+.title span{font-size:13px;font-weight:400;color:#888;margin-left:8px}
+.persons-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.persons-group label{font-size:13px;color:#777}
+.toggle-group{display:flex;border:1px solid #ccc;border-radius:8px;overflow:hidden}
+.toggle-btn{padding:6px 13px;font-size:13px;background:#fff;border:none;cursor:pointer;color:#777;transition:all 0.15s}
+.toggle-btn.active{background:#3d6b4f;color:#fff;font-weight:600}
+.nav{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.nav-btn{background:#fff;border:1px solid #ccc;border-radius:8px;padding:5px 12px;cursor:pointer;font-size:14px;color:#555}
+.nav-btn:hover{background:#f5f5f5}
+.month-label{font-size:17px;font-weight:700;color:#2d2d2d;min-width:120px;text-align:center}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:1rem}
+.day-header{text-align:center;font-size:12px;color:#888;padding:4px 0;font-weight:600}
+.day-header.sun{color:#e24b4a}.day-header.sat{color:#378add}
+.day-cell{min-height:90px;background:#fff;border:1px solid #e8e8e0;border-radius:8px;padding:5px;cursor:pointer;transition:all 0.15s}
+.day-cell:hover{border-color:#3d6b4f;background:#f6fbf8}
+.day-cell.empty{background:transparent;border-color:transparent;cursor:default}
+.day-cell.today{border-color:#3d6b4f;border-width:2px}
+.day-num{font-size:12px;font-weight:600;color:#888;margin-bottom:3px}
+.day-num.sun{color:#e24b4a}.day-num.sat{color:#378add}
+.meal-tag{font-size:10px;padding:2px 5px;border-radius:4px;margin-bottom:2px;line-height:1.4;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.main-tag{background:#d1fae5;color:#065f46}
+.side-tag{background:#fef9c3;color:#854d0e}
+.genre-和{background:#fce7f3;color:#9d174d}
+.genre-洋{background:#dbeafe;color:#1e40af}
+.genre-中{background:#ffedd5;color:#9a3412}
+.tool-btn{padding:6px 14px;font-size:13px;border:1px solid #ccc;border-radius:8px;cursor:pointer;background:#fff;color:#555}
+.tool-btn:hover{background:#f5f5f5}
+.bottom-nav{display:flex;gap:8px;margin-top:1rem;border-top:1px solid #e8e8e0;padding-top:1rem}
+.bottom-nav-btn{flex:1;padding:9px;font-size:14px;border:1px solid #ccc;border-radius:8px;cursor:pointer;background:#fff;color:#777}
+.bottom-nav-btn.active{background:#3d6b4f;color:#fff;font-weight:600}
+.view-body{min-height:300px}
+.mgmt-section{margin-bottom:1.5rem}
+.mgmt-title{font-size:15px;font-weight:700;color:#2d2d2d;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e8e8e0}
+.dish-list{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;margin-bottom:10px}
+.dish-item{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border:1px solid #e8e8e0;border-radius:8px;font-size:13px;background:#fff}
+.dish-item-name{color:#222;flex:1}
+.dish-item-cat{font-size:11px;color:#888;margin:0 6px}
+.dish-item-genre{font-size:11px;padding:1px 6px;border-radius:4px}
+.add-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;border:1px solid #e8e8e0;border-radius:10px;background:#fafaf8}
+.add-form input,.add-form select,.add-form textarea{padding:7px 10px;border:1px solid #ccc;border-radius:8px;font-size:13px;background:#fff;color:#222;font-family:inherit}
+.add-form textarea{grid-column:1/-1;resize:vertical;min-height:60px}
+.add-form .full{grid-column:1/-1}
+.save-btn{grid-column:1/-1;padding:8px;background:#3d6b4f;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:#fff}
+.save-btn:hover{background:#2d5a3e}
+.section-label{font-size:13px;color:#555;margin-bottom:5px;font-weight:600}
+.recipe-box{background:#f5f5f2;border-radius:8px;padding:11px;margin-bottom:8px;font-size:13px;line-height:1.8;color:#222}
+.recipe-title{font-size:12px;font-weight:600;color:#777;margin-bottom:4px}
+.portion-badge{font-size:12px;color:#fff;background:#3d6b4f;border-radius:6px;padding:3px 10px;display:inline-block;margin-left:6px}
+.shuffle-btn{padding:5px 13px;font-size:12px;border:1px solid #ccc;border-radius:6px;cursor:pointer;background:#fff;color:#555}
+.shuffle-btn:hover{background:#f0f0f0}
+.meal-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.divider{border:none;border-top:1px solid #e8e8e0;margin:12px 0}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:20px;width:100%;max-width:600px;max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal-title{font-size:17px;font-weight:700;color:#2d2d2d}
+.close-btn{background:#f0f0f0;border:none;font-size:18px;cursor:pointer;color:#555;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.close-btn:hover{background:#e0e0e0}
+.genre-badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="title">賄い献立 <span>スタッフ食</span></div>
+    <div class="persons-group">
+      <label>人数：</label>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btn-4" onclick="setPersons(4)">4人</button>
+        <button class="toggle-btn" id="btn-5" onclick="setPersons(5)">5人</button>
+        <button class="toggle-btn" id="btn-6" onclick="setPersons(6)">6人</button>
+        <button class="toggle-btn" id="btn-7" onclick="setPersons(7)">7人</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="bottom-nav-btn active" onclick="showView('calendar')">カレンダー</button>
+    <button class="bottom-nav-btn" onclick="showView('manage')">料理管理</button>
+  </div>
+
+  <div id="view-calendar" class="view-body" style="margin-top:1rem">
+    <div class="nav">
+      <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
+      <div class="month-label" id="month-label"></div>
+      <button class="nav-btn" onclick="changeMonth(1)">▶</button>
+      <button class="tool-btn" onclick="regen()">再生成</button>
+      <button class="tool-btn" onclick="printMonth()">印刷</button>
+      <button class="tool-btn" onclick="downloadJSON()">保存</button>
+      <button class="tool-btn" onclick="document.getElementById('import-file').click()">読込</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+    <div class="calendar" id="calendar"></div>
+  </div>
+
+  <div id="view-manage" class="view-body" style="margin-top:1rem;display:none">
+    <div class="mgmt-section">
+      <div class="mgmt-title">主菜一覧（<span id="main-count">0</span>品）</div>
+      <div class="dish-list" id="main-list"></div>
+    </div>
+    <div class="mgmt-section">
+      <div class="mgmt-title">副菜一覧（<span id="side-count">0</span>品）</div>
+      <div class="dish-list" id="side-list"></div>
+    </div>
+    <div class="mgmt-section">
+      <div class="mgmt-title">料理を追加</div>
+      <div class="add-form">
+        <input type="text" id="new-name" placeholder="料理名">
+        <select id="new-type"><option value="main">主菜</option><option value="side">副菜</option></select>
+        <select id="new-genre"><option value="和">和食</option><option value="洋">洋食</option><option value="中">中華</option></select>
+        <select id="new-cat">
+          <option value="魚">魚介</option><option value="肉">肉料理</option><option value="豆腐">豆腐・豆</option>
+          <option value="野菜">野菜</option><option value="卵">卵料理</option><option value="麺・ご飯">麺・ご飯</option>
+          <option value="スープ">スープ・汁物</option><option value="その他">その他</option>
+        </select>
+        <input type="text" id="new-ing4" placeholder="材料（4人分）" class="full">
+        <input type="text" id="new-ing7" placeholder="材料（7人分）" class="full">
+        <textarea id="new-recipe" placeholder="作り方（①②③…と書く）"></textarea>
+        <button class="save-btn" onclick="addDish()">追加する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-date"></div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+let persons=4,currentYear=new Date().getFullYear(),currentMonth=new Date().getMonth(),schedule={};
+
+// 材料は4人分と7人分を記載。途中の人数は補間表示
+const mainDishes=[
+  // 和食
+  {id:1,name:"さばの味噌煮",genre:"和",cat:"魚",ing4:"さば4切れ・味噌大4・みりん大4・砂糖大2・生姜2片・酒大4",ing7:"さば7切れ・味噌大7・みりん大7・砂糖大3・生姜3片・酒大7",recipe:"①さばに熱湯をかけ臭みを取る。②鍋に水・調味料・生姜を煮立てる。③さばを加え落し蓋で15分煮る。④煮汁を煮詰めて完成。"},
+  {id:2,name:"鶏の照り焼き",genre:"和",cat:"肉",ing4:"鶏もも600g・醤油大4・みりん大4・砂糖大2・サラダ油少々",ing7:"鶏もも1kg・醤油大7・みりん大7・砂糖大3・サラダ油少々",recipe:"①鶏肉は一口大に切る。②フライパンで皮目から焼く。③タレを加えて絡め蒸し焼きにする。"},
+  {id:3,name:"肉じゃが",genre:"和",cat:"肉",ing4:"牛薄切り300g・じゃがいも6個・玉ねぎ2個・だし600ml・醤油大6・みりん大4・砂糖大2",ing7:"牛薄切り500g・じゃがいも10個・玉ねぎ3個・だし1L・醤油大10・みりん大6・砂糖大3",recipe:"①じゃがいもは一口大に切る。②鍋で肉と玉ねぎを炒める。③じゃがいも・だし・調味料を加え煮る。"},
+  {id:4,name:"豚の生姜焼き",genre:"和",cat:"肉",ing4:"豚ロース薄切り400g・玉ねぎ1個・醤油大4・みりん大2・生姜大2",ing7:"豚ロース薄切り700g・玉ねぎ2個・醤油大7・みりん大3・生姜大3",recipe:"①豚肉に下味をつける。②フライパンで玉ねぎを炒める。③豚肉を加えタレで絡める。"},
+  {id:5,name:"鮭のホイル焼き",genre:"和",cat:"魚",ing4:"生鮭4切れ・玉ねぎ1個・えのき2袋・バター20g・醤油大2・塩こしょう少々",ing7:"生鮭7切れ・玉ねぎ2個・えのき3袋・バター35g・醤油大3・塩こしょう少々",recipe:"①鮭と野菜をホイルに包む。②バターと醤油をかけて包む。③グリルで12分焼く。"},
+  {id:6,name:"豚汁",genre:"和",cat:"スープ",ing4:"豚バラ200g・大根200g・にんじん2本・ごぼう1本・こんにゃく1枚・味噌大6・だし1.2L",ing7:"豚バラ350g・大根350g・にんじん3本・ごぼう2本・こんにゃく2枚・味噌大10・だし2L",recipe:"①野菜を切り豚肉と炒める。②だしを加えて煮る。③野菜が柔らかくなったら味噌を溶く。"},
+  {id:7,name:"筑前煮",genre:"和",cat:"野菜",ing4:"鶏もも300g・れんこん200g・にんじん2本・ごぼう1本・こんにゃく1枚・だし400ml・醤油大6・みりん大4・砂糖大2",ing7:"鶏もも500g・れんこん350g・にんじん3本・ごぼう2本・こんにゃく2枚・だし700ml・醤油大10・みりん大6・砂糖大3",recipe:"①材料を切り鶏肉から炒める。②野菜を加える。③だし・調味料で汁気がなくなるまで煮る。"},
+  {id:8,name:"茶碗蒸し",genre:"和",cat:"卵",ing4:"卵6個・だし900ml・醤油小2・塩少々・鶏肉100g・三つ葉少々",ing7:"卵10個・だし1.5L・醤油大1・塩少々・鶏肉175g・三つ葉少々",recipe:"①卵をよく溶きだしと調味料を混ぜ濾す。②具材を入れて卵液を注ぐ。③蒸し器で中火10分・弱火5分蒸す。"},
+  {id:9,name:"ぶりの照り焼き",genre:"和",cat:"魚",ing4:"ぶり4切れ・醤油大4・みりん大4・酒大2・砂糖小2",ing7:"ぶり7切れ・醤油大7・みりん大7・酒大3・砂糖大1",recipe:"①ぶりに下味10分。②フライパンで両面焼く。③タレを加えて絡める。"},
+  {id:10,name:"あじの南蛮漬け",genre:"和",cat:"魚",ing4:"あじ8尾・酢大6・砂糖大2・醤油大2・玉ねぎ1個・唐辛子2本",ing7:"あじ14尾・酢大10・砂糖大3・醤油大3・玉ねぎ2個・唐辛子3本",recipe:"①あじに片栗粉をまぶして揚げる。②南蛮酢を合わせる。③揚げたあじを1時間以上漬ける。"},
+  {id:11,name:"鶏と根菜の煮物",genre:"和",cat:"肉",ing4:"鶏もも400g・れんこん300g・ごぼう1本・にんじん2本・醤油大4・みりん大4・砂糖大2・だし400ml",ing7:"鶏もも700g・れんこん500g・ごぼう2本・にんじん3本・醤油大7・みりん大7・砂糖大3・だし700ml",recipe:"①材料を切り炒める。②だし・調味料を加えて煮詰める。"},
+  {id:12,name:"かれいの煮付け",genre:"和",cat:"魚",ing4:"かれい4切れ・醤油大6・みりん大4・酒大4・砂糖大2・生姜2片",ing7:"かれい7切れ・醤油大10・みりん大7・酒大7・砂糖大3・生姜3片",recipe:"①かれいを霜降りにする。②煮汁を煮立てて魚を入れる。③落し蓋で10分煮る。"},
+  {id:13,name:"鰆の西京焼き",genre:"和",cat:"魚",ing4:"鰆4切れ・西京味噌大6・みりん大2・酒大2",ing7:"鰆7切れ・西京味噌大10・みりん大3・酒大3",recipe:"①味噌床を作り鰆を2日漬ける。②味噌を拭き取りグリルで焼く。"},
+  {id:14,name:"高野豆腐の煮物",genre:"和",cat:"豆腐",ing4:"高野豆腐8枚・だし800ml・醤油大4・みりん大4・砂糖大2",ing7:"高野豆腐14枚・だし1.4L・醤油大7・みりん大7・砂糖大3",recipe:"①高野豆腐を水で戻す。②だし・調味料を煮立てる。③高野豆腐を加え落し蓋で20分煮る。"},
+  {id:15,name:"おでん",genre:"和",cat:"その他",ing4:"大根・こんにゃく・はんぺん・ちくわ・卵など各4個・だし1.6L・醤油大4・みりん大4・塩少々",ing7:"大根・こんにゃく・はんぺん・ちくわ・卵など各7個・だし2.8L・醤油大7・みりん大7・塩少々",recipe:"①大根は下茹でする。②昆布だしに調味料を合わせる。③材料を入れて弱火で1時間以上煮込む。"},
+  {id:16,name:"いわしの梅煮",genre:"和",cat:"魚",ing4:"いわし8尾・梅干し4個・醤油大4・みりん大4・酒大4・砂糖大2",ing7:"いわし14尾・梅干し7個・醤油大7・みりん大7・酒大7・砂糖大3",recipe:"①いわしを洗う。②鍋に調味料と梅干しを煮立てる。③いわしを加え落し蓋で20分煮る。"},
+  {id:17,name:"鶏そぼろ丼",genre:"和",cat:"麺・ご飯",ing4:"鶏ひき肉400g・醤油大4・みりん大4・砂糖大2・生姜少々・卵4個・ご飯4膳分",ing7:"鶏ひき肉700g・醤油大7・みりん大7・砂糖大3・生姜少々・卵7個・ご飯7膳分",recipe:"①ひき肉を炒め調味料でそぼろを作る。②卵は炒り卵にする。③ご飯に乗せる。"},
+  {id:18,name:"豆腐ハンバーグ",genre:"和",cat:"豆腐",ing4:"木綿豆腐1丁・豚ひき肉300g・玉ねぎ半個・卵2個・塩こしょう少々",ing7:"木綿豆腐2丁・豚ひき肉500g・玉ねぎ1個・卵3個・塩こしょう少々",recipe:"①豆腐を水切りしひき肉と混ぜる。②成形して両面焼く。③大根おろしとポン酢で食べる。"},
+  {id:19,name:"さんまの塩焼き",genre:"和",cat:"魚",ing4:"さんま4尾・塩少々・大根おろし・すだち各適量",ing7:"さんま7尾・塩少々・大根おろし・すだち各適量",recipe:"①さんまに塩をふり15分置く。②グリルで焼き色がつくまで焼く。③大根おろしとすだちを添える。"},
+  {id:20,name:"鶏の水炊き",genre:"和",cat:"肉",ing4:"鶏もも500g・白菜8枚・豆腐2丁・春菊1束・ポン酢・だし800ml",ing7:"鶏もも900g・白菜14枚・豆腐3丁・春菊2束・ポン酢・だし1.4L",recipe:"①昆布でだしをとる。②鶏肉をアクを取りながら煮る。③野菜・豆腐を加えポン酢で食べる。"},
+  // 洋食
+  {id:21,name:"ハンバーグ",genre:"洋",cat:"肉",ing4:"合いびき肉600g・玉ねぎ1個・卵2個・パン粉大6・牛乳大4・塩こしょう少々・デミグラスソース1缶",ing7:"合いびき肉1kg・玉ねぎ2個・卵3個・パン粉大10・牛乳大7・塩こしょう少々・デミグラスソース2缶",recipe:"①ひき肉・玉ねぎ・卵・パン粉を混ぜて成形する。②フライパンで両面焼く。③ソースを作ってかける。"},
+  {id:22,name:"チキンソテー",genre:"洋",cat:"肉",ing4:"鶏もも600g・塩こしょう少々・にんにく2片・オリーブオイル大2・レモン1個",ing7:"鶏もも1kg・塩こしょう少々・にんにく3片・オリーブオイル大3・レモン2個",recipe:"①鶏肉に塩こしょうをして30分置く。②にんにくのオイルで皮目から焼く。③レモンを絞って完成。"},
+  {id:23,name:"ポークソテー",genre:"洋",cat:"肉",ing4:"豚ロース厚切り4枚・塩こしょう少々・オリーブオイル大2・バルサミコソース適量",ing7:"豚ロース厚切り7枚・塩こしょう少々・オリーブオイル大3・バルサミコソース適量",recipe:"①豚肉を常温に戻し塩こしょうする。②強火で焼き色をつけ中火で火を通す。③ソースをかける。"},
+  {id:24,name:"シーフードパスタ",genre:"洋",cat:"麺・ご飯",ing4:"パスタ400g・えび150g・あさり300g・トマト缶1缶・にんにく2片・オリーブオイル大3・塩こしょう少々",ing7:"パスタ700g・えび250g・あさり500g・トマト缶2缶・にんにく3片・オリーブオイル大5・塩こしょう少々",recipe:"①パスタを茹でる。②にんにくを炒めシーフードを加える。③トマト缶で煮てパスタと合わせる。"},
+  {id:25,name:"クリームシチュー",genre:"洋",cat:"スープ",ing4:"鶏もも400g・じゃがいも4個・にんじん2本・玉ねぎ2個・牛乳600ml・バター30g・小麦粉大4・コンソメ2個",ing7:"鶏もも700g・じゃがいも7個・にんじん3本・玉ねぎ3個・牛乳1L・バター50g・小麦粉大7・コンソメ3個",recipe:"①バターで野菜と鶏肉を炒め小麦粉をふる。②水とコンソメで煮る。③牛乳を加えて仕上げる。"},
+  {id:26,name:"カレーライス",genre:"洋",cat:"麺・ご飯",ing4:"豚肩ロース400g・じゃがいも4個・にんじん2本・玉ねぎ2個・カレールー4皿分・ご飯4膳",ing7:"豚肩ロース700g・じゃがいも7個・にんじん3本・玉ねぎ3個・カレールー7皿分・ご飯7膳",recipe:"①肉と野菜を炒める。②水を加えて煮る。③ルーを加えてとろみをつける。"},
+  {id:27,name:"ロールキャベツ",genre:"洋",cat:"肉",ing4:"キャベツ大8枚・合いびき肉400g・玉ねぎ半個・卵1個・トマト缶1缶・コンソメ2個",ing7:"キャベツ大14枚・合いびき肉700g・玉ねぎ1個・卵2個・トマト缶2缶・コンソメ3個",recipe:"①キャベツを茹でる。②ひき肉を混ぜてキャベツで包む。③スープで煮込む。"},
+  {id:28,name:"オムライス",genre:"洋",cat:"卵",ing4:"卵8個・ご飯4膳・鶏肉200g・玉ねぎ半個・ケチャップ大6・バター20g・塩こしょう少々",ing7:"卵14個・ご飯7膳・鶏肉350g・玉ねぎ1個・ケチャップ大10・バター35g・塩こしょう少々",recipe:"①ケチャップライスを作る。②薄い卵焼きでライスを包む。③ケチャップをかける。"},
+  {id:29,name:"ミネストローネ",genre:"洋",cat:"スープ",ing4:"トマト缶2缶・玉ねぎ1個・にんじん1本・セロリ1本・じゃがいも2個・ベーコン4枚・コンソメ2個・水800ml",ing7:"トマト缶3缶・玉ねぎ2個・にんじん2本・セロリ2本・じゃがいも3個・ベーコン7枚・コンソメ3個・水1.4L",recipe:"①野菜とベーコンを炒める。②水とコンソメで煮る。③トマト缶を加えて煮込む。"},
+  {id:30,name:"グラタン",genre:"洋",cat:"その他",ing4:"マカロニ200g・鶏肉300g・玉ねぎ1個・ホワイトソース缶2缶・牛乳200ml・チーズ適量",ing7:"マカロニ350g・鶏肉500g・玉ねぎ2個・ホワイトソース缶3缶・牛乳350ml・チーズ適量",recipe:"①マカロニを茹でる。②鶏肉と玉ねぎを炒める。③ホワイトソースと合わせてチーズをかけて焼く。"},
+  {id:31,name:"魚のムニエル",genre:"洋",cat:"魚",ing4:"白身魚4切れ・塩こしょう少々・薄力粉適量・バター30g・レモン1個・パセリ少々",ing7:"白身魚7切れ・塩こしょう少々・薄力粉適量・バター50g・レモン2個・パセリ少々",recipe:"①魚に塩こしょうをして薄力粉をまぶす。②バターで両面焼く。③レモンとパセリで仕上げる。"},
+  {id:32,name:"ピラフ",genre:"洋",cat:"麺・ご飯",ing4:"米4合・鶏肉200g・玉ねぎ1個・にんじん1本・コンソメ2個・バター20g・塩こしょう少々",ing7:"米7合・鶏肉350g・玉ねぎ2個・にんじん2本・コンソメ3個・バター35g・塩こしょう少々",recipe:"①野菜と鶏肉を炒める。②米を加えて炒め水とコンソメで炊く。③バターで仕上げる。"},
+  {id:33,name:"ポトフ",genre:"洋",cat:"スープ",ing4:"ウインナー8本・じゃがいも4個・にんじん2本・キャベツ四分の一・玉ねぎ2個・コンソメ3個・水1.5L",ing7:"ウインナー14本・じゃがいも7個・にんじん3本・キャベツ半個・玉ねぎ3個・コンソメ5個・水2.5L",recipe:"①野菜を大きめに切る。②水とコンソメで煮る。③ウインナーを加えて煮込む。"},
+  {id:34,name:"ビーフシチュー",genre:"洋",cat:"肉",ing4:"牛すね肉600g・じゃがいも4個・にんじん2本・玉ねぎ2個・デミグラスソース缶1缶・赤ワイン200ml",ing7:"牛すね肉1kg・じゃがいも7個・にんじん3本・玉ねぎ3個・デミグラスソース缶2缶・赤ワイン350ml",recipe:"①牛肉を炒める。②野菜を加え赤ワインで煮る。③ソースを加えて1時間以上煮込む。"},
+  {id:35,name:"タコライス",genre:"洋",cat:"麺・ご飯",ing4:"合いびき肉400g・タコシーズニング1袋・レタス・トマト・チーズ各適量・ご飯4膳",ing7:"合いびき肉700g・タコシーズニング1.5袋・レタス・トマト・チーズ各適量・ご飯7膳",recipe:"①ひき肉にシーズニングを絡めて炒める。②ご飯の上に肉・レタス・トマト・チーズを乗せる。"},
+  // 中華
+  {id:36,name:"麻婆豆腐",genre:"中",cat:"豆腐",ing4:"絹豆腐2丁・豚ひき肉200g・豆板醤大2・醤油大2・鶏がらスープ200ml・片栗粉大2・にんにく・生姜各1片",ing7:"絹豆腐3丁・豚ひき肉350g・豆板醤大3・醤油大3・鶏がらスープ350ml・片栗粉大3・にんにく・生姜各2片",recipe:"①ひき肉と豆板醤を炒める。②スープと調味料を加える。③豆腐を加え片栗粉でとろみをつける。"},
+  {id:37,name:"回鍋肉",genre:"中",cat:"肉",ing4:"豚バラ薄切り400g・キャベツ半個・ピーマン4個・豆板醤大2・甜麺醤大2・醤油大1・にんにく・生姜各少々",ing7:"豚バラ薄切り700g・キャベツ1個・ピーマン7個・豆板醤大3・甜麺醤大3・醤油大2・にんにく・生姜各少々",recipe:"①豚バラを炒め一旦取り出す。②野菜を炒める。③肉を戻し調味料で絡める。"},
+  {id:38,name:"酢豚",genre:"中",cat:"肉",ing4:"豚肩ロース500g・ピーマン3個・にんじん1本・玉ねぎ1個・酢大4・砂糖大4・醤油大2・ケチャップ大2",ing7:"豚肩ロース900g・ピーマン5個・にんじん2本・玉ねぎ2個・酢大7・砂糖大7・醤油大3・ケチャップ大3",recipe:"①豚肉を揚げる。②野菜を炒める。③酢豚ソースを合わせて絡める。"},
+  {id:39,name:"エビチリ",genre:"中",cat:"魚",ing4:"えび400g・豆板醤小2・ケチャップ大4・鶏がらスープ大6・にんにく・生姜・長ねぎ各少々",ing7:"えび700g・豆板醤大1・ケチャップ大7・鶏がらスープ大10・にんにく・生姜・長ねぎ各少々",recipe:"①えびの下処理をする。②にんにく・生姜・豆板醤を炒める。③えびを加えソースで絡める。"},
+  {id:40,name:"青椒肉絲",genre:"中",cat:"肉",ing4:"牛細切り300g・ピーマン6個・たけのこ水煮1袋・オイスターソース大2・醤油大1",ing7:"牛細切り500g・ピーマン10個・たけのこ水煮1.5袋・オイスターソース大3・醤油大2",recipe:"①牛肉に下味をつける。②ピーマンとたけのこを炒める。③牛肉を加え調味料で仕上げる。"},
+  {id:41,name:"チャーハン",genre:"中",cat:"麺・ご飯",ing4:"ご飯4膳・卵4個・ハム4枚・長ねぎ1本・醤油大2・塩こしょう少々・ごま油大1",ing7:"ご飯7膳・卵7個・ハム7枚・長ねぎ2本・醤油大3・塩こしょう少々・ごま油大2",recipe:"①強火でご飯を炒める。②卵を加えてほぐす。③ハム・ねぎを加えて調味料で仕上げる。"},
+  {id:42,name:"中華丼",genre:"中",cat:"麺・ご飯",ing4:"豚薄切り200g・えび150g・白菜4枚・にんじん1本・たけのこ1袋・鶏がらスープ400ml・片栗粉大2・ご飯4膳",ing7:"豚薄切り350g・えび250g・白菜7枚・にんじん2本・たけのこ1.5袋・鶏がらスープ700ml・片栗粉大3・ご飯7膳",recipe:"①材料を炒める。②スープを加えて煮る。③片栗粉でとろみをつけてご飯にかける。"},
+  {id:43,name:"餃子",genre:"中",cat:"肉",ing4:"豚ひき肉300g・キャベツ300g・にら半束・にんにく・生姜各少々・餃子の皮40枚・醤油・酢・ラー油各適量",ing7:"豚ひき肉500g・キャベツ500g・にら1束・にんにく・生姜各少々・餃子の皮70枚・醤油・酢・ラー油各適量",recipe:"①具材を混ぜて包む。②フライパンで焼き目をつける。③水を加えて蒸し焼きにする。"},
+  {id:44,name:"マーボーナス",genre:"中",cat:"野菜",ing4:"なす6本・豚ひき肉200g・豆板醤大1・醤油大2・鶏がらスープ200ml・片栗粉大1",ing7:"なす10本・豚ひき肉350g・豆板醤大2・醤油大3・鶏がらスープ350ml・片栗粉大2",recipe:"①なすをごま油で炒める。②ひき肉と豆板醤を炒める。③スープで煮てとろみをつける。"},
+  {id:45,name:"棒棒鶏",genre:"中",cat:"肉",ing4:"鶏むね肉600g・きゅうり2本・ごまだれ（白すりごま大4・醤油大3・酢大2・砂糖大1・ごま油大1）",ing7:"鶏むね肉1kg・きゅうり3本・ごまだれ（白すりごま大7・醤油大5・酢大3・砂糖大2・ごま油大2）",recipe:"①鶏むね肉を蒸して冷ます。②細く裂く。③きゅうりとともにごまだれをかける。"},
+  {id:46,name:"春巻き",genre:"中",cat:"その他",ing4:"春巻きの皮8枚・豚薄切り200g・たけのこ1袋・にら半束・春雨30g・オイスターソース大2",ing7:"春巻きの皮14枚・豚薄切り350g・たけのこ1.5袋・にら1束・春雨50g・オイスターソース大3",recipe:"①具材を炒めて冷ます。②春巻きの皮で包む。③揚げる。"},
+  {id:47,name:"八宝菜",genre:"中",cat:"その他",ing4:"えび・いか・豚薄切り各100g・白菜4枚・にんじん1本・たけのこ1袋・うずら卵8個・鶏がらスープ400ml",ing7:"えび・いか・豚薄切り各175g・白菜7枚・にんじん2本・たけのこ1.5袋・うずら卵14個・鶏がらスープ700ml",recipe:"①具材を炒める。②スープを加えて煮る。③片栗粉でとろみをつける。"},
+  {id:48,name:"豚の角煮",genre:"中",cat:"肉",ing4:"豚バラブロック800g・醤油大6・みりん大4・砂糖大3・酒大4・生姜2片",ing7:"豚バラブロック1.4kg・醤油大10・みりん大7・砂糖大5・酒大7・生姜3片",recipe:"①豚バラを茹でこぼす。②調味料で2時間煮込む。③煮汁を煮詰めて完成。"},
+  {id:49,name:"ルーロー飯",genre:"中",cat:"麺・ご飯",ing4:"豚バラ薄切り500g・醤油大6・みりん大4・砂糖大3・五香粉少々・卵4個・ご飯4膳",ing7:"豚バラ薄切り900g・醤油大10・みりん大7・砂糖大5・五香粉少々・卵7個・ご飯7膳",recipe:"①豚肉を炒める。②調味料を加えて煮込む。③ご飯に乗せてゆで卵を添える。"},
+  {id:50,name:"ガパオライス",genre:"洋",cat:"麺・ご飯",ing4:"鶏ひき肉400g・パプリカ2個・ピーマン4個・バジル大量・オイスターソース大3・ナンプラー大2・卵4個・ご飯4膳",ing7:"鶏ひき肉700g・パプリカ3個・ピーマン7個・バジル大量・オイスターソース大5・ナンプラー大3・卵7個・ご飯7膳",recipe:"①鶏ひき肉と野菜を炒める。②調味料で味付けしバジルを加える。③目玉焼きを乗せてご飯にかける。"},
+  {id:51,name:"鶏の唐揚げ",genre:"和",cat:"肉",ing4:"鶏もも600g・醤油大4・みりん大2・生姜大1・にんにく大1・片栗粉適量",ing7:"鶏もも1kg・醤油大7・みりん大3・生姜大2・にんにく大2・片栗粉適量",recipe:"①鶏肉に下味をつけて30分置く。②片栗粉をまぶして揚げる。"},
+  {id:52,name:"メンチカツ",genre:"洋",cat:"肉",ing4:"合いびき肉400g・玉ねぎ半個・卵1個・パン粉・薄力粉・溶き卵各適量",ing7:"合いびき肉700g・玉ねぎ1個・卵2個・パン粉・薄力粉・溶き卵各適量",recipe:"①ひき肉・玉ねぎ・卵を混ぜて成形。②薄力粉→卵→パン粉の順につける。③揚げる。"},
+  {id:53,name:"鯖のカレー揚げ",genre:"洋",cat:"魚",ing4:"さば4切れ・カレー粉大2・塩少々・薄力粉適量",ing7:"さば7切れ・カレー粉大3・塩少々・薄力粉適量",recipe:"①さばにカレー粉と塩をまぶす。②薄力粉をまぶして揚げる。"},
+  {id:54,name:"えびフライ",genre:"洋",cat:"魚",ing4:"えび大16尾・塩こしょう少々・薄力粉・溶き卵・パン粉各適量・タルタルソース適量",ing7:"えび大28尾・塩こしょう少々・薄力粉・溶き卵・パン粉各適量・タルタルソース適量",recipe:"①えびの下処理をして塩こしょうする。②衣をつけて揚げる。③タルタルソースで食べる。"},
+  {id:55,name:"豚キムチ",genre:"和",cat:"肉",ing4:"豚バラ薄切り400g・キムチ300g・にら半束・ごま油大1・醤油大1",ing7:"豚バラ薄切り700g・キムチ500g・にら1束・ごま油大2・醤油大2",recipe:"①豚肉を炒める。②キムチを加えて炒める。③にらを加えて醤油で仕上げる。"},
+  {id:56,name:"牛丼",genre:"和",cat:"麺・ご飯",ing4:"牛薄切り500g・玉ねぎ2個・だし400ml・醤油大6・みりん大4・砂糖大2・ご飯4膳",ing7:"牛薄切り900g・玉ねぎ3個・だし700ml・醤油大10・みりん大7・砂糖大3・ご飯7膳",recipe:"①玉ねぎをだしで煮る。②牛肉を加えて調味料で煮る。③ご飯にかける。"},
+  {id:57,name:"トマトチキン煮",genre:"洋",cat:"肉",ing4:"鶏もも600g・トマト缶1缶・玉ねぎ1個・にんにく2片・白ワイン100ml・コンソメ1個・塩こしょう少々",ing7:"鶏もも1kg・トマト缶2缶・玉ねぎ2個・にんにく3片・白ワイン150ml・コンソメ2個・塩こしょう少々",recipe:"①鶏肉を焼き色がつくまで炒める。②野菜とトマト缶・スープで煮込む。"},
+  {id:58,name:"サーモンのクリームパスタ",genre:"洋",cat:"麺・ご飯",ing4:"パスタ400g・サーモン切り身300g・生クリーム200ml・玉ねぎ半個・バター15g・塩こしょう少々",ing7:"パスタ700g・サーモン切り身500g・生クリーム350ml・玉ねぎ1個・バター25g・塩こしょう少々",recipe:"①パスタを茹でる。②サーモンと玉ねぎをバターで炒める。③生クリームで煮詰めてパスタと合わせる。"},
+  {id:59,name:"キーマカレー",genre:"洋",cat:"麺・ご飯",ing4:"合いびき肉400g・玉ねぎ2個・トマト缶1缶・カレー粉大3・にんにく・生姜各1片・ご飯4膳",ing7:"合いびき肉700g・玉ねぎ3個・トマト缶2缶・カレー粉大5・にんにく・生姜各2片・ご飯7膳",recipe:"①玉ねぎを炒める。②ひき肉を加えてカレー粉で炒める。③トマト缶で煮込む。"},
+  {id:60,name:"担々麺",genre:"中",cat:"麺・ご飯",ing4:"中華麺4玉・豚ひき肉200g・豆板醤大2・芝麻醤大4・鶏がらスープ1.2L・長ねぎ・ほうれん草各適量",ing7:"中華麺7玉・豚ひき肉350g・豆板醤大3・芝麻醤大7・鶏がらスープ2L・長ねぎ・ほうれん草各適量",recipe:"①スープを作る。②ひき肉に豆板醤を合わせて炒める。③麺を茹でてスープ・肉味噌・野菜を乗せる。"}
+];
+
+const sideDishes=[
+  {id:101,name:"ほうれん草の胡麻和え",genre:"和",cat:"野菜",ing4:"ほうれん草2束・白すりごま大4・醤油大2・砂糖小2",ing7:"ほうれん草3束・白すりごま大7・醤油大3・砂糖大1",recipe:"①ほうれん草を茹でて絞る。②胡麻・醤油・砂糖で和える。"},
+  {id:102,name:"ひじきの煮物",genre:"和",cat:"野菜",ing4:"乾燥ひじき40g・油揚げ2枚・にんじん1本・醤油大4・みりん大2・砂糖大2",ing7:"乾燥ひじき70g・油揚げ3枚・にんじん2本・醤油大7・みりん大3・砂糖大3",recipe:"①ひじきを戻す。②材料を炒めてだしと調味料で煮る。"},
+  {id:103,name:"大根の煮物",genre:"和",cat:"野菜",ing4:"大根1本・だし600ml・醤油大4・みりん大4・砂糖大2",ing7:"大根1.5本・だし1L・醤油大7・みりん大7・砂糖大3",recipe:"①大根を厚切りにして下茹で。②だし・調味料で30分煮る。"},
+  {id:104,name:"かぼちゃの煮物",genre:"和",cat:"野菜",ing4:"かぼちゃ1個・だし400ml・醤油大4・みりん大4・砂糖大2",ing7:"かぼちゃ2個・だし700ml・醤油大7・みりん大7・砂糖大3",recipe:"①かぼちゃを切る。②だし・調味料で蓋をして煮る。"},
+  {id:105,name:"きゅうりとわかめの酢の物",genre:"和",cat:"野菜",ing4:"きゅうり4本・乾燥わかめ10g・酢大4・砂糖大2・塩少々",ing7:"きゅうり7本・乾燥わかめ15g・酢大7・砂糖大3・塩少々",recipe:"①きゅうりを塩もみする。②わかめを戻す。③酢・砂糖・塩で和える。"},
+  {id:106,name:"なすの味噌炒め",genre:"和",cat:"野菜",ing4:"なす6本・味噌大4・みりん大2・砂糖小2・ごま油大2",ing7:"なす10本・味噌大7・みりん大3・砂糖大1・ごま油大3",recipe:"①なすをくし切りにして炒める。②味噌・みりん・砂糖で絡める。"},
+  {id:107,name:"小松菜のおひたし",genre:"和",cat:"野菜",ing4:"小松菜2束・だし大4・醤油小2・塩少々",ing7:"小松菜3束・だし大7・醤油大1・塩少々",recipe:"①小松菜を茹でて絞る。②だし・醤油に浸す。"},
+  {id:108,name:"切り干し大根の煮物",genre:"和",cat:"野菜",ing4:"切り干し大根60g・油揚げ1枚・にんじん1本・だし400ml・醤油大4・みりん大2・砂糖大2",ing7:"切り干し大根100g・油揚げ2枚・にんじん2本・だし700ml・醤油大7・みりん大3・砂糖大3",recipe:"①切り干し大根を戻す。②材料を炒めてだし・調味料で煮る。"},
+  {id:109,name:"れんこんのきんぴら",genre:"和",cat:"野菜",ing4:"れんこん400g・醤油大4・みりん大2・砂糖大2・ごま油大2・唐辛子少々",ing7:"れんこん700g・醤油大7・みりん大3・砂糖大3・ごま油大3・唐辛子少々",recipe:"①れんこんを薄切りにする。②ごま油で炒め調味料で仕上げる。"},
+  {id:110,name:"ごぼうのきんぴら",genre:"和",cat:"野菜",ing4:"ごぼう2本・にんじん1本・醤油大4・みりん大2・砂糖大2・ごま油大2",ing7:"ごぼう3本・にんじん2本・醤油大7・みりん大3・砂糖大3・ごま油大3",recipe:"①ごぼうとにんじんを細切り。②ごま油で炒めて調味料で炒り煮する。"},
+  {id:111,name:"豆腐の味噌汁",genre:"和",cat:"スープ",ing4:"豆腐1丁・わかめ少々・味噌大4・だし800ml",ing7:"豆腐2丁・わかめ少々・味噌大7・だし1.4L",recipe:"①だしを温めわかめと豆腐を加える。②味噌を溶く。"},
+  {id:112,name:"なめこの味噌汁",genre:"和",cat:"スープ",ing4:"なめこ2袋・大根少々・味噌大4・だし800ml",ing7:"なめこ3袋・大根少々・味噌大7・だし1.4L",recipe:"①だしを温め大根となめこを加える。②味噌を溶く。"},
+  {id:113,name:"ブロッコリーのサラダ",genre:"洋",cat:"野菜",ing4:"ブロッコリー2株・塩少々・ドレッシング適量",ing7:"ブロッコリー3株・塩少々・ドレッシング適量",recipe:"①ブロッコリーを小房に分けて茹でる。②冷ましてドレッシングをかける。"},
+  {id:114,name:"もやしのナムル",genre:"中",cat:"野菜",ing4:"もやし2袋・ごま油大2・塩少々・にんにく少々・白すりごま大2",ing7:"もやし4袋・ごま油大3・塩少々・にんにく少々・白すりごま大3",recipe:"①もやしをサッと茹でる。②ごま油・塩・にんにく・ごまで和える。"},
+  {id:115,name:"春菊の胡麻和え",genre:"和",cat:"野菜",ing4:"春菊2束・白すりごま大4・醤油大2・砂糖小2",ing7:"春菊3束・白すりごま大7・醤油大3・砂糖大1",recipe:"①春菊を茹でて絞る。②胡麻・醤油・砂糖で和える。"},
+  {id:116,name:"里芋の煮物",genre:"和",cat:"野菜",ing4:"里芋12個・だし400ml・醤油大4・みりん大4・砂糖大2",ing7:"里芋20個・だし700ml・醤油大7・みりん大7・砂糖大3",recipe:"①里芋を茹でて皮をむく。②だし・調味料で煮る。"},
+  {id:117,name:"コールスロー",genre:"洋",cat:"野菜",ing4:"キャベツ半個・にんじん1本・マヨネーズ大4・酢大2・砂糖大1・塩少々",ing7:"キャベツ1個・にんじん2本・マヨネーズ大7・酢大3・砂糖大2・塩少々",recipe:"①野菜を細切りにして塩もみする。②マヨネーズ・酢・砂糖で和える。"},
+  {id:118,name:"トマトと卵のスープ",genre:"中",cat:"スープ",ing4:"トマト4個・卵4個・鶏がらスープ1L・塩こしょう少々",ing7:"トマト7個・卵7個・鶏がらスープ1.7L・塩こしょう少々",recipe:"①スープを煮立てトマトを入れる。②溶き卵を流し込む。③塩こしょうで調える。"},
+  {id:119,name:"ニラ玉炒め",genre:"中",cat:"卵",ing4:"にら1束・卵4個・塩少々・ごま油大2",ing7:"にら2束・卵7個・塩少々・ごま油大3",recipe:"①にらを切る。②卵を溶きにらと混ぜる。③ごま油で炒める。"},
+  {id:120,name:"白菜の浅漬け",genre:"和",cat:"野菜",ing4:"白菜半個・塩大2・昆布少々・唐辛子少々",ing7:"白菜1個・塩大3・昆布少々・唐辛子少々",recipe:"①白菜を切って塩・昆布・唐辛子と混ぜる。②重石をして30分以上漬ける。"},
+  {id:121,name:"さつまいもの甘煮",genre:"和",cat:"野菜",ing4:"さつまいも2本・砂糖大4・みりん大2・塩少々",ing7:"さつまいも4本・砂糖大7・みりん大3・塩少々",recipe:"①さつまいもを輪切りにして水にさらす。②水・砂糖・みりん・塩で柔らかく煮る。"},
+  {id:122,name:"長芋の短冊",genre:"和",cat:"野菜",ing4:"長芋400g・醤油少々・青ねぎ・わさび各少々",ing7:"長芋700g・醤油少々・青ねぎ・わさび各少々",recipe:"①長芋を皮をむいて短冊切り。②醤油・ねぎ・わさびをかける。"},
+  {id:123,name:"青菜の炒め物",genre:"中",cat:"野菜",ing4:"青菜2束・にんにく2片・塩・ごま油各少々",ing7:"青菜3束・にんにく3片・塩・ごま油各少々",recipe:"①にんにくをごま油で炒める。②青菜を加えて強火で炒め塩で味付けする。"},
+  {id:124,name:"たたきごぼう",genre:"和",cat:"野菜",ing4:"ごぼう2本・白すりごま大4・醤油大2・みりん大2・砂糖少々・酢少々",ing7:"ごぼう3本・白すりごま大7・醤油大3・みりん大3・砂糖少々・酢少々",recipe:"①ごぼうを茹でて麺棒でたたく。②酢水にさらす。③調味料で和える。"},
+  {id:125,name:"卵焼き",genre:"和",cat:"卵",ing4:"卵8個・だし大6・砂糖大2・醤油小2・塩少々",ing7:"卵14個・だし大10・砂糖大3・醤油大1・塩少々",recipe:"①卵・だし・調味料をよく混ぜる。②卵焼き器で巻いて作る。"},
+  {id:126,name:"おから炒り",genre:"和",cat:"豆腐",ing4:"おから400g・にんじん1本・こんにゃく1枚・ごぼう半本・醤油大4・みりん大2・砂糖大2・だし400ml",ing7:"おから700g・にんじん2本・こんにゃく2枚・ごぼう1本・醤油大7・みりん大3・砂糖大3・だし700ml",recipe:"①具材を細かく切り炒める。②おからを加えてだし・調味料で炒り煮する。"},
+  {id:127,name:"ポテトサラダ",genre:"洋",cat:"野菜",ing4:"じゃがいも6個・にんじん1本・きゅうり2本・マヨネーズ大6・塩こしょう少々",ing7:"じゃがいも10個・にんじん2本・きゅうり3本・マヨネーズ大10・塩こしょう少々",recipe:"①じゃがいもを茹でてつぶす。②野菜と混ぜてマヨネーズで和える。"},
+  {id:128,name:"新玉ねぎのスープ",genre:"洋",cat:"スープ",ing4:"玉ねぎ4個・バター20g・コンソメ2個・水1L・塩こしょう少々",ing7:"玉ねぎ7個・バター35g・コンソメ3個・水1.7L・塩こしょう少々",recipe:"①玉ねぎをバターで炒める。②水とコンソメで煮て塩こしょうで調える。"},
+  {id:129,name:"ほうれん草の白和え",genre:"和",cat:"野菜",ing4:"ほうれん草1束・木綿豆腐1丁・白すりごま大4・砂糖大2・醤油大2",ing7:"ほうれん草2束・木綿豆腐2丁・白すりごま大7・砂糖大3・醤油大3",recipe:"①豆腐を水切り。②ほうれん草を茹でて切る。③すりごまと調味料で和える。"},
+  {id:130,name:"キャベツの塩昆布和え",genre:"和",cat:"野菜",ing4:"キャベツ半個・塩昆布20g・ごま油大2",ing7:"キャベツ1個・塩昆布35g・ごま油大3",recipe:"①キャベツをざく切りにして塩もみする。②塩昆布とごま油で和える。"},
+  {id:131,name:"アスパラの塩炒め",genre:"洋",cat:"野菜",ing4:"アスパラ2束・バター20g・塩少々・にんにく少々",ing7:"アスパラ3束・バター35g・塩少々・にんにく少々",recipe:"①アスパラを斜め切りにする。②バターとにんにくで炒めて塩で味付けする。"},
+  {id:132,name:"かきたま汁",genre:"和",cat:"スープ",ing4:"卵4個・だし800ml・醤油小2・塩少々・三つ葉少々",ing7:"卵7個・だし1.4L・醤油大1・塩少々・三つ葉少々",recipe:"①だしを煮立て調味料で調える。②溶き卵を流し込んで混ぜる。③三つ葉を添える。"},
+  {id:133,name:"糸こんにゃくの炒り煮",genre:"和",cat:"野菜",ing4:"糸こんにゃく2袋・醤油大4・みりん大2・砂糖大2・ごま油大2",ing7:"糸こんにゃく3袋・醤油大7・みりん大3・砂糖大3・ごま油大3",recipe:"①こんにゃくを下茹でして炒る。②調味料で炒り煮する。"},
+  {id:134,name:"大豆の煮物",genre:"和",cat:"豆腐",ing4:"水煮大豆300g・ひじき少々・にんじん1本・醤油大4・みりん大2・砂糖大2",ing7:"水煮大豆500g・ひじき少々・にんじん2本・醤油大7・みりん大3・砂糖大3",recipe:"①材料を炒める。②調味料を加えて煮含める。"},
+  {id:135,name:"わかめスープ",genre:"中",cat:"スープ",ing4:"乾燥わかめ10g・鶏がらスープ800ml・ごま油少々・塩少々・白ごま少々",ing7:"乾燥わかめ15g・鶏がらスープ1.4L・ごま油少々・塩少々・白ごま少々",recipe:"①スープを温める。②わかめを戻して加える。③ごま油と塩で調える。"},
+  {id:136,name:"チンゲン菜の炒め物",genre:"中",cat:"野菜",ing4:"チンゲン菜4株・にんにく2片・ごま油大2・塩少々",ing7:"チンゲン菜7株・にんにく3片・ごま油大3・塩少々",recipe:"①チンゲン菜を切る。②ごま油とにんにくで炒め塩で仕上げる。"},
+  {id:137,name:"めかぶの酢の物",genre:"和",cat:"野菜",ing4:"めかぶ4パック・きゅうり2本・酢大2・醤油少々",ing7:"めかぶ7パック・きゅうり3本・酢大3・醤油少々",recipe:"①めかぶときゅうりを合わせる。②酢・醤油で和える。"},
+  {id:138,name:"ツナとコーンのサラダ",genre:"洋",cat:"野菜",ing4:"ツナ缶2缶・コーン缶1缶・レタス適量・マヨネーズ大4",ing7:"ツナ缶3缶・コーン缶2缶・レタス適量・マヨネーズ大7",recipe:"①ツナとコーンの水気を切る。②レタスと混ぜてマヨネーズで和える。"},
+  {id:139,name:"冬瓜の含め煮",genre:"和",cat:"野菜",ing4:"冬瓜半個・だし600ml・醤油大2・みりん大2・塩少々",ing7:"冬瓜1個・だし1L・醤油大3・みりん大3・塩少々",recipe:"①冬瓜の皮をむいて切る。②だしと調味料で柔らかく煮る。"},
+  {id:140,name:"ほたてのバター醤油",genre:"洋",cat:"その他",ing4:"ほたて貝柱12個・バター20g・醤油大2・青ねぎ少々",ing7:"ほたて貝柱20個・バター35g・醤油大3・青ねぎ少々",recipe:"①フライパンにバターを溶かす。②ほたてを両面焼く。③醤油をかけてねぎを散らす。"},
+  {id:141,name:"高菜炒め",genre:"中",cat:"野菜",ing4:"高菜漬け300g・ごま油大2・醤油少々・鷹の爪少々",ing7:"高菜漬け500g・ごま油大3・醤油少々・鷹の爪少々",recipe:"①高菜をざく切りにする。②ごま油と鷹の爪で炒める。"},
+  {id:142,name:"かぶの浅漬け",genre:"和",cat:"野菜",ing4:"かぶ8個・塩大2・昆布少々・ゆず少々",ing7:"かぶ14個・塩大3・昆布少々・ゆず少々",recipe:"①かぶを薄切りにする。②塩・昆布・ゆずで30分以上漬ける。"},
+  {id:143,name:"いんげんの胡麻和え",genre:"和",cat:"野菜",ing4:"いんげん300g・白すりごま大4・醤油大2・砂糖小2",ing7:"いんげん500g・白すりごま大7・醤油大3・砂糖大1",recipe:"①いんげんを茹でて斜め切り。②胡麻・醤油・砂糖で和える。"},
+  {id:144,name:"蓮根とにんじんのきんぴら",genre:"和",cat:"野菜",ing4:"蓮根300g・にんじん2本・醤油大4・みりん大2・砂糖大2・ごま油大2",ing7:"蓮根500g・にんじん3本・醤油大7・みりん大3・砂糖大3・ごま油大3",recipe:"①材料を細切りにする。②ごま油で炒めて調味料で仕上げる。"},
+  {id:145,name:"キャベツのコンソメスープ",genre:"洋",cat:"スープ",ing4:"キャベツ四分の一・ウインナー4本・コンソメ2個・水800ml・塩こしょう少々",ing7:"キャベツ半個・ウインナー7本・コンソメ3個・水1.4L・塩こしょう少々",recipe:"①キャベツとウインナーを切る。②水とコンソメで煮て塩こしょうで調える。"},
+  {id:146,name:"山芋の梅和え",genre:"和",cat:"野菜",ing4:"山芋400g・梅干し4個・かつお節少々・醤油少々",ing7:"山芋700g・梅干し7個・かつお節少々・醤油少々",recipe:"①山芋を短冊切りにする。②梅干しをたたいて和える。"},
+  {id:147,name:"枝豆",genre:"和",cat:"野菜",ing4:"枝豆400g・塩大2",ing7:"枝豆700g・塩大3",recipe:"①枝豆を塩でもみ洗いする。②たっぷりの塩湯で5〜6分茹でる。"},
+  {id:148,name:"豆苗の炒め物",genre:"中",cat:"野菜",ing4:"豆苗2袋・にんにく2片・塩少々・ごま油大2",ing7:"豆苗3袋・にんにく3片・塩少々・ごま油大3",recipe:"①にんにくをごま油で炒める。②豆苗を加えてさっと炒め塩で味付けする。"},
+  {id:149,name:"蒸しキャベツのポン酢",genre:"和",cat:"野菜",ing4:"キャベツ半個・塩少々・ポン酢大4",ing7:"キャベツ1個・塩少々・ポン酢大7",recipe:"①キャベツをざく切りにする。②電子レンジで加熱する。③ポン酢をかける。"},
+  {id:150,name:"にんじんのラペ",genre:"洋",cat:"野菜",ing4:"にんじん3本・オリーブオイル大2・酢大2・砂糖小1・塩少々・パセリ少々",ing7:"にんじん5本・オリーブオイル大3・酢大3・砂糖小2・塩少々・パセリ少々",recipe:"①にんじんを千切りにする。②ドレッシングで和えて30分置く。"},
+  {id:151,name:"粕汁",genre:"和",cat:"スープ",ing4:"酒粕100g・大根・にんじん各少々・鮭少々・だし800ml・味噌大2・塩少々",ing7:"酒粕175g・大根・にんじん各少々・鮭少々・だし1.4L・味噌大3・塩少々",recipe:"①野菜と鮭を入れてだしで煮る。②酒粕を溶き入れる。③味噌で調える。"},
+  {id:152,name:"しらすおろし",genre:"和",cat:"野菜",ing4:"しらす干し80g・大根半本・醤油大2・レモン少々",ing7:"しらす干し140g・大根1本・醤油大3・レモン少々",recipe:"①大根をすりおろす。②しらすを乗せて醤油とレモンをかける。"},
+  {id:153,name:"とうもろこしのバター炒め",genre:"洋",cat:"野菜",ing4:"とうもろこし4本・バター20g・塩少々",ing7:"とうもろこし7本・バター35g・塩少々",recipe:"①とうもろこしの実を取る。②バターで炒めて塩で味付けする。"},
+  {id:154,name:"パプリカのマリネ",genre:"洋",cat:"野菜",ing4:"パプリカ4個・オリーブオイル大3・酢大2・砂糖少々・塩こしょう少々",ing7:"パプリカ7個・オリーブオイル大5・酢大3・砂糖少々・塩こしょう少々",recipe:"①パプリカを焼いて皮をむく。②オリーブオイル・酢・塩こしょうで漬ける。"},
+  {id:155,name:"ほうれん草のソテー",genre:"洋",cat:"野菜",ing4:"ほうれん草2束・バター15g・にんにく1片・塩こしょう少々",ing7:"ほうれん草3束・バター25g・にんにく2片・塩こしょう少々",recipe:"①にんにくをバターで炒める。②ほうれん草を加えて塩こしょうで仕上げる。"},
+  {id:156,name:"とろろ昆布汁",genre:"和",cat:"スープ",ing4:"とろろ昆布10g・梅干し4個・醤油少々・お湯800ml",ing7:"とろろ昆布15g・梅干し7個・醤油少々・お湯1.4L",recipe:"①椀にとろろ昆布と梅干しを入れる。②熱湯を注いで醤油で調える。"},
+  {id:157,name:"みょうが酢漬け",genre:"和",cat:"野菜",ing4:"みょうが8個・酢大4・砂糖大2・塩少々",ing7:"みょうが14個・酢大7・砂糖大3・塩少々",recipe:"①みょうがを縦半分に切る。②熱湯をかけて酢・砂糖・塩に漬ける。"},
+  {id:158,name:"マカロニサラダ",genre:"洋",cat:"その他",ing4:"マカロニ200g・きゅうり2本・ハム4枚・マヨネーズ大6・塩こしょう少々",ing7:"マカロニ350g・きゅうり3本・ハム7枚・マヨネーズ大10・塩こしょう少々",recipe:"①マカロニを茹でる。②野菜・ハムと混ぜてマヨネーズで和える。"},
+  {id:159,name:"もやしと豚の中華スープ",genre:"中",cat:"スープ",ing4:"もやし2袋・豚薄切り100g・鶏がらスープ800ml・醤油大1・ごま油少々",ing7:"もやし3袋・豚薄切り175g・鶏がらスープ1.4L・醤油大2・ごま油少々",recipe:"①スープを煮立てて豚肉を加える。②もやしを加えて醤油・ごま油で調える。"},
+  {id:160,name:"金時豆の甘煮",genre:"和",cat:"豆腐",ing4:"乾燥金時豆200g・砂糖大8・塩少々",ing7:"乾燥金時豆350g・砂糖大14・塩少々",recipe:"①豆を一晩水に浸けて茹でる。②砂糖と塩で甘く煮る。"}
+];
+
+function getIngredient(dish, n) {
+  // 4人分と7人分の中間を補間
+  const base4 = dish.ing4;
+  const base7 = dish.ing7;
+  if (n <= 4) return base4 + `（${n}人分に調整）`;
+  if (n >= 7) return base7;
+  // 5〜6人分は参考表示
+  return base4 + `（${n}人分：上記の約${Math.round((n/4)*10)/10}倍）`;
+}
+
+function setPersons(n){
+  persons=n;
+  [4,5,6,7].forEach(i=>{
+    document.getElementById(`btn-${i}`).classList.toggle('active',i===n);
+  });
+}
+function showView(v){
+  document.getElementById('view-calendar').style.display=v==='calendar'?'block':'none';
+  document.getElementById('view-manage').style.display=v==='manage'?'block':'none';
+  document.querySelectorAll('.bottom-nav-btn').forEach((b,i)=>{
+    b.classList.toggle('active',(i===0&&v==='calendar')||(i===1&&v==='manage'));
+  });
+  if(v==='manage') renderManage();
+}
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function getFirstDay(y,m){return new Date(y,m,1).getDay();}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function generateSchedule(y,m){
+  const days=getDaysInMonth(y,m),sm=shuffle(mainDishes),ss=shuffle(sideDishes),sch={};
+  for(let d=1;d<=days;d++) sch[d]={main:sm[(d-1)%sm.length],sides:[ss[(d*2-2)%ss.length],ss[(d*2-1)%ss.length]]};
+  schedule[`${y}-${m}`]=sch;
+}
+function getSchedule(y,m){const k=`${y}-${m}`;if(!schedule[k])generateSchedule(y,m);return schedule[k];}
+
+function genreColor(g){
+  if(g==='和') return 'background:#fce7f3;color:#9d174d';
+  if(g==='洋') return 'background:#dbeafe;color:#1e40af';
+  return 'background:#ffedd5;color:#9a3412';
+}
+
+function renderCalendar(){
+  document.getElementById('month-label').textContent=`${currentYear}年${currentMonth+1}月`;
+  const cal=document.getElementById('calendar');
+  const dn=['日','月','火','水','木','金','土'],dc=['sun','','','','','','sat'];
+  let html=dn.map((d,i)=>`<div class="day-header ${dc[i]}">${d}</div>`).join('');
+  const first=getFirstDay(currentYear,currentMonth),total=getDaysInMonth(currentYear,currentMonth);
+  const sch=getSchedule(currentYear,currentMonth),today=new Date();
+  for(let i=0;i<first;i++) html+=`<div class="day-cell empty"></div>`;
+  for(let d=1;d<=total;d++){
+    const dow=(first+d-1)%7,isToday=today.getFullYear()===currentYear&&today.getMonth()===currentMonth&&today.getDate()===d;
+    const meal=sch[d],nc=dow===0?'sun':dow===6?'sat':'';
+    html+=`<div class="day-cell${isToday?' today':''}" onclick="openDay(${d})">
+      <div class="day-num ${nc}">${d}</div>
+      ${meal?`<span class="meal-tag main-tag">${meal.main.name}</span><span class="meal-tag side-tag">${meal.sides[0].name}</span><span class="meal-tag side-tag">${meal.sides[1].name}</span>`:''}
+    </div>`;
+  }
+  cal.innerHTML=html;
+}
+function openDay(d){
+  const sch=getSchedule(currentYear,currentMonth),meal=sch[d];
+  if(!meal) return;
+  const ing = persons <= 4 ? 'ing4' : 'ing7';
+  const pLabel=`${persons}人分`;
+  document.getElementById('modal-date').textContent=`${currentMonth+1}月${d}日の賄い`;
+  const sidesHtml=meal.sides.map((s,idx)=>`
+    <div style="margin-bottom:12px">
+      <div class="meal-section-header">
+        <div class="section-label">副菜${idx+1}：${s.name} <span class="genre-badge" style="${genreColor(s.genre)}">${s.genre}</span></div>
+        <button class="shuffle-btn" onclick="swapSide(${d},${idx})">変える</button>
+      </div>
+      <div class="recipe-box">
+        <div class="recipe-title">材料（${pLabel}目安）</div><div>${s[ing]}</div>
+        <div class="recipe-title" style="margin-top:6px">作り方</div><div>${s.recipe.replace(/。(?!$)/g,'。<br>')}</div>
+      </div>
+    </div>`).join('');
+  document.getElementById('modal-body').innerHTML=`
+    <div class="meal-section-header">
+      <div class="section-label">主菜：${meal.main.name} <span class="genre-badge" style="${genreColor(meal.main.genre)}">${meal.main.genre}</span> <span class="portion-badge">${pLabel}</span></div>
+      <button class="shuffle-btn" onclick="swapMain(${d})">変える</button>
+    </div>
+    <div class="recipe-box">
+      <div class="recipe-title">材料</div><div>${meal.main[ing]}</div>
+      <div class="recipe-title" style="margin-top:6px">作り方</div><div>${meal.main.recipe.replace(/。(?!$)/g,'。<br>')}</div>
+    </div>
+    <div class="divider"></div>
+    ${sidesHtml}`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function swapMain(d){
+  const k=`${currentYear}-${currentMonth}`,sch=schedule[k],cur=sch[d].main;
+  const others=mainDishes.filter(m=>m.id!==cur.id);
+  if(others.length){sch[d].main=others[Math.floor(Math.random()*others.length)];renderCalendar();openDay(d);}
+}
+function swapSide(d,idx){
+  const k=`${currentYear}-${currentMonth}`,sch=schedule[k],cur=sch[d].sides[idx];
+  const avail=sideDishes.filter(s=>s.id!==cur.id&&s.id!==sch[d].sides[1-idx].id);
+  if(avail.length){sch[d].sides[idx]=avail[Math.floor(Math.random()*avail.length)];renderCalendar();openDay(d);}
+}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay')) closeModal();}
+function changeMonth(dir){
+  currentMonth+=dir;
+  if(currentMonth<0){currentMonth=11;currentYear--;}
+  if(currentMonth>11){currentMonth=0;currentYear++;}
+  renderCalendar();
+}
+function regen(){delete schedule[`${currentYear}-${currentMonth}`];renderCalendar();}
+function renderManage(){
+  document.getElementById('main-count').textContent=mainDishes.length;
+  document.getElementById('side-count').textContent=sideDishes.length;
+  document.getElementById('main-list').innerHTML=mainDishes.map(d=>`<div class="dish-item"><span class="dish-item-name">${d.name}</span><span class="genre-badge dish-item-genre" style="${genreColor(d.genre)}">${d.genre}</span><span class="dish-item-cat">${d.cat}</span></div>`).join('');
+  document.getElementById('side-list').innerHTML=sideDishes.map(d=>`<div class="dish-item"><span class="dish-item-name">${d.name}</span><span class="genre-badge dish-item-genre" style="${genreColor(d.genre)}">${d.genre}</span><span class="dish-item-cat">${d.cat}</span></div>`).join('');
+}
+function addDish(){
+  const name=document.getElementById('new-name').value.trim();
+  if(!name){alert('料理名を入力してください');return;}
+  const dish={id:Date.now(),name,genre:document.getElementById('new-genre').value,cat:document.getElementById('new-cat').value,
+    ing4:document.getElementById('new-ing4').value.trim(),
+    ing7:document.getElementById('new-ing7').value.trim(),
+    recipe:document.getElementById('new-recipe').value.trim()};
+  if(document.getElementById('new-type').value==='main') mainDishes.push(dish); else sideDishes.push(dish);
+  ['new-name','new-ing4','new-ing7','new-recipe'].forEach(id=>document.getElementById(id).value='');
+  renderManage();
+  alert(`「${name}」を追加しました！`);
+}
+function downloadJSON(){
+  const sch=getSchedule(currentYear,currentMonth);
+  const data={version:1,year:currentYear,month:currentMonth+1,persons,mainDishes,sideDishes,
+    schedule:Object.fromEntries(Object.entries(sch).map(([d,m])=>([d,{mainId:m.main.id,sideIds:m.sides.map(s=>s.id)}])))};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download=`賄い献立_${currentYear}年${currentMonth+1}月.json`;
+  a.click();
+}
+function importJSON(event){
+  const file=event.target.files[0];if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data.version!==1) throw new Error();
+      data.mainDishes.forEach(d=>{if(!mainDishes.find(m=>m.id===d.id)) mainDishes.push(d);});
+      data.sideDishes.forEach(d=>{if(!sideDishes.find(s=>s.id===d.id)) sideDishes.push(d);});
+      const y=data.year,m=data.month-1,rebuilt={};
+      for(const [day,ids] of Object.entries(data.schedule)){
+        const main=mainDishes.find(d=>d.id===ids.mainId);
+        const sides=ids.sideIds.map(id=>sideDishes.find(d=>d.id===id));
+        if(main&&sides.every(Boolean)) rebuilt[day]={main,sides};
+      }
+      schedule[`${y}-${m}`]=rebuilt;
+      currentYear=y;currentMonth=m;renderCalendar();
+      alert(`${y}年${m+1}月の献立を読み込みました！`);
+    }catch{alert('読み込みに失敗しました。');}
+  };
+  reader.readAsText(file);event.target.value='';
+}
+function printMonth(){
+  const sch=getSchedule(currentYear,currentMonth);
+  const ing=persons<=4?'ing4':'ing7';
+  const days=getDaysInMonth(currentYear,currentMonth),first=getFirstDay(currentYear,currentMonth);
+  let rows='';
+  for(let d=1;d<=days;d++){
+    const m=sch[d];if(!m) continue;
+    const dow=['日','月','火','水','木','金','土'][(first+d-1)%7];
+    rows+=`<tr><td>${d}日（${dow}）</td><td>[${m.main.genre}] ${m.main.name}</td><td style="font-size:11px;color:#555">${m.main[ing]}</td><td>[${m.sides[0].genre}] ${m.sides[0].name}</td><td>[${m.sides[1].genre}] ${m.sides[1].name}</td></tr>`;
+  }
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>${currentYear}年${currentMonth+1}月 賄い献立</title><style>body{font-family:'Hiragino Kaku Gothic Pro','Meiryo',sans-serif;padding:20px;font-size:13px}h1{font-size:18px;font-weight:700;margin-bottom:4px}.sub{font-size:12px;color:#666;margin-bottom:16px}table{width:100%;border-collapse:collapse}th,td{padding:7px 8px;border:1px solid #ccc;text-align:left}th{background:#f0f0f0;font-weight:700;font-size:12px}tr:nth-child(even){background:#fafafa}@media print{button{display:none}}</style></head><body><h1>${currentYear}年${currentMonth+1}月 賄い献立</h1><div class="sub">${persons}人分目安 ／ 和・洋・中ミックス</div><button onclick="window.print()" style="margin-bottom:16px;padding:6px 16px;cursor:pointer;font-size:13px">印刷する</button><table><thead><tr><th style="width:80px">日付</th><th style="width:130px">主菜</th><th>材料目安</th><th style="width:130px">副菜1</th><th style="width:130px">副菜2</th></tr></thead><tbody>${rows}</tbody></table></body></html>`);
+  win.document.close();
+}
+renderCalendar();
+</script>
+</body>
+</html>
