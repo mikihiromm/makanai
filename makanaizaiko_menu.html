@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>賄い献立提案</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif; background: #f7f6f2; color: #1a1a1a; min-height: 100vh; }
+  header { background: #1a1a1a; color: #fff; padding: 16px 20px; position: sticky; top: 0; z-index: 10; }
+  header h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.05em; }
+  header p { font-size: 11px; color: #999; margin-top: 2px; }
+  .container { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+  .section { margin-bottom: 24px; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { padding: 6px 13px; border-radius: 20px; border: 1px solid #ddd; font-size: 13px; cursor: pointer; background: #fff; color: #333; transition: all 0.15s; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .chip:active { transform: scale(0.96); }
+  .chip.selected { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
+  .selected-area { background: #fff; border: 1px solid #e8e8e8; border-radius: 12px; padding: 12px 14px; min-height: 50px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .tag { background: #f0f0f0; border-radius: 20px; padding: 4px 10px; font-size: 12px; color: #333; display: flex; align-items: center; gap: 4px; }
+  .tag-x { cursor: pointer; color: #999; font-size: 14px; line-height: 1; }
+  .empty-msg { font-size: 13px; color: #bbb; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
+  .controls label { font-size: 13px; color: #666; }
+  select { font-size: 14px; padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; background: #fff; color: #1a1a1a; -webkit-appearance: none; appearance: none; }
+  .btn { padding: 10px 22px; background: #1a1a1a; border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.15s; -webkit-tap-highlight-color: transparent; }
+  .btn:active { opacity: 0.8; }
+  .btn:disabled { background: #ccc; cursor: not-allowed; }
+  .divider { border: none; border-top: 1px solid #e8e8e8; margin: 20px 0; }
+  .set-card { background: #fff; border: 1px solid #e8e8e8; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .set-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .set-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #888; }
+  .set-cost { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+  .dish-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .dish-box { border: 1px solid #f0f0f0; border-radius: 10px; padding: 10px 12px; background: #fafafa; }
+  .dish-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .label-main { color: #c0392b; }
+  .label-side { color: #2980b9; }
+  .dish-name { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; line-height: 1.3; }
+  .dish-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+  .badge { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 600; }
+  .bc { background: #e8f5e9; color: #2e7d32; }
+  .bt { background: #fff3e0; color: #e65100; }
+  .bm { background: #ffebee; color: #c62828; }
+  .dish-info { font-size: 11px; color: #666; line-height: 1.6; margin-bottom: 4px; }
+  .ok { color: #2e7d32; }
+  .missing { color: #c62828; font-weight: 600; }
+  .steps-toggle { font-size: 11px; color: #2980b9; cursor: pointer; display: inline-block; margin-top: 4px; user-select: none; }
+  .steps-body { font-size: 11px; color: #555; line-height: 1.9; margin-top: 8px; border-top: 1px solid #eee; padding-top: 8px; display: none; }
+  .note { font-size: 10px; color: #bbb; text-align: center; margin-top: 8px; }
+  .no-result { font-size: 14px; color: #888; padding: 1rem 0; text-align: center; }
+  @media (max-width: 400px) {
+    .dish-row { grid-template-columns: 1fr; }
+    .dish-name { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>賄い献立提案</h1>
+  <p>冷蔵庫の残り物から主菜＋副菜をセットで提案</p>
+</header>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">肉・魚・加工品</div>
+    <div class="chips" id="c-meat"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">野菜・きのこ</div>
+    <div class="chips" id="c-veg"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">豆腐・卵・乳製品</div>
+    <div class="chips" id="c-egg"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">缶詰・乾物・麺・その他</div>
+    <div class="chips" id="c-other"></div>
+  </div>
+
+  <hr class="divider">
+  <div class="section-title" style="margin-bottom:10px">選んだ食材</div>
+  <div class="selected-area" id="sel-area"><span class="empty-msg">食材を選んでください</span></div>
+  <div style="height:16px"></div>
+
+  <div class="controls">
+    <label>人数：</label>
+    <select id="portions">
+      <option value="4">4人前</option>
+      <option value="5">5人前</option>
+      <option value="6" selected>6人前</option>
+      <option value="7">7人前</option>
+    </select>
+    <button class="btn" id="search-btn" onclick="doSearch()" disabled>献立セットを探す</button>
+  </div>
+
+  <div id="result-area"></div>
+</div>
+
+<script>
+const CATS = {
+  "c-meat": ["鶏もも肉","鶏むね肉","豚バラ","豚こま","豚ロース","牛切り落とし","合い挽き肉","豚ひき肉","鶏ひき肉","ベーコン","ウインナー","ハム","鮭","タラ","アジ","イカ","エビ","ちくわ","さつま揚げ","豚薄切り肉"],
+  "c-veg":  ["玉ねぎ","人参","じゃがいも","キャベツ","白菜","ほうれん草","小松菜","ブロッコリー","なす","ピーマン","もやし","大根","ごぼう","れんこん","長ねぎ","しめじ","えのき","エリンギ","にら","きゅうり","トマト","かぼちゃ","パプリカ","コーン","ズッキーニ"],
+  "c-egg":  ["卵","木綿豆腐","絹豆腐","油揚げ","厚揚げ","牛乳","チーズ","バター","生クリーム"],
+  "c-other":["ツナ缶","サバ缶","トマト缶","こんにゃく","春雨","乾燥わかめ","キムチ","梅干し","ごま","なめたけ","中華麺","うどん","そうめん","パスタ","焼きそば麺","米（ご飯）","小麦粉"]
+};
+
+const MAIN = [
+  {name:"鶏の唐揚げ",time:"30分",cost:180,must:["鶏もも肉"],main:["鶏もも肉"],sub:["長ねぎ"],
+   steps:["鶏もも肉を一口大に切り、しょうゆ・酒・しょうが・にんにくで15分漬ける","片栗粉をまぶして170℃で4分揚げ、一度取り出す","180℃で再度1分揚げてカリッとさせる"],
+   portions:{4:"600g",5:"750g",6:"900g",7:"1.1kg"}},
+  {name:"豚の生姜焼き",time:"15分",cost:160,must:["豚ロース","豚薄切り肉","豚こま"],main:["豚ロース","豚薄切り肉","豚こま"],sub:["玉ねぎ"],
+   steps:["豚肉をしょうゆ・みりん・酒・しょうがに漬ける","フライパンで玉ねぎを炒め豚肉を加える","たれを絡めてキャベツと盛り付ける"],
+   portions:{4:"480g",5:"600g",6:"720g",7:"840g"}},
+  {name:"麻婆豆腐",time:"20分",cost:140,must:["木綿豆腐"],main:["豚ひき肉","合い挽き肉"],sub:["木綿豆腐","長ねぎ"],
+   steps:["豆腐を2cm角に切り熱湯で茹でておく","ひき肉・長ねぎを炒め豆板醤・しょうゆ・スープを加える","水溶き片栗粉でとろみをつけ豆腐を加える"],
+   portions:{4:"豆腐2丁・肉200g",5:"2.5丁・250g",6:"3丁・300g",7:"3.5丁・350g"}},
+  {name:"肉じゃが",time:"35分",cost:160,must:["じゃがいも","玉ねぎ"],main:["牛切り落とし","豚バラ","豚こま"],sub:["じゃがいも","玉ねぎ","人参"],
+   steps:["肉・野菜を切る","鍋で肉を炒め野菜を加えだし・しょうゆ・みりん・砂糖で煮る","じゃがいもが柔らかくなるまで中火で20分煮る"],
+   portions:{4:"じゃがいも600g・肉200g",5:"750g・250g",6:"900g・300g",7:"1.1kg・350g"}},
+  {name:"鮭のムニエル",time:"20分",cost:200,must:["鮭"],main:["鮭"],sub:["バター","ブロッコリー"],
+   steps:["鮭に塩こしょうして小麦粉をまぶす","バターで両面3分ずつ中火で焼く","レモン汁とバターをかけて完成"],
+   portions:{4:"4切れ",5:"5切れ",6:"6切れ",7:"7切れ"}},
+  {name:"回鍋肉",time:"20分",cost:150,must:["豚バラ","豚ロース","キャベツ"],main:["豚バラ","豚ロース"],sub:["キャベツ","ピーマン","長ねぎ"],
+   steps:["豚肉・野菜を食べやすく切る","豚肉を炒め野菜を加える","豆板醤・テンメンジャン・しょうゆで強火で仕上げる"],
+   portions:{4:"豚240g・キャベツ1/3玉",5:"300g・1/2玉",6:"360g・2/3玉",7:"420g・3/4玉"}},
+  {name:"親子丼（具）",time:"20分",cost:160,must:["卵"],main:["鶏もも肉","鶏むね肉"],sub:["卵","玉ねぎ"],
+   steps:["鶏肉・玉ねぎを薄切りにする","だし・しょうゆ・みりんで煮る","溶き卵を回し入れ半熟で火を止める"],
+   portions:{4:"鶏400g・卵4個",5:"500g・5個",6:"600g・6個",7:"700g・7個"}},
+  {name:"牛丼（具）",time:"20分",cost:220,must:["牛切り落とし","玉ねぎ"],main:["牛切り落とし"],sub:["玉ねぎ","長ねぎ"],
+   steps:["玉ねぎを薄切りにしてだし・しょうゆ・みりん・砂糖で煮る","玉ねぎが透き通ったら牛肉を加える","色が変わるまで煮て完成"],
+   portions:{4:"牛400g・玉ねぎ2個",5:"500g・2.5個",6:"600g・3個",7:"700g・3.5個"}},
+  {name:"ハンバーグ",time:"30分",cost:200,must:["合い挽き肉","豚ひき肉"],main:["合い挽き肉","豚ひき肉"],sub:["玉ねぎ","卵"],
+   steps:["玉ねぎをみじん切りにして炒め冷ます","ひき肉・玉ねぎ・卵・パン粉・塩こしょうを混ぜて成形","両面を焼いて蒸し焼きにして中まで火を通す"],
+   portions:{4:"600g",5:"750g",6:"900g",7:"1.05kg"}},
+  {name:"クリームシチュー",time:"40分",cost:200,must:["牛乳"],main:["鶏もも肉","鶏むね肉"],sub:["じゃがいも","人参","玉ねぎ","牛乳","バター"],
+   steps:["鶏肉・野菜を一口大に切る","バターで炒め小麦粉を振り入れる","牛乳とスープを加えて煮込み塩こしょうで整える"],
+   portions:{4:"鶏400g・牛乳600ml",5:"500g・750ml",6:"600g・900ml",7:"700g・1050ml"}},
+  {name:"カレーライス（具）",time:"45分",cost:200,must:["じゃがいも","玉ねぎ"],main:["豚バラ","牛切り落とし","鶏もも肉"],sub:["じゃがいも","人参","玉ねぎ"],
+   steps:["肉・野菜を切り鍋で炒める","水を加えて野菜が柔らかくなるまで煮る","火を止めてカレールーを溶かし弱火でとろみを出す"],
+   portions:{4:"肉300g・じゃがいも4個",5:"375g・5個",6:"450g・6個",7:"525g・7個"}},
+  {name:"チャーハン",time:"15分",cost:100,must:["米（ご飯）","卵"],main:["米（ご飯）"],sub:["卵","ハム","ベーコン","長ねぎ"],
+   steps:["卵を溶いておく","強火でフライパンに油を引き卵を炒ってご飯を加える","具材を加えてしょうゆ・塩こしょうで味付けする"],
+   portions:{4:"4膳・卵4個",5:"5膳・5個",6:"6膳・6個",7:"7膳・7個"}},
+  {name:"焼きそば",time:"15分",cost:100,must:["焼きそば麺"],main:["焼きそば麺"],sub:["豚バラ","キャベツ","もやし","人参"],
+   steps:["野菜・肉を食べやすく切る","フライパンで肉を炒め野菜を加える","麺を加え水を回しかけほぐしながらソースで味付け"],
+   portions:{4:"4玉・豚200g",5:"5玉・250g",6:"6玉・300g",7:"7玉・350g"}},
+  {name:"オムライス",time:"20分",cost:150,must:["米（ご飯）","卵"],main:["米（ご飯）","卵"],sub:["鶏もも肉","玉ねぎ","ピーマン"],
+   steps:["鶏肉・玉ねぎを炒めご飯を加えケチャップでチキンライスを作る","薄焼き卵を作る","チキンライスを包んでケチャップをかける"],
+   portions:{4:"4膳・卵8個",5:"5膳・10個",6:"6膳・12個",7:"7膳・14個"}},
+  {name:"豚キムチ炒め",time:"15分",cost:150,must:["キムチ"],main:["豚バラ","豚こま"],sub:["キムチ","もやし","にら"],
+   steps:["豚肉を食べやすく切る","フライパンで豚肉を炒めキムチ・もやしを加える","にらを加えしょうゆ・ごま油で整える"],
+   portions:{4:"豚240g・キムチ200g",5:"300g・250g",6:"360g・300g",7:"420g・350g"}},
+  {name:"ミートソースパスタ",time:"30分",cost:180,must:["パスタ","トマト缶"],main:["合い挽き肉","豚ひき肉"],sub:["パスタ","玉ねぎ","トマト缶"],
+   steps:["玉ねぎをみじん切りにして炒めひき肉を加える","トマト缶・コンソメ・塩こしょうで20分煮込む","茹でたパスタに合わせる"],
+   portions:{4:"パスタ400g・肉300g",5:"500g・375g",6:"600g・450g",7:"700g・525g"}},
+  {name:"ナポリタン",time:"20分",cost:120,must:["パスタ"],main:["パスタ"],sub:["ウインナー","玉ねぎ","ピーマン","パプリカ"],
+   steps:["パスタを茹でる","ウインナー・野菜を炒める","パスタを加えケチャップ・ウスターソースで味付けする"],
+   portions:{4:"400g",5:"500g",6:"600g",7:"700g"}},
+  {name:"鶏むね肉のチキンカツ",time:"25分",cost:170,must:["鶏むね肉"],main:["鶏むね肉"],sub:["卵","小麦粉"],
+   steps:["鶏むね肉を薄くそぎ切りにして塩こしょうで下味をつける","小麦粉→卵→パン粉の順に衣をつける","170℃の油でこんがり揚げる"],
+   portions:{4:"4枚",5:"5枚",6:"6枚",7:"7枚"}},
+  {name:"エビチリ",time:"20分",cost:220,must:["エビ"],main:["エビ"],sub:["長ねぎ","トマト缶","玉ねぎ"],
+   steps:["エビに下味をつけ片栗粉をまぶし油通しする","豆板醤・にんにく・しょうがを炒めトマトケチャップ・スープを加える","エビを戻して煮絡める"],
+   portions:{4:"400g",5:"500g",6:"600g",7:"700g"}},
+  {name:"鶏と野菜のトマト煮",time:"30分",cost:170,must:["トマト缶"],main:["鶏もも肉","鶏むね肉"],sub:["トマト缶","玉ねぎ","なす","ズッキーニ"],
+   steps:["鶏肉・野菜を一口大に切る","鶏肉を炒め野菜を加えトマト缶・コンソメで煮込む","塩こしょうで味を整える"],
+   portions:{4:"鶏400g・トマト缶2缶",5:"500g・2.5缶",6:"600g・3缶",7:"700g・3.5缶"}},
+  {name:"餃子（焼き）",time:"30分",cost:150,must:["豚ひき肉","合い挽き肉"],main:["豚ひき肉","合い挽き肉"],sub:["キャベツ","にら","長ねぎ"],
+   steps:["キャベツ・にらをみじん切りにして塩もみし水気を絞る","ひき肉・野菜・調味料を混ぜて皮で包む","焼き色をつけてから水を入れ蒸し焼きにする"],
+   portions:{4:"30個",5:"38個",6:"46個",7:"55個"}},
+  {name:"筑前煮",time:"40分",cost:150,must:["鶏もも肉"],main:["鶏もも肉"],sub:["ごぼう","れんこん","人参","こんにゃく"],
+   steps:["全食材を乱切りにして鶏肉は下味をつける","鶏肉を炒め野菜・こんにゃくを加えてだし・しょうゆ・みりん・砂糖で煮る","弱火で20〜25分煮汁が半分になるまで煮る"],
+   portions:{4:"鶏400g",5:"500g",6:"600g",7:"700g"}},
+  {name:"豚バラと大根の煮物",time:"35分",cost:130,must:["豚バラ","大根"],main:["豚バラ"],sub:["大根","こんにゃく","長ねぎ"],
+   steps:["豚バラを4cm幅、大根を半月切りにする","鍋で豚バラを炒め大根・こんにゃくを加える","しょうゆ・みりん・酒・砂糖で25分煮込む"],
+   portions:{4:"豚300g・大根1/2本",5:"375g・2/3本",6:"450g・1本",7:"525g・1本強"}},
+  {name:"キムチ鍋（具）",time:"25分",cost:180,must:["キムチ"],main:["豚バラ","豚こま"],sub:["キムチ","白菜","木綿豆腐","長ねぎ"],
+   steps:["白菜・豆腐・豚肉を食べやすく切る","キムチと豚肉を炒めだし汁を加える","白菜・豆腐・長ねぎを入れて10分煮込む"],
+   portions:{4:"豚200g・キムチ200g",5:"250g・250g",6:"300g・300g",7:"350g・350g"}},
+];
+
+const SIDE = [
+  {name:"ほうれん草の卵炒め",time:"10分",cost:70,must:["ほうれん草","小松菜"],main:["ほうれん草","小松菜"],sub:["卵"],
+   steps:["ほうれん草をざく切りにして塩茹でする","ごま油を熱し卵を炒り卵にする","ほうれん草を加えて炒め塩こしょうで整える"]},
+  {name:"かぼちゃの煮物",time:"25分",cost:70,must:["かぼちゃ"],main:["かぼちゃ"],sub:["油揚げ"],
+   steps:["かぼちゃを3cm角に切る","だし・しょうゆ・みりん・砂糖を煮立てる","かぼちゃを加えて落とし蓋をし弱火で15分煮る"]},
+  {name:"ポテトサラダ",time:"25分",cost:80,must:["じゃがいも"],main:["じゃがいも"],sub:["人参","玉ねぎ","きゅうり","ハム"],
+   steps:["じゃがいも・人参を茹でてつぶす","玉ねぎ・きゅうりは薄切りにして塩もみし水気を絞る","マヨネーズ・塩こしょうで和える"]},
+  {name:"厚揚げの炒め物",time:"15分",cost:90,must:["厚揚げ"],main:["厚揚げ"],sub:["ピーマン","にら","もやし"],
+   steps:["厚揚げを一口大に切り野菜を食べやすく切る","厚揚げを焼き目がつくまで炒める","野菜を加えてオイスターソース・しょうゆで味付け"]},
+  {name:"ツナと野菜の炒め煮",time:"20分",cost:80,must:["ツナ缶"],main:["ツナ缶"],sub:["大根","人参","こんにゃく"],
+   steps:["大根・人参を短冊切り、こんにゃくはちぎる","野菜をだし・しょうゆ・みりんで煮る","柔らかくなったらツナを加えて煮汁を飛ばす"]},
+  {name:"だし巻き卵",time:"15分",cost:60,must:["卵"],main:["卵"],sub:[],
+   steps:["卵をだし・しょうゆ・みりんと混ぜる","卵焼き器に油を引き何回かに分けて巻きながら焼く","粗熱を取って切り分ける"]},
+  {name:"なすの味噌炒め",time:"15分",cost:80,must:["なす"],main:["なす"],sub:["ピーマン","長ねぎ"],
+   steps:["なすを乱切りにして油通しする","フライパンでなす・ピーマンを炒める","味噌・みりん・砂糖・酒で炒め絡める"]},
+  {name:"豆腐チャンプルー",time:"15分",cost:70,must:["木綿豆腐","卵"],main:["木綿豆腐"],sub:["卵","もやし","にら","ベーコン"],
+   steps:["豆腐を水切りして一口大に切る","フライパンで豆腐を炒める","もやし・にらを加え卵を回し入れてしょうゆで味付け"]},
+  {name:"ブロッコリーの卵炒め",time:"10分",cost:80,must:["ブロッコリー","卵"],main:["ブロッコリー"],sub:["卵","ベーコン"],
+   steps:["ブロッコリーを小房に分けて塩茹でする","フライパンでベーコンを炒める","ブロッコリーを加えて炒り卵にし塩こしょうで味付け"]},
+  {name:"ちくわとキャベツの炒め物",time:"10分",cost:55,must:["ちくわ"],main:["ちくわ"],sub:["キャベツ","もやし","ピーマン"],
+   steps:["ちくわを斜め切りにし野菜を食べやすく切る","フライパンで炒め合わせる","しょうゆ・酒・みりんで味付けしごま油を垂らす"]},
+  {name:"さつま揚げの甘辛煮",time:"15分",cost:90,must:["さつま揚げ"],main:["さつま揚げ"],sub:["大根","人参","こんにゃく"],
+   steps:["さつま揚げを一口大、大根・人参を乱切りにする","だし・しょうゆ・みりん・砂糖を煮立てる","具材を加えて中火で15分煮込む"]},
+  {name:"トマトと卵の中華炒め",time:"10分",cost:70,must:["トマト","卵"],main:["トマト"],sub:["卵","長ねぎ"],
+   steps:["トマトを一口大に切り卵を溶く","卵をふんわり炒めて取り出す","トマトを炒め卵を戻して塩・砂糖・ごま油で味付け"]},
+  {name:"春雨スープ",time:"15分",cost:60,must:["春雨"],main:["春雨"],sub:["卵","乾燥わかめ","えのき","ハム"],
+   steps:["春雨を水で戻す","鶏ガラスープで春雨・えのき・わかめを煮る","卵を回し入れしょうゆ・塩で整えごま油を垂らす"]},
+  {name:"玉ねぎと卵のスープ",time:"10分",cost:45,must:["玉ねぎ","卵"],main:["玉ねぎ"],sub:["卵","ウインナー"],
+   steps:["玉ねぎを薄切りにしてコンソメスープで柔らかく煮る","溶き卵を回し入れ半熟にする","塩こしょう・ごま油で整える"]},
+  {name:"白菜と豚バラの蒸し煮",time:"20分",cost:100,must:["白菜"],main:["白菜"],sub:["豚バラ","えのき"],
+   steps:["白菜をざく切り豚肉を食べやすく切る","鍋に白菜→豚肉の順に重ねて塩・酒を振る","蓋をして弱火で15分蒸し煮にしポン酢で食べる"]},
+  {name:"サバ缶の味噌煮風",time:"15分",cost:90,must:["サバ缶"],main:["サバ缶"],sub:["長ねぎ"],
+   steps:["サバ缶を汁ごと鍋に入れしょうゆ・みりん・砂糖・味噌を加える","長ねぎ・しょうがを加えて中火で5分煮る","煮汁を煮詰めてからめる"]},
+  {name:"ほうれん草のごまあえ",time:"10分",cost:50,must:["ほうれん草","小松菜"],main:["ほうれん草","小松菜"],sub:["ごま"],
+   steps:["ほうれん草を塩茹でして水気を絞り食べやすく切る","しょうゆ・砂糖・すりごまでたれを作る","ほうれん草と和えて完成"]},
+  {name:"きゅうりの浅漬け",time:"5分",cost:40,must:["きゅうり"],main:["きゅうり"],sub:["大根","人参"],
+   steps:["きゅうりを斜め薄切りにする","塩をもみ込んで10分置き水気を絞る","しょうゆ・酢・砂糖・ごまで和えて完成"]},
+  {name:"もやしのナムル",time:"10分",cost:40,must:["もやし"],main:["もやし"],sub:["にら","ごま"],
+   steps:["もやしを沸騰したお湯で30秒茹でて水気を切る","塩・ごま油・にんにく・ごまで和える","冷やして完成"]},
+  {name:"大根のなめたけあえ",time:"5分",cost:50,must:["大根","なめたけ"],main:["大根"],sub:["なめたけ"],
+   steps:["大根を千切りにして塩もみし水気を絞る","なめたけ・しょうゆ・ごまと和える","冷やして提供"]},
+];
+
+const selected = new Set();
+
+function renderChips() {
+  Object.entries(CATS).forEach(([id, items]) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = items.map(i => `<span class="chip" onclick="toggle(this,'${i}')">${i}</span>`).join('');
+  });
+}
+
+function toggle(el, name) {
+  if (selected.has(name)) { selected.delete(name); el.classList.remove('selected'); }
+  else { selected.add(name); el.classList.add('selected'); }
+  renderSelected();
+}
+
+function renderSelected() {
+  const area = document.getElementById('sel-area');
+  const btn = document.getElementById('search-btn');
+  if (!selected.size) {
+    area.innerHTML = '<span class="empty-msg">食材を選んでください</span>';
+    btn.disabled = true; return;
+  }
+  btn.disabled = false;
+  area.innerHTML = [...selected].map(n =>
+    `<span class="tag">${n}<span class="tag-x" onclick="removeTag('${n}')">×</span></span>`
+  ).join('');
+}
+
+function removeTag(name) {
+  selected.delete(name);
+  document.querySelectorAll('.chip').forEach(c => { if (c.textContent === name) c.classList.remove('selected'); });
+  renderSelected();
+}
+
+function calcScore(menu) {
+  const sel = [...selected];
+  const mustOk = menu.must.some(m => sel.includes(m));
+  if (!mustOk) return -1;
+  const all = [...menu.main, ...menu.sub];
+  const hits = all.filter(i => sel.includes(i)).length;
+  return hits / Math.max(all.length, 1);
+}
+
+function getMissing(menu) {
+  const sel = [...selected];
+  return [...menu.main, ...menu.sub].filter(i => !sel.includes(i));
+}
+
+const openSteps = {};
+
+function toggleSteps(id) {
+  openSteps[id] = !openSteps[id];
+  const el = document.getElementById('steps-' + id);
+  const btn = document.getElementById('stbtn-' + id);
+  if (el) el.style.display = openSteps[id] ? 'block' : 'none';
+  if (btn) btn.textContent = openSteps[id] ? '手順を閉じる ▲' : '手順を見る ▼';
+}
+
+function doSearch() {
+  const portions = document.getElementById('portions').value;
+  const scoredMain = MAIN.map(m => ({m, s: calcScore(m)})).filter(x => x.s >= 0).sort((a,b) => b.s - a.s);
+  const scoredSide = SIDE.map(m => ({m, s: calcScore(m)})).filter(x => x.s >= 0).sort((a,b) => b.s - a.s);
+  const area = document.getElementById('result-area');
+
+  if (!scoredMain.length && !scoredSide.length) {
+    area.innerHTML = '<hr class="divider"><div class="no-result">選んだ食材に合う献立が見つかりませんでした。<br>別の食材も追加してみてください。</div>';
+    return;
+  }
+
+  const mains = scoredMain.slice(0, 3);
+  const sides = scoredSide.slice(0, 3);
+  const sets = [];
+  for (let i = 0; i < 3; i++) {
+    const mn = mains[i % Math.max(mains.length, 1)];
+    const sd = sides[i % Math.max(sides.length, 1)];
+    if (mn && sd) sets.push({mn, sd});
+  }
+
+  if (!sets.length) {
+    area.innerHTML = '<hr class="divider"><div class="no-result">組み合わせが見つかりませんでした。食材を追加してみてください。</div>';
+    return;
+  }
+
+  area.innerHTML = '<hr class="divider"><div class="section-title" style="margin-bottom:14px">献立セットの提案（' + portions + '人前）</div>' +
+    sets.map(({mn, sd}, idx) => {
+      const totalCost = mn.m.cost + sd.m.cost;
+      const mainMissing = getMissing(mn.m);
+      const sideMissing = getMissing(sd.m);
+      const mainId = 'm' + idx;
+      const sideId = 's' + idx;
+      return `
+        <div class="set-card">
+          <div class="set-header">
+            <span class="set-num">セット ${idx+1}</span>
+            <span class="set-cost">合計目安 ¥${totalCost}/人</span>
+          </div>
+          <div class="dish-row">
+            <div class="dish-box">
+              <div class="dish-label label-main">主菜</div>
+              <div class="dish-name">${mn.m.name}</div>
+              <div class="dish-meta">
+                <span class="badge bc">¥${mn.m.cost}/人</span>
+                <span class="badge bt">${mn.m.time}</span>
+                ${mainMissing.length ? '<span class="badge bm">要購入あり</span>' : ''}
+              </div>
+              <div class="dish-info"><strong>分量：</strong>${mn.m.portions[portions]}</div>
+              <div class="dish-info">${mainMissing.length ? '<strong>要購入：</strong><span class="missing">'+mainMissing.join('、')+'</span>' : '<span class="ok">購入不要</span>'}</div>
+              <span class="steps-toggle" id="stbtn-${mainId}" onclick="toggleSteps('${mainId}')">手順を見る ▼</span>
+              <div class="steps-body" id="steps-${mainId}">${mn.m.steps.map((s,i)=>(i+1)+'. '+s).join('<br>')}</div>
+            </div>
+            <div class="dish-box">
+              <div class="dish-label label-side">副菜</div>
+              <div class="dish-name">${sd.m.name}</div>
+              <div class="dish-meta">
+                <span class="badge bc">¥${sd.m.cost}/人</span>
+                <span class="badge bt">${sd.m.time}</span>
+                ${sideMissing.length ? '<span class="badge bm">要購入あり</span>' : ''}
+              </div>
+              <div class="dish-info">${sideMissing.length ? '<strong>要購入：</strong><span class="missing">'+sideMissing.join('、')+'</span>' : '<span class="ok">購入不要</span>'}</div>
+              <span class="steps-toggle" id="stbtn-${sideId}" onclick="toggleSteps('${sideId}')">手順を見る ▼</span>
+              <div class="steps-body" id="steps-${sideId}">${sd.m.steps.map((s,i)=>(i+1)+'. '+s).join('<br>')}</div>
+            </div>
+          </div>
+          <div class="note">※ 汁物・ご飯は別途ご用意ください</div>
+        </div>`;
+    }).join('');
+  area.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+renderChips();
+</script>
+</body>
+</html>
