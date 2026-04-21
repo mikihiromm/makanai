@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シニア食べやせ献立 朝昼夜90品目版</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#f5f5f2;color:#333;}
+:root{
+  --g:#3B6D11;--gl:#EAF3DE;--gm:#639922;--gc:#C0DD97;
+  --t:#0F6E56;--tl:#E1F5EE;--tm:#1D9E75;
+  --am:#BA7517;--al:#FAEEDA;--am2:#EF9F27;
+  --co:#993C1D;--cl:#FAECE7;
+  --bl:#E6F1FB;--bm:#378ADD;
+  --bg:#fff;--bg2:#f5f5f2;--border:#e0e0d8;--text:#333;--text2:#666;
+  --b-color:#BA7517;--l-color:#1D9E75;--d-color:#3B6D11;
+}
+.app{max-width:700px;margin:0 auto;background:var(--bg);min-height:100vh;}
+.hdr{background:var(--gl);border-bottom:1px solid var(--gc);padding:12px 16px;}
+.hdr-t{font-size:17px;font-weight:600;color:var(--g);}
+.hdr-s{font-size:11px;color:var(--gm);margin-top:2px;}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.tab{flex:1;padding:10px 2px;font-size:11px;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;}
+.tab.on{color:var(--g);border-bottom-color:var(--gm);font-weight:600;}
+.scr{display:none;padding:14px;}
+.scr.on{display:block;}
+
+/* Calendar */
+.cn{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cn button{background:none;border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--text);}
+.cn button:hover{background:var(--gl);}
+.ch{font-size:15px;font-weight:600;}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cdow{text-align:center;font-size:10px;color:var(--text2);padding:3px 0;font-weight:600;}
+.cdow.su{color:#e24b4a;}.cdow.sa{color:#378add;}
+.cc{border:1px solid var(--border);border-radius:6px;padding:3px;min-height:60px;cursor:pointer;transition:background .1s;}
+.cc:hover{background:var(--gl);}
+.cc.today{border-color:var(--gm);background:var(--gl);}
+.cc.sel{border-color:var(--g);background:var(--gc);}
+.cc.empty{border-color:transparent;cursor:default;}
+.cdate{font-size:10px;color:var(--text2);font-weight:500;}
+.cdots{display:flex;flex-direction:column;gap:1px;align-items:center;margin:2px 0;}
+.cdot{width:5px;height:5px;border-radius:50%;}
+.ckcal{font-size:8px;color:var(--g);text-align:center;font-weight:600;}
+
+/* Detail */
+.dp{margin-top:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.dp-h{padding:10px 16px;font-size:14px;font-weight:600;color:var(--g);background:var(--gl);}
+.mr{border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:flex-start;gap:10px;}
+.ml{font-size:11px;font-weight:600;color:#fff;padding:3px 9px;border-radius:10px;flex-shrink:0;margin-top:2px;}
+.ml.B{background:var(--b-color);}.ml.L{background:var(--l-color);}.ml.D{background:var(--d-color);}
+.mn{font-size:13px;font-weight:600;color:var(--text);}
+.mk{font-size:11px;color:var(--text2);margin-top:2px;}
+.mbs{margin-left:auto;display:flex;gap:4px;flex-shrink:0;}
+.mb{font-size:10px;border:1px solid var(--border);border-radius:6px;padding:3px 8px;background:none;cursor:pointer;color:var(--text2);}
+.mb:hover{background:var(--bg2);}
+.mb.sw{color:var(--t);border-color:var(--tm);}
+.dtot{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:var(--bg2);}
+.dtv{font-size:16px;font-weight:600;color:var(--g);}
+
+/* Picker */
+.pov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center;}
+.pov.show{display:flex;}
+.pbox{background:var(--bg);border-radius:12px;width:92%;max-width:480px;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.25);}
+.pbox-h{padding:12px 16px;border-bottom:1px solid var(--border);}
+.pt{font-size:13px;font-weight:600;color:var(--text);}
+.pl{overflow-y:auto;flex:1;}
+.pi{padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.pi:hover{background:var(--gl);}
+.pin{font-size:12px;color:var(--text);flex:1;}
+.pik{font-size:11px;color:var(--g);background:var(--gl);padding:2px 8px;border-radius:8px;font-weight:600;flex-shrink:0;}
+.pcl{padding:12px;width:100%;border:none;border-top:1px solid var(--border);background:none;cursor:pointer;font-size:13px;color:var(--text2);}
+.pcl:hover{background:var(--bg2);}
+
+/* Recipe detail */
+.rd{margin-top:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.rd h3{font-size:15px;font-weight:600;margin-bottom:6px;}
+.rs{font-size:12px;font-weight:600;color:var(--g);margin:10px 0 4px;}
+.rt{font-size:13px;color:var(--text2);line-height:1.8;}
+.cx{float:right;background:none;border:1px solid var(--border);border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;color:var(--text2);line-height:28px;text-align:center;}
+
+/* Weekly */
+.ws{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
+.wb{font-size:11px;border:1px solid var(--border);border-radius:6px;padding:4px 10px;background:none;cursor:pointer;color:var(--text2);}
+.wb:hover{background:var(--gl);}
+.wb.on{background:var(--gl);border-color:var(--gm);color:var(--g);font-weight:600;}
+.wt{width:100%;border-collapse:collapse;font-size:10px;}
+.wt th{background:var(--gl);color:var(--g);font-weight:600;padding:5px 3px;text-align:center;border:1px solid var(--gc);}
+.wt td{padding:4px 3px;border:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.wtr td{background:var(--bg2);font-weight:600;}
+.b-cell{border-left:3px solid var(--b-color);}
+.l-cell{border-left:3px solid var(--l-color);}
+.d-cell{border-left:3px solid var(--d-color);}
+
+/* Stats */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.sc{background:var(--bg2);border-radius:10px;padding:12px;}
+.scl{font-size:11px;color:var(--text2);margin-bottom:3px;}
+.scv{font-size:22px;font-weight:600;}
+.scu{font-size:12px;font-weight:400;color:var(--text2);}
+.bw{margin:12px 0;}
+.bl2{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:3px;}
+.br{height:10px;background:var(--bg2);border-radius:5px;overflow:hidden;border:1px solid var(--border);}
+.bf{height:100%;border-radius:5px;background:var(--gm);transition:width .4s;}
+.mrow2{display:flex;gap:8px;margin-top:12px;}
+.mi{flex:1;text-align:center;background:var(--bg2);border-radius:10px;padding:10px 4px;}
+.min2{font-size:10px;color:var(--text2);}
+.miv2{font-size:16px;font-weight:600;margin:3px 0;}
+.aok{background:var(--gl);border:1px solid var(--gc);color:var(--g);padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:10px;}
+.aov{background:var(--cl);border:1px solid #f5c4b3;color:var(--co);padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:10px;}
+
+/* Recipe list */
+.fr{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
+.frb{font-size:10px;border:1px solid var(--border);border-radius:10px;padding:3px 9px;background:none;cursor:pointer;color:var(--text2);}
+.frb:hover{background:var(--gl);}
+.frb.on{background:var(--gl);border-color:var(--gm);color:var(--g);font-weight:600;}
+.rl{display:flex;flex-direction:column;gap:7px;}
+.rc2{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 16px;cursor:pointer;}
+.rc2:hover{background:var(--gl);}
+.rch{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;}
+.rcn{font-size:13px;font-weight:600;color:var(--text);}
+.rck{font-size:11px;color:var(--g);background:var(--gl);padding:2px 8px;border-radius:8px;font-weight:600;flex-shrink:0;}
+.rct{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.tag2{font-size:9px;padding:2px 6px;border-radius:8px;}
+.tag2.B{background:var(--al);color:var(--am);}
+.tag2.L{background:var(--tl);color:var(--t);}
+.tag2.D{background:var(--gl);color:var(--g);}
+.tag2.m{background:var(--cl);color:var(--co);}
+.af{background:var(--bg2);border-radius:10px;padding:16px;margin-bottom:12px;border:1px solid var(--border);}
+.af input,.af textarea,.af select{width:100%;margin-bottom:8px;padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);}
+.af textarea{height:58px;resize:vertical;}
+.bp{background:var(--gm);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600;}
+.bp:hover{background:var(--g);}
+.bs{background:none;border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;color:var(--text2);}
+
+/* Settings */
+.set-lbl{font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600;}
+.set-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.set-row label{font-size:13px;min-width:120px;}
+.set-val{font-size:13px;font-weight:600;color:var(--g);min-width:80px;text-align:right;}
+.tips{font-size:12px;color:var(--text2);line-height:2.2;background:var(--gl);padding:14px 16px;border-radius:10px;margin-top:16px;}
+.meal-legend{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+.ml-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);}
+.ml-dot{width:12px;height:12px;border-radius:3px;}
+
+@media(max-width:480px){
+  .tab{font-size:9px;padding:8px 1px;}
+  .hdr-t{font-size:14px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="hdr">
+  <div class="hdr-t">🥦 シニア食べやせ献立 朝昼夜90品目版</div>
+  <div class="hdr-s">朝30品・昼30品・夜30品から自由に選択 ／ 1,400〜1,600kcal目安</div>
+</div>
+<div class="tabs">
+  <button class="tab on" onclick="showTab('cal')">📅 カレンダー</button>
+  <button class="tab" onclick="showTab('week')">📊 週間</button>
+  <button class="tab" onclick="showTab('stats')">📈 集計</button>
+  <button class="tab" onclick="showTab('recs')">📖 レシピ</button>
+  <button class="tab" onclick="showTab('set')">⚙️ 設定</button>
+</div>
+
+<div id="scr-cal" class="scr on">
+  <div class="meal-legend">
+    <div class="ml-item"><div class="ml-dot" style="background:var(--b-color)"></div>朝ごはん</div>
+    <div class="ml-item"><div class="ml-dot" style="background:var(--l-color)"></div>昼ごはん</div>
+    <div class="ml-item"><div class="ml-dot" style="background:var(--d-color)"></div>夜ごはん</div>
+  </div>
+  <div class="cn">
+    <button onclick="chM(-1)">◀ 前月</button>
+    <span class="ch" id="ch"></span>
+    <button onclick="chM(1)">次月 ▶</button>
+  </div>
+  <div class="cg" id="cg"></div>
+  <div id="dpp" class="dp" style="display:none;">
+    <div class="dp-h" id="ddate"></div>
+    <div id="dmeals"></div>
+    <div class="dtot"><span style="font-size:13px;color:var(--text2)">1日合計</span><span class="dtv" id="dtv"></span></div>
+  </div>
+  <div id="rdbox" class="rd" style="display:none;"></div>
+</div>
+
+<div id="scr-week" class="scr">
+  <div class="ws" id="ws"></div>
+  <div style="overflow-x:auto;"><table class="wt" id="wt"></table></div>
+</div>
+
+<div id="scr-stats" class="scr">
+  <div class="sg">
+    <div class="sc"><div class="scl">今月の平均カロリー</div><div class="scv" id="savg">—<span class="scu"> kcal</span></div></div>
+    <div class="sc"><div class="scl">目標達成日数</div><div class="scv" id="sgd">—<span class="scu"> 日</span></div></div>
+  </div>
+  <div id="salt"></div>
+  <div class="bw">
+    <div class="bl2"><span>今日の達成度</span><span id="spct">—</span></div>
+    <div class="br"><div class="bf" id="sb" style="width:0%"></div></div>
+  </div>
+  <div class="mrow2">
+    <div class="mi"><div class="min2">炭水化物</div><div class="miv2" id="mcv">—</div><div style="font-size:9px;color:var(--am)">目標50〜60%</div></div>
+    <div class="mi"><div class="min2">たんぱく質</div><div class="miv2" id="mpv">—</div><div style="font-size:9px;color:var(--t)">目標20〜25%</div></div>
+    <div class="mi"><div class="min2">脂質</div><div class="miv2" id="mfv">—</div><div style="font-size:9px;color:var(--g)">目標15〜20%</div></div>
+  </div>
+</div>
+
+<div id="scr-recs" class="scr">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <span style="font-size:13px;font-weight:600;">全レシピ（<span id="rcount">90</span>品目）</span>
+    <button class="bp" onclick="togAF()">＋ マイレシピ追加</button>
+  </div>
+  <div class="fr">
+    <button class="frb on" onclick="fRec('all',this)">すべて</button>
+    <button class="frb" onclick="fRec('B',this)">🌅 朝ごはん</button>
+    <button class="frb" onclick="fRec('L',this)">☀️ 昼ごはん</button>
+    <button class="frb" onclick="fRec('D',this)">🌙 夜ごはん</button>
+    <button class="frb" onclick="fRec('mine',this)">⭐ マイレシピ</button>
+  </div>
+  <div class="af" id="af" style="display:none;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--g)">新しいレシピを追加</div>
+    <input id="rn" placeholder="料理名">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <input id="rk" type="number" placeholder="カロリー (kcal)">
+      <select id="rc">
+        <option value="B">🌅 朝ごはん用</option>
+        <option value="L">☀️ 昼ごはん用</option>
+        <option value="D">🌙 夜ごはん用</option>
+      </select>
+    </div>
+    <textarea id="ri" placeholder="材料（1人分）"></textarea>
+    <textarea id="rs2" placeholder="作り方（簡単に）"></textarea>
+    <div style="display:flex;gap:8px;">
+      <button class="bp" onclick="addMR()">保存</button>
+      <button class="bs" onclick="togAF()">キャンセル</button>
+    </div>
+  </div>
+  <div class="rl" id="rl"></div>
+</div>
+
+<div id="scr-set" class="scr">
+  <div style="margin-bottom:20px;">
+    <div class="set-lbl">カロリー目標設定</div>
+    <div class="set-row">
+      <label>1日の目標カロリー</label>
+      <input type="range" min="1200" max="1800" step="50" id="gsl" oninput="updG()">
+      <span class="set-val" id="gd"></span>
+    </div>
+    <div class="set-row">
+      <label>1食あたりの目安</label>
+      <span class="set-val" id="pmd"></span>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;">
+    <div class="set-lbl">栄養バランス目標（PFC比）</div>
+    <div class="set-row"><label>炭水化物</label><span class="set-val" style="color:var(--am)">50〜60%</span></div>
+    <div class="set-row"><label>たんぱく質</label><span class="set-val" style="color:var(--t)">20〜25%</span></div>
+    <div class="set-row"><label>脂質</label><span class="set-val" style="color:var(--g)">15〜20%</span></div>
+  </div>
+  <div class="tips">
+    ✅ 極端な食事制限はNG。3食きちんと食べる<br>
+    ✅ 朝は消化が良いものを。胃腸を優しく起こす<br>
+    ✅ 昼はしっかりエネルギー補給。活動の源に<br>
+    ✅ 夜は低カロリー・高たんぱく・消化に良いものを<br>
+    ✅ 揚げ物・バターは控えめに<br>
+    ✅ よく噛んで満腹感を高める<br>
+    ✅ 塩分は1日6g未満を目安に
+  </div>
+</div>
+
+<!-- PICKER -->
+<div class="pov" id="pov">
+  <div class="pbox">
+    <div class="pbox-h"><div class="pt" id="ptitle">料理を選んでください</div></div>
+    <div class="pl" id="pl"></div>
+    <button class="pcl" id="pcl-btn">キャンセル</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ============================================================
+// DB: 朝30品(meal:'B') / 昼30品(meal:'L') / 夜30品(meal:'D')
+// ============================================================
+const DB=[
+// ===== 朝ごはん 30品 =====
+{id:1,meal:'B',name:"鮭の塩焼き朝定食",kcal:460,carb:62,prot:26,fat:10,ing:"鮭1切れ(80g)、ごはん140g、みそ汁（わかめ豆腐）、ほうれん草おひたし",how:"①鮭に塩を振りグリルで7分焼く。②みそ汁はわかめ・豆腐で。③ほうれん草はゆでてしょうゆで和える。"},
+{id:2,meal:'B',name:"納豆ごはん＋だし巻き卵",kcal:440,carb:56,prot:24,fat:12,ing:"ごはん140g、納豆1パック、卵2個、だし大2、砂糖少々、みそ汁",how:"①卵・だし・砂糖を混ぜてだし巻き卵を作る。②納豆はよく混ぜてごはんへ。"},
+{id:3,meal:'B',name:"具だくさんみそ汁定食",kcal:420,carb:60,prot:18,fat:8,ing:"ごはん150g、豆腐50g、大根30g、にんじん20g、油揚げ、ねぎ、みそ大1.5",how:"①野菜を煮てやわらかくする。②みそを溶いて完成。"},
+{id:4,meal:'B',name:"オートミールおかゆ",kcal:390,carb:58,prot:16,fat:7,ing:"オートミール50g、鶏むね50g、ねぎ、しょうが、しょうゆ小1、だし300ml",how:"①鶏肉をほぐす。②だしでオートミールと5分煮る。③しょうゆで調味。"},
+{id:5,meal:'B',name:"全粒粉トースト＋目玉焼き",kcal:410,carb:50,prot:18,fat:14,ing:"全粒粉食パン1枚、卵2個、トマト50g、レタス30g、オリーブ油小0.5",how:"①卵は目玉焼きに。②パンをトーストし野菜と添える。"},
+{id:6,meal:'B',name:"温泉卵のっけごはん",kcal:445,carb:61,prot:22,fat:11,ing:"ごはん150g、温泉卵2個、しょうゆだれ（だし・しょうゆ・みりん各大1）、三つ葉",how:"①ごはんに温泉卵をのせる。②しょうゆだれをかけて三つ葉をちらす。"},
+{id:7,meal:'B',name:"しらすおろし定食",kcal:435,carb:62,prot:24,fat:8,ing:"ごはん150g、しらす30g、大根おろし60g、みそ汁、しょうゆ少々",how:"①大根をすりおろす。②しらすをのせてしょうゆで。"},
+{id:8,meal:'B',name:"さば水煮缶朝定食",kcal:455,carb:58,prot:28,fat:12,ing:"さば水煮缶100g、ごはん140g、大根おろし50g、みそ汁、しょうゆ小1",how:"①さば缶を汁ごと器に盛る。②大根おろし・しょうゆをかける。③みそ汁を添える。"},
+{id:9,meal:'B',name:"ヨーグルト＋フルーツ＋トースト",kcal:400,carb:58,prot:15,fat:9,ing:"プレーンヨーグルト150g、バナナ半本、食パン1枚、はちみつ少々",how:"①ヨーグルトにバナナを加えはちみつをかける。②パンをトーストする。"},
+{id:10,meal:'B',name:"豆腐チゲ風スープごはん",kcal:440,carb:58,prot:22,fat:10,ing:"木綿豆腐100g、キムチ30g、ごはん140g、ねぎ、ごま油小0.5、だし200ml",how:"①だしにキムチを入れ煮る。②豆腐・ねぎを加えごま油で仕上げ。"},
+{id:11,meal:'B',name:"鶏むねのおかゆ",kcal:395,carb:60,prot:20,fat:6,ing:"ごはん150g（粥に）、鶏むね50g、生姜、ねぎ、だし400ml、しょうゆ小1",how:"①だしでごはんを煮て粥にする。②鶏むねをゆでてほぐし入れる。"},
+{id:12,meal:'B',name:"雑穀ごはん＋焼き魚朝定食",kcal:450,carb:60,prot:26,fat:10,ing:"雑穀ごはん140g、あじ1尾(80g)、みそ汁、大根おろし",how:"①あじをグリルで焼く。②大根おろしを添えて雑穀ごはんと一緒に。"},
+{id:13,meal:'B',name:"豆乳スープ＋トースト",kcal:420,carb:52,prot:18,fat:12,ing:"食パン1枚、豆乳200ml、玉ねぎ40g、しめじ30g、コンソメ1個、塩こしょう",how:"①玉ねぎ・しめじを炒める。②豆乳とコンソメを加え煮る。③パンをトーストする。"},
+{id:14,meal:'B',name:"長芋とろろごはん朝定食",kcal:430,carb:63,prot:18,fat:7,ing:"ごはん150g、長芋80g、卵黄1個、焼き海苔、だしつゆ大1",how:"①長芋をすりおろす。②卵黄・だしつゆと混ぜごはんにかける。"},
+{id:15,meal:'B',name:"ひじきと豆腐の朝サラダ定食",kcal:420,carb:56,prot:20,fat:10,ing:"絹豆腐100g、ひじき乾燥5g、枝豆20g、ごはん140g、和風ドレッシング大1",how:"①ひじきを戻してゆでる。②豆腐・枝豆とドレッシングで和える。"},
+{id:16,meal:'B',name:"卵と野菜のスクランブル＋パン",kcal:415,carb:48,prot:20,fat:14,ing:"食パン1枚、卵2個、ほうれん草50g、ミニトマト3個、オリーブ油小1",how:"①ほうれん草を炒め卵を加えスクランブルに。②パンをトーストして添える。"},
+{id:17,meal:'B',name:"鮭フレーク混ぜごはん朝定食",kcal:445,carb:62,prot:22,fat:10,ing:"ごはん150g、鮭フレーク40g、きゅうり30g、しそ2枚、ごま、みそ汁",how:"①ごはんに具材を混ぜ込む。②みそ汁を添えて完成。"},
+{id:18,meal:'B',name:"豆腐ときのこのみそ汁定食",kcal:425,carb:62,prot:20,fat:8,ing:"ごはん150g、木綿豆腐80g、えのき40g、しめじ30g、みそ大1.5",how:"①きのこをだしで煮る。②豆腐を加えみそを溶く。"},
+{id:19,meal:'B',name:"さんまの開き朝定食",kcal:455,carb:60,prot:26,fat:13,ing:"さんまの開き80g、ごはん140g、大根おろし、みそ汁、梅干し",how:"①さんまをグリルで焼く。②大根おろし・梅干しと一緒に。"},
+{id:20,meal:'B',name:"ほうれん草のキッシュ風朝食",kcal:430,carb:50,prot:20,fat:15,ing:"ほうれん草80g、卵2個、豆乳100ml、全粒粉食パン1枚、チーズ10g",how:"①卵・豆乳・チーズを混ぜほうれん草を加え耐熱皿でトースター10分。"},
+{id:21,meal:'B',name:"にんじんポタージュ＋パン",kcal:400,carb:52,prot:14,fat:10,ing:"にんじん120g、玉ねぎ40g、豆乳100ml、食パン1枚、コンソメ1個",how:"①にんじん・玉ねぎをコンソメで煮る。②豆乳加えてブレンダーで。"},
+{id:22,meal:'B',name:"鶏とごぼうの雑炊",kcal:405,carb:60,prot:20,fat:7,ing:"ごはん120g、鶏むね50g、ごぼう20g、卵1個、だし300ml、しょうゆ大1、三つ葉",how:"①だしに鶏・ごぼうを煮る。②ごはんを加え卵でとじる。"},
+{id:23,meal:'B',name:"全粒粉パン＋ゆで卵＋野菜スープ",kcal:410,carb:50,prot:18,fat:12,ing:"全粒粉パン1枚、ゆで卵1個、じゃがいも・にんじん・玉ねぎ70g、コンソメ",how:"①野菜スープを作る。②パンとゆで卵を添えて朝食に。"},
+{id:24,meal:'B',name:"あおさのみそ汁定食",kcal:420,carb:62,prot:18,fat:7,ing:"ごはん150g、あおさ(のり)5g、豆腐60g、みそ大1.5、みりん少々",how:"①だしでみそ汁を作り、最後にあおさを加える。②ごはんと一緒に。"},
+{id:25,meal:'B',name:"豆腐と野菜の中華風スープ定食",kcal:430,carb:60,prot:20,fat:9,ing:"ごはん140g、絹豆腐80g、もやし50g、ねぎ、鶏がらスープ、ごま油少々",how:"①スープを作り豆腐・もやし・ねぎを加える。②ごま油で仕上げ。"},
+{id:26,meal:'B',name:"蒸し鶏の朝ごはん定食",kcal:445,carb:58,prot:28,fat:8,ing:"鶏むね80g、ごはん140g、きゅうり30g、みそ汁、ポン酢大1",how:"①鶏むねをレンジ蒸しにしてほぐす。②きゅうりと一緒にポン酢で。"},
+{id:27,meal:'B',name:"かぼちゃのスープ＋トースト",kcal:415,carb:56,prot:14,fat:10,ing:"かぼちゃ100g、玉ねぎ30g、豆乳80ml、食パン1枚、コンソメ",how:"①かぼちゃ・玉ねぎをコンソメで煮て豆乳でポタージュに。②パンをトーストして。"},
+{id:28,meal:'B',name:"白米＋焼き魚＋きのこみそ汁",kcal:450,carb:62,prot:24,fat:10,ing:"ごはん140g、ほっけ80g、えのき・しめじ40g、みそ汁、大根おろし",how:"①ほっけをグリルで焼く。②きのこみそ汁と大根おろしで。"},
+{id:29,meal:'B',name:"高野豆腐の含め煮朝定食",kcal:435,carb:60,prot:22,fat:9,ing:"高野豆腐1枚、ごはん140g、みそ汁、だし・しょうゆ・みりん各大1",how:"①高野豆腐を戻してだしで甘辛く煮る。②みそ汁と一緒に。"},
+{id:30,meal:'B',name:"チーズトースト＋トマトスープ",kcal:410,carb:50,prot:18,fat:13,ing:"食パン1枚、チーズ15g、トマト缶100g、玉ねぎ40g、コンソメ",how:"①パンにチーズをのせてトースター5分。②トマトスープを作って添える。"},
+
+// ===== 昼ごはん 30品 =====
+{id:31,meal:'L',name:"きのこたっぷりうどん",kcal:430,carb:70,prot:18,fat:6,ing:"うどん1玉(200g)、しいたけ・えのき・なめこ合わせ80g、かまぼこ2枚、だし400ml",how:"①だしにきのこを入れて煮る。②うどんを加え2分煮る。③かまぼこをのせる。"},
+{id:32,meal:'L',name:"鶏そぼろ丼",kcal:475,carb:65,prot:28,fat:10,ing:"ごはん160g、鶏ひき肉80g、卵2個、しょうゆ大1、みりん大1、砂糖小1",how:"①鶏ひきをしょうゆ・みりん・砂糖で炒り煮。②炒り卵と2色丼に。"},
+{id:33,meal:'L',name:"豚しゃぶサラダ定食",kcal:465,carb:58,prot:28,fat:13,ing:"豚もも薄切り80g、レタス60g、トマト50g、ごはん140g、ポン酢大1.5",how:"①豚をゆでて冷ます。②野菜と盛り合わせてポン酢で。"},
+{id:34,meal:'L',name:"温野菜パスタ",kcal:455,carb:68,prot:18,fat:10,ing:"スパゲッティ80g、ブロッコリー40g、パプリカ30g、ズッキーニ30g、オリーブ油小1、にんにく",how:"①パスタをゆでる。②野菜をオリーブ油でソテー。③混ぜ合わせて塩こしょうで。"},
+{id:35,meal:'L',name:"鮭フレーク混ぜごはん昼定食",kcal:460,carb:64,prot:24,fat:10,ing:"ごはん160g、鮭フレーク50g、しそ・きゅうり・ごま、みそ汁",how:"①ごはんに具材を混ぜ込む。②みそ汁を添えて完成。"},
+{id:36,meal:'L',name:"親子丼（低脂質）",kcal:480,carb:65,prot:28,fat:11,ing:"鶏むね80g、卵2個、玉ねぎ50g、ごはん160g、だし100ml、しょうゆ・みりん各大1",how:"①鶏むねと玉ねぎをだしで煮る。②卵を回し入れてとじる。③ごはんに盛る。"},
+{id:37,meal:'L',name:"ひじき煮定食",kcal:450,carb:64,prot:22,fat:9,ing:"ごはん150g、ひじき乾燥5g、大豆水煮30g、にんじん30g、しょうゆ大1",how:"①ひじきを戻す。②大豆・にんじんと一緒に炒め煮。"},
+{id:38,meal:'L',name:"冷やしそば（山菜）",kcal:420,carb:68,prot:18,fat:5,ing:"そば乾燥80g、山菜水煮50g、温泉卵1個、だしつゆ大2、ねぎ",how:"①そばをゆでて冷水で締める。②器に盛り具材をのせつゆをかける。"},
+{id:39,meal:'L',name:"そぼろうどん",kcal:440,carb:68,prot:22,fat:7,ing:"うどん1玉、鶏ひき肉60g、ねぎ20g、だし400ml、しょうゆ大1.5、みりん大1",how:"①そぼろを作る。②うどんをゆでてだしのつゆにそぼろをのせる。"},
+{id:40,meal:'L',name:"五目炊き込みごはん",kcal:460,carb:68,prot:20,fat:9,ing:"米1合、ひよこ豆30g、にんじん30g、ごぼう20g、鶏むね40g、しょうゆ・みりん各大1",how:"①具材を一口大に切る。②米と合わせしょうゆ・みりんで炊く。"},
+{id:41,meal:'L',name:"冷やし中華風そうめん",kcal:420,carb:68,prot:16,fat:7,ing:"そうめん乾燥80g、きゅうり30g、トマト30g、ハム20g、ごま酢だれ大2",how:"①そうめんをゆでて冷水で締める。②野菜・ハムをのせてごま酢だれをかける。"},
+{id:42,meal:'L',name:"豚汁定食",kcal:465,carb:62,prot:24,fat:12,ing:"豚もも60g、じゃがいも50g、にんじん30g、ごぼう20g、こんにゃく、ごはん150g、みそ",how:"①豚肉と根菜をごま油で炒める。②だしで煮てみそを溶く。"},
+{id:43,meal:'L',name:"鶏むね蒸し煮定食",kcal:460,carb:58,prot:32,fat:8,ing:"鶏むね100g、ブロッコリー60g、ごはん140g、ポン酢大1、酒大1",how:"①鶏むねはレンジ酒蒸し5分。②ほぐしてポン酢で。③ブロッコリーをゆでて添える。"},
+{id:44,meal:'L',name:"高野豆腐丼",kcal:455,carb:64,prot:24,fat:10,ing:"高野豆腐1枚、卵1個、ごはん160g、だし100ml、しょうゆ大1、みりん大1",how:"①高野豆腐を戻してだしで煮る。②卵でとじてごはんにのせる。"},
+{id:45,meal:'L',name:"えびとブロッコリー炒め定食",kcal:450,carb:58,prot:28,fat:11,ing:"えび80g、ブロッコリー80g、ごはん140g、にんにく1片、オイスターソース小1",how:"①えびは背わたを取る。②にんにくで炒め、ブロッコリー・えびを加えオイスターソースで。"},
+{id:46,meal:'L',name:"豆腐チャンプルー定食",kcal:450,carb:60,prot:22,fat:12,ing:"木綿豆腐150g、キャベツ80g、卵1個、ごはん140g、しょうゆ大1、ごま油小1",how:"①豆腐は水切り。②ごま油で野菜・豆腐を炒め卵でとじる。③しょうゆで調味。"},
+{id:47,meal:'L',name:"ゆで鶏のバンバンジー風定食",kcal:455,carb:58,prot:30,fat:11,ing:"鶏むね100g、きゅうり50g、ごはん140g、ごまだれ大1（市販）",how:"①鶏むねをゆでてほぐす。②きゅうりと盛り合わせごまだれをかける。"},
+{id:48,meal:'L',name:"鍋焼きうどん",kcal:445,carb:68,prot:22,fat:8,ing:"うどん1玉、鶏もも60g、かまぼこ2枚、ほうれん草40g、卵1個、だし400ml",how:"①だしと具材を土鍋で煮る。②卵を落として蓋をして2分。"},
+{id:49,meal:'L',name:"春雨サラダ定食",kcal:430,carb:60,prot:18,fat:10,ing:"春雨乾燥30g、きゅうり40g、にんじん30g、ごはん140g、ハム20g、中華ドレッシング大1",how:"①春雨をゆでて冷ます。②野菜・ハムと一緒にドレッシングで和える。"},
+{id:50,meal:'L',name:"長芋とろろごはん昼定食",kcal:440,carb:65,prot:20,fat:7,ing:"ごはん160g、長芋100g、卵黄1個、焼き海苔、だしつゆ大1、みそ汁",how:"①長芋をすりおろす。②卵黄・だしつゆと混ぜごはんにかける。"},
+{id:51,meal:'L',name:"ほたてのバター醤油定食",kcal:465,carb:62,prot:26,fat:12,ing:"ほたて80g、ごはん150g、アスパラ40g、バター3g、しょうゆ小1",how:"①アスパラはゆでる。②ほたてをバターで焼き、しょうゆを垂らす。"},
+{id:52,meal:'L',name:"かつおのたたき定食",kcal:455,carb:62,prot:30,fat:9,ing:"かつお100g、玉ねぎ30g、大葉3枚、ごはん150g、ポン酢大1.5、生姜",how:"①かつおは表面を炙りスライス。②玉ねぎ・大葉をのせポン酢生姜で。"},
+{id:53,meal:'L',name:"鮭の親子丼",kcal:480,carb:65,prot:28,fat:11,ing:"鮭フレーク50g、いくら10g、ごはん160g、だしつゆ大1、みつば",how:"①ごはんにだしつゆを少量まぜる。②鮭フレーク・いくら・みつばをのせる。"},
+{id:54,meal:'L',name:"牛肉と野菜の炒め物定食",kcal:480,carb:60,prot:26,fat:15,ing:"牛もも薄切り80g、もやし50g、小松菜50g、ごはん150g、オイスターソース大1",how:"①強火で牛肉を炒め野菜を加える。②オイスターソースで調味。"},
+{id:55,meal:'L',name:"鯖そぼろ丼",kcal:470,carb:64,prot:28,fat:12,ing:"さば水煮缶100g、ごはん160g、生姜1片、しょうゆ大1、みりん大1、卵黄1",how:"①さば缶をフライパンで生姜・しょうゆ・みりんで炒り煮。②ごはんに盛り卵黄をのせる。"},
+{id:56,meal:'L',name:"切り干し大根煮物定食",kcal:440,carb:64,prot:20,fat:8,ing:"切り干し大根乾燥20g、にんじん20g、油揚げ0.5枚、ごはん150g、しょうゆ・みりん各大1",how:"①切り干し大根を戻す。②にんじん・油揚げと炒め煮。"},
+{id:57,meal:'L',name:"五目ちらし寿司",kcal:465,carb:68,prot:20,fat:8,ing:"ごはん150g(寿司酢まぜ)、れんこん・にんじん・ごぼう30g、えび・錦糸卵",how:"①酢飯を作る。②具材を炊いてのせる。③錦糸卵・えびをちらす。"},
+{id:58,meal:'L',name:"鶏とれんこんの炒め煮定食",kcal:465,carb:62,prot:28,fat:11,ing:"鶏むね80g、れんこん80g、ごはん140g、しょうゆ・みりん各大1、酒大1",how:"①鶏むねとれんこんをごま油で炒める。②しょうゆ・みりん・酒を加え炒め煮。"},
+{id:59,meal:'L',name:"豆腐ハンバーグ定食",kcal:470,carb:60,prot:26,fat:13,ing:"木綿豆腐100g、鶏ひき肉80g、ごはん150g、大根おろし50g、ポン酢",how:"①豆腐の水切りをし鶏ひきと混ぜて成形。②フライパンで焼く。③大根おろしとポン酢で。"},
+{id:60,meal:'L',name:"わかめそば",kcal:425,carb:66,prot:18,fat:6,ing:"そば乾燥80g、わかめ乾燥5g、温泉卵1個、だしつゆ大2、ねぎ",how:"①そばをゆでる。②わかめを戻す。③器に盛り卵をのせてつゆをかける。"},
+
+// ===== 夜ごはん 30品 =====
+{id:61,meal:'D',name:"さばの味噌煮定食",kcal:490,carb:62,prot:30,fat:14,ing:"さば100g、ごはん150g、ほうれん草おひたし、みそ大1、みりん大1、砂糖小1",how:"①さばをみそ煮に。②ほうれん草のおひたしと一緒に。"},
+{id:62,meal:'D',name:"かれいの煮付け定食",kcal:475,carb:63,prot:28,fat:10,ing:"かれい100g、ごはん150g、小松菜おひたし、しょうゆ大2、みりん大2、酒大1",how:"①かれいはしょうゆ・みりん・酒・水で10分煮る。②おひたしを添える。"},
+{id:63,meal:'D',name:"鶏の照り焼き定食",kcal:485,carb:62,prot:32,fat:13,ing:"鶏もも(皮なし)100g、ごはん150g、ブロッコリー40g、しょうゆ・みりん・砂糖各大1",how:"①鶏もも(皮なし)を焼く。②たれを加えからめる。③ブロッコリーを添える。"},
+{id:64,meal:'D',name:"豚の生姜焼き定食",kcal:490,carb:62,prot:28,fat:15,ing:"豚もも薄切り80g、キャベツ千切り60g、ごはん150g、生姜・しょうゆ・みりん各大1",how:"①豚肉を生姜だれで炒める。②キャベツを添えてごはんと一緒に。"},
+{id:65,meal:'D',name:"鮭のちゃんちゃん焼き",kcal:470,carb:60,prot:30,fat:13,ing:"鮭100g、キャベツ80g、じゃがいも50g、ごはん140g、みそ大1.5、バター3g",how:"①野菜をアルミホイルに敷き鮭をのせる。②みそだれをかけてフライパンで蒸し焼き12分。"},
+{id:66,meal:'D',name:"たらのホイル焼き定食",kcal:455,carb:60,prot:28,fat:10,ing:"たら1切れ、きのこ50g、ごはん150g、バター2g、しょうゆ少々、塩こしょう",how:"①たらときのこをホイルに包みバター・しょうゆを加える。②オーブン180度で12分。"},
+{id:67,meal:'D',name:"肉豆腐定食",kcal:465,carb:58,prot:28,fat:14,ing:"牛もも薄切り60g、木綿豆腐150g、玉ねぎ50g、ごはん140g、しょうゆ・みりん各大1.5",how:"①玉ねぎを炒め牛肉・豆腐を加え甘辛く煮る。②ごはんに盛る。"},
+{id:68,meal:'D',name:"麻婆豆腐定食（低脂質）",kcal:480,carb:62,prot:26,fat:12,ing:"木綿豆腐150g、鶏ひき肉50g、ごはん150g、豆板醤小0.5、にんにく・生姜、片栗粉",how:"①鶏ひきを炒め豆腐を加え調味。②片栗粉でとろみをつける。"},
+{id:69,meal:'D',name:"ブリの照り焼き定食",kcal:485,carb:62,prot:28,fat:15,ing:"ブリ100g、ごはん150g、大根おろし、照り焼きたれ（しょうゆ・みりん・砂糖各大1）",how:"①ブリを焼きたれを加えてからめる。②大根おろしを添える。"},
+{id:70,meal:'D',name:"鯛の塩蒸し定食",kcal:460,carb:62,prot:30,fat:10,ing:"鯛切り身100g、ごはん150g、小松菜50g、酒大1、塩少々",how:"①鯛に塩・酒をふりラップをして電子レンジ600W4分。②小松菜をゆでて添える。"},
+{id:71,meal:'D',name:"サーモンのムニエル定食",kcal:475,carb:60,prot:28,fat:14,ing:"鮭100g、小麦粉少量、ごはん150g、レモン1/4、バター3g、塩こしょう",how:"①鮭に塩胡椒し小麦粉をまぶす。②バターで両面2分ずつ焼く。③レモンを添える。"},
+{id:72,meal:'D',name:"白菜と豆腐の鍋定食",kcal:440,carb:60,prot:24,fat:9,ing:"木綿豆腐100g、白菜100g、しめじ30g、ごはん140g、だし300ml、しょうゆ大1",how:"①白菜・しめじ・豆腐を鍋に入れだしで煮る。②しょうゆで調味。"},
+{id:73,meal:'D',name:"ほっけ定食",kcal:475,carb:62,prot:30,fat:13,ing:"ほっけ1枚(100g)、ごはん150g、大根おろし、みそ汁、漬物",how:"①ほっけをグリルで8分焼く。②大根おろしを添えてみそ汁と一緒に。"},
+{id:74,meal:'D',name:"いわしの梅煮定食",kcal:465,carb:62,prot:28,fat:12,ing:"いわし100g、梅干し1個、ごはん150g、ほうれん草、しょうゆ大1、みりん大1",how:"①いわしをしょうゆ・みりん・梅干しで10分煮る。②ほうれん草のおひたしを添える。"},
+{id:75,meal:'D',name:"鶏むねのレモン蒸し定食",kcal:455,carb:60,prot:32,fat:8,ing:"鶏むね100g、レモン汁大1、ごはん150g、サラダ菜、塩こしょう",how:"①鶏むねにレモン汁・塩をふりラップしてレンジ600W5分。②スライスしてサラダ菜と盛る。"},
+{id:76,meal:'D',name:"豚汁＋ごはん定食",kcal:465,carb:64,prot:24,fat:12,ing:"豚もも60g、ごぼう・にんじん・じゃがいも・こんにゃく各30g、ごはん150g、みそ",how:"①豚肉と根菜をごま油で炒める。②だしで煮てみそを溶く。③ごはんと一緒に。"},
+{id:77,meal:'D',name:"あじの南蛮漬け定食",kcal:470,carb:60,prot:26,fat:12,ing:"あじ1尾、野菜（玉ねぎ・にんじん・ピーマン）30g、ごはん150g、南蛮酢",how:"①あじは焼いて熱いうちに南蛮酢に漬ける。②野菜も一緒に漬け込む。"},
+{id:78,meal:'D',name:"塩麹鶏定食",kcal:460,carb:62,prot:30,fat:10,ing:"鶏むね100g、塩麹大1、ごはん150g、小松菜50g、みそ汁",how:"①前日から鶏に塩麹を揉み込む。②フライパンで蓋をして蒸し焼き8分。"},
+{id:79,meal:'D',name:"ごぼうの炊き込みごはん定食",kcal:455,carb:70,prot:20,fat:8,ing:"米1合、ごぼう50g、にんじん30g、鶏むね40g、油揚げ、しょうゆ・みりん各大1.5",how:"①ごぼうはささがきに。②具材と米を合わせて炊く。"},
+{id:80,meal:'D',name:"なすの田楽定食",kcal:440,carb:62,prot:18,fat:10,ing:"なす2本(120g)、ごはん150g、みそだれ（みそ・みりん・砂糖各大1）、ごま",how:"①なすを縦半分に切り焼く。②みそだれをかけてごまをふる。"},
+{id:81,meal:'D',name:"サバ缶トマト煮定食",kcal:475,carb:62,prot:28,fat:14,ing:"さば水煮缶100g、カットトマト缶100g、玉ねぎ50g、ごはん150g、にんにく少々",how:"①玉ねぎを炒めトマト缶・さば缶を加え10分煮込む。②ごはんに盛る。"},
+{id:82,meal:'D',name:"たこのやわらか煮定食",kcal:445,carb:62,prot:26,fat:8,ing:"ゆでたこ80g、ごはん150g、大根80g、しょうゆ大1.5、みりん大1.5",how:"①大根を柔らかくゆでる。②たこと大根をしょうゆ・みりんで10分煮る。"},
+{id:83,meal:'D',name:"けんちん汁定食",kcal:440,carb:64,prot:20,fat:9,ing:"木綿豆腐100g、ごぼう20g、にんじん20g、大根30g、こんにゃく20g、ごはん150g、みそ",how:"①根菜と豆腐をごま油で炒める。②だしを加え煮てみそを溶く。"},
+{id:84,meal:'D',name:"ささみのピカタ定食",kcal:460,carb:60,prot:32,fat:10,ing:"鶏ささみ100g、卵1個、粉チーズ大1、ごはん150g、レタス",how:"①ささみに卵液・粉チーズをつける。②フライパンで両面焼く。"},
+{id:85,meal:'D',name:"あさりの酒蒸し定食",kcal:440,carb:60,prot:24,fat:9,ing:"あさり150g、ごはん150g、小松菜40g、酒大2、しょうゆ少々",how:"①あさりと酒を鍋に入れ蓋をして3分蒸す。②しょうゆで味を調え小松菜を添える。"},
+{id:86,meal:'D',name:"鶏むねのおかか和え定食",kcal:445,carb:60,prot:30,fat:8,ing:"鶏むね100g、ほうれん草60g、ごはん140g、かつお節2g、しょうゆ小1",how:"①蒸した鶏をほぐす。②ほうれん草をゆでてしょうゆで和え、鶏とかつお節で和える。"},
+{id:87,meal:'D',name:"おでん定食",kcal:450,carb:62,prot:24,fat:10,ing:"大根50g、こんにゃく30g、はんぺん30g、卵1個、ちくわ1本、ごはん140g、だし400ml",how:"①だしに具材を入れ弱火で20分ゆっくり煮込む。②からしをそえる。"},
+{id:88,meal:'D',name:"鶏とかぼちゃの煮物定食",kcal:460,carb:66,prot:26,fat:10,ing:"鶏むね80g、かぼちゃ100g、ごはん140g、しょうゆ大1、みりん大1、砂糖小1",how:"①かぼちゃと鶏を甘辛く煮る。②ごはんと一緒に盛り付ける。"},
+{id:89,meal:'D',name:"イカの生姜炒め定食",kcal:450,carb:62,prot:26,fat:10,ing:"いか80g、ピーマン40g、玉ねぎ40g、ごはん150g、生姜1片、しょうゆ大1",how:"①いかは一口大に切る。②生姜を炒め野菜・いかを加えしょうゆで調味。"},
+{id:90,meal:'D',name:"豆腐と野菜の蒸し煮定食",kcal:435,carb:60,prot:22,fat:9,ing:"木綿豆腐120g、白菜80g、にんじん30g、ごはん140g、だし200ml、しょうゆ小1",how:"①野菜と豆腐をだしで蒸し煮にする。②しょうゆで調味して仕上げ。"},
+];
+
+const today=new Date();
+let cy=today.getFullYear(),cm=today.getMonth();
+let selD=null,goalKcal=1500;
+const plan={};
+let myRecs=[],nextId=500,pkCtx=null,rfC='all',afOpen=false;
+
+function save(){try{localStorage.setItem('plan90_v1',JSON.stringify(plan));localStorage.setItem('myRecs90_v1',JSON.stringify(myRecs));localStorage.setItem('goal90_v1',String(goalKcal));}catch(e){}}
+function load(){try{const p=localStorage.getItem('plan90_v1');if(p)Object.assign(plan,JSON.parse(p));const mr=localStorage.getItem('myRecs90_v1');if(mr)myRecs=JSON.parse(mr);const g=localStorage.getItem('goal90_v1');if(g)goalKcal=parseInt(g);}catch(e){}}
+load();
+
+function getDB(){return[...DB,...myRecs];}
+function getR(id){return getDB().find(r=>r.id===id);}
+function mealDB(meal){return getDB().filter(r=>r.meal===meal);}
+
+function getPlan(y,m,d){
+  const k=`${y}-${m}-${d}`;
+  if(!plan[k]){
+    const s=((y*400+m*31+d))%30;
+    const bd=DB.filter(r=>r.meal==='B'),ld=DB.filter(r=>r.meal==='L'),dd=DB.filter(r=>r.meal==='D');
+    plan[k]=[bd[s%bd.length].id,ld[s%ld.length].id,dd[s%dd.length].id];
+  }
+  return plan[k];
+}
+
+function renderCal(){
+  const mons=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  document.getElementById('ch').textContent=`${cy}年 ${mons[cm]}`;
+  const dows=['日','月','火','水','木','金','土'];
+  let h=dows.map((d,i)=>`<div class="cdow${i===0?' su':i===6?' sa':''}">${d}</div>`).join('');
+  const first=new Date(cy,cm,1).getDay(),days=new Date(cy,cm+1,0).getDate();
+  for(let i=0;i<first;i++) h+='<div class="cc empty"></div>';
+  for(let d=1;d<=days;d++){
+    const ids=getPlan(cy,cm,d),tot=ids.reduce((s,id)=>{const r=getR(id);return s+(r?r.kcal:0);},0);
+    const isT=d===today.getDate()&&cm===today.getMonth()&&cy===today.getFullYear();
+    h+=`<div class="cc${isT?' today':''}${d===selD?' sel':''}" onclick="selDay(${d})">
+      <div class="cdate">${d}</div>
+      <div class="cdots">
+        <div class="cdot" style="background:var(--b-color)"></div>
+        <div class="cdot" style="background:var(--l-color)"></div>
+        <div class="cdot" style="background:var(--d-color)"></div>
+      </div>
+      <div class="ckcal">${tot}k</div>
+    </div>`;
+  }
+  document.getElementById('cg').innerHTML=h;
+}
+
+function selDay(d){
+  selD=d;renderCal();
+  const ids=getPlan(cy,cm,d);
+  const labs=['朝','昼','夜'],cls=['B','L','D'];
+  document.getElementById('ddate').textContent=`${cy}年${cm+1}月${d}日`;
+  let h='';
+  ids.forEach((id,i)=>{
+    const r=getR(id);if(!r)return;
+    h+=`<div class="mr">
+      <span class="ml ${cls[i]}">${labs[i]}</span>
+      <div style="flex:1;"><div class="mn">${r.name}</div><div class="mk">${r.kcal}kcal ／ 炭${r.carb}g ／ 蛋${r.prot}g ／ 脂${r.fat}g</div></div>
+      <div class="mbs"><button class="mb sw" onclick="openPk(${d},${i})">変更</button><button class="mb" onclick="showRD(${r.id})">詳細</button></div>
+    </div>`;
+  });
+  const tot=ids.reduce((s,id)=>{const r=getR(id);return s+(r?r.kcal:0);},0);
+  document.getElementById('dmeals').innerHTML=h;
+  document.getElementById('dtv').textContent=`${tot} kcal　${tot<=goalKcal?'✅ 目標内':'⚠️ 超過'}`;
+  document.getElementById('dpp').style.display='block';
+  document.getElementById('rdbox').style.display='none';
+}
+
+function showRD(id){
+  const r=getR(id);if(!r)return;
+  const mealName={B:'朝ごはん',L:'昼ごはん',D:'夜ごはん'};
+  const el=document.getElementById('rdbox');
+  el.innerHTML=`<button class="cx" onclick="document.getElementById('rdbox').style.display='none'">✕</button>
+    <h3>${r.name}</h3>
+    <div style="font-size:11px;margin:4px 0 8px;"><span class="tag2 ${r.meal}" style="font-size:10px;padding:2px 8px;border-radius:8px;">${mealName[r.meal]||r.meal}</span>　${r.kcal}kcal ／ 炭水化物${r.carb}g ／ たんぱく質${r.prot}g ／ 脂質${r.fat}g</div>
+    <div class="rs">材料（1人分）</div><div class="rt">${r.ing}</div>
+    <div class="rs">作り方</div><div class="rt">${r.how}</div>`;
+  el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function chM(delta){
+  cm+=delta;
+  if(cm>11){cm=0;cy++;}if(cm<0){cm=11;cy--;}
+  selD=null;
+  document.getElementById('dpp').style.display='none';
+  document.getElementById('rdbox').style.display='none';
+  renderCal();
+}
+
+function openPk(day,mi){
+  pkCtx={day,mi};
+  const mealName=['朝ごはん','昼ごはん','夜ごはん'];
+  const mealKeys=['B','L','D'];
+  document.getElementById('ptitle').textContent=mealName[mi]+'の料理を選んでください';
+  renderPL(mealKeys[mi]);
+  document.getElementById('pov').classList.add('show');
+}
+
+function renderPL(mealKey){
+  const recipes=getDB().filter(r=>r.meal===mealKey);
+  const ids=pkCtx?getPlan(cy,cm,pkCtx.day):[];
+  document.getElementById('pl').innerHTML=recipes.map(r=>`
+    <div class="pi" onclick="swapM(${r.id})">
+      <span class="pin">${ids.includes(r.id)?'✓ ':''}<strong>${r.name}</strong></span>
+      <span class="pik">${r.kcal} kcal</span>
+    </div>`).join('');
+}
+
+function swapM(rid){
+  if(!pkCtx)return;
+  const{day,mi}=pkCtx;
+  const k=`${cy}-${cm}-${day}`;
+  if(!plan[k])getPlan(cy,cm,day);
+  plan[k][mi]=rid;save();
+  closePk();selDay(day);renderCal();
+}
+
+function closePk(){document.getElementById('pov').classList.remove('show');pkCtx=null;}
+document.getElementById('pov').addEventListener('click',function(e){if(e.target===this)closePk();});
+document.getElementById('pcl-btn').onclick=closePk;
+
+function renderWeekly(){
+  const days=new Date(cy,cm+1,0).getDate(),weeks=[];
+  let w=[],dow=new Date(cy,cm,1).getDay();
+  for(let i=0;i<dow;i++)w.push(null);
+  for(let d=1;d<=days;d++){w.push(d);if(w.length===7){weeks.push(w);w=[];}}
+  if(w.length){while(w.length<7)w.push(null);weeks.push(w);}
+  window._wks=weeks;
+  const dows=['日','月','火','水','木','金','土'];
+  document.getElementById('ws').innerHTML=weeks.map((_,i)=>`<button class="wb${i===0?' on':''}" onclick="renderWT(${i})" id="wb-${i}">第${i+1}週</button>`).join('');
+  renderWT(0);
+}
+
+function renderWT(wi){
+  document.querySelectorAll('.wb').forEach(b=>b.classList.remove('on'));
+  document.getElementById(`wb-${wi}`).classList.add('on');
+  const w=window._wks[wi],dows=['日','月','火','水','木','金','土'];
+  let h=`<tr><th>食事</th>${w.map((d,i)=>`<th style="${i===0?'color:#e24b4a':i===6?'color:#378add':''}">${dows[i]}<br><span style="font-weight:400">${d||''}</span></th>`).join('')}</tr>`;
+  const mls=[{k:'朝',cls:'b-cell'},{k:'昼',cls:'l-cell'},{k:'夜',cls:'d-cell'}];
+  mls.forEach(({k,cls},mi)=>{
+    h+=`<tr><td style="text-align:center;font-weight:600;color:var(--text2);font-size:11px;">${k}</td>`;
+    w.forEach(d=>{
+      if(!d){h+='<td></td>';return;}
+      const ids=getPlan(cy,cm,d),r=getR(ids[mi]);
+      h+=`<td class="${cls}" style="font-size:10px;">${r?r.name.split('（')[0].substring(0,9):''}<br><span style="color:var(--g);font-weight:600;">${r?r.kcal:''}</span></td>`;
+    });
+    h+='</tr>';
+  });
+  h+=`<tr class="wtr"><td style="text-align:center;font-size:11px;">計</td>`;
+  w.forEach(d=>{
+    if(!d){h+='<td></td>';return;}
+    const ids=getPlan(cy,cm,d),tot=ids.reduce((s,id)=>{const r=getR(id);return s+(r?r.kcal:0);},0);
+    h+=`<td style="text-align:center;font-size:11px;color:${tot<=goalKcal?'var(--g)':'#e24b4a'};font-weight:600;">${tot}</td>`;
+  });
+  h+='</tr>';
+  document.getElementById('wt').innerHTML=h;
+}
+
+function renderStats(){
+  const days=new Date(cy,cm+1,0).getDate();
+  let tot=0,gd=0;
+  for(let d=1;d<=days;d++){
+    const ids=getPlan(cy,cm,d),t=ids.reduce((s,id)=>{const r=getR(id);return s+(r?r.kcal:0);},0);
+    tot+=t;if(t<=goalKcal)gd++;
+  }
+  document.getElementById('savg').innerHTML=`${Math.round(tot/days)}<span class="scu"> kcal</span>`;
+  document.getElementById('sgd').innerHTML=`${gd}<span class="scu"> / ${days}日</span>`;
+  const tids=getPlan(today.getFullYear(),today.getMonth(),today.getDate());
+  const ttot=tids.reduce((s,id)=>{const r=getR(id);return s+(r?r.kcal:0);},0);
+  const pct=Math.min(100,Math.round(ttot/goalKcal*100));
+  document.getElementById('spct').textContent=`${pct}%`;
+  document.getElementById('sb').style.width=`${pct}%`;
+  document.getElementById('sb').style.background=pct>105?'#e24b4a':'var(--gm)';
+  document.getElementById('salt').innerHTML=pct<=100
+    ?`<div class="aok">✅ 今日 ${ttot} kcal — 目標 ${goalKcal} kcal の範囲内です</div>`
+    :`<div class="aov">⚠️ 今日 ${ttot} kcal — 目標を ${ttot-goalKcal} kcal 超過しています</div>`;
+  const mc=Math.round(tids.reduce((s,id)=>{const r=getR(id);return s+(r?r.carb:0);},0));
+  const mpp=Math.round(tids.reduce((s,id)=>{const r=getR(id);return s+(r?r.prot:0);},0));
+  const mf=Math.round(tids.reduce((s,id)=>{const r=getR(id);return s+(r?r.fat:0);},0));
+  document.getElementById('mcv').innerHTML=`${mc}<span style="font-size:11px;font-weight:400;color:var(--text2)">g</span>`;
+  document.getElementById('mpv').innerHTML=`${mpp}<span style="font-size:11px;font-weight:400;color:var(--text2)">g</span>`;
+  document.getElementById('mfv').innerHTML=`${mf}<span style="font-size:11px;font-weight:400;color:var(--text2)">g</span>`;
+}
+
+function togAF(){afOpen=!afOpen;document.getElementById('af').style.display=afOpen?'block':'none';}
+function addMR(){
+  const name=document.getElementById('rn').value.trim();
+  const kcal=parseInt(document.getElementById('rk').value)||0;
+  const meal=document.getElementById('rc').value;
+  const ing=document.getElementById('ri').value.trim();
+  const how=document.getElementById('rs2').value.trim();
+  if(!name||!kcal){alert('料理名とカロリーは必須です');return;}
+  myRecs.push({id:nextId++,meal,name,kcal,carb:Math.round(kcal*0.55/4),prot:Math.round(kcal*0.22/4),fat:Math.round(kcal*0.18/9),ing:ing||'—',how:how||'—',isMine:true});
+  save();togAF();
+  ['rn','rk','ri','rs2'].forEach(id=>document.getElementById(id).value='');
+  renderRecs();
+}
+function fRec(cat,btn){rfC=cat;document.querySelectorAll('.frb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderRecs();}
+function renderRecs(){
+  const mealName={B:'🌅 朝ごはん',L:'☀️昼ごはん',D:'🌙夜ごはん'};
+  let all=getDB();
+  if(rfC==='mine')all=myRecs;
+  else if(rfC!=='all')all=all.filter(r=>r.meal===rfC);
+  document.getElementById('rcount').textContent=getDB().length;
+  if(all.length===0){document.getElementById('rl').innerHTML='<div style="padding:20px;text-align:center;color:var(--text2);">該当するレシピがありません</div>';return;}
+  document.getElementById('rl').innerHTML=all.map(r=>`
+    <div class="rc2" onclick="showRD(${r.id})">
+      <div class="rch"><span class="rcn">${r.name}</span><span class="rck">${r.kcal} kcal</span></div>
+      <div class="rct">
+        <span class="tag2 ${r.meal}">${mealName[r.meal]||r.meal}</span>
+        <span class="tag2 L">蛋${r.prot}g</span>
+        <span class="tag2 D">炭${r.carb}g</span>
+        ${r.isMine?'<span class="tag2 m">マイレシピ</span>':''}
+      </div>
+    </div>`).join('');
+}
+
+function updG(){
+  goalKcal=parseInt(document.getElementById('gsl').value);
+  document.getElementById('gd').textContent=`${goalKcal} kcal`;
+  document.getElementById('pmd').textContent=`約 ${Math.round(goalKcal/3)} kcal`;
+  save();
+}
+
+function showTab(name){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById(`scr-${name}`).classList.add('on');
+  const tabs=['cal','week','stats','recs','set'];
+  document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('on');
+  if(name==='week')renderWeekly();
+  if(name==='stats')renderStats();
+  if(name==='recs')renderRecs();
+}
+
+document.getElementById('gsl').value=goalKcal;
+updG();renderCal();
+</script>
+</body>
+</html>
