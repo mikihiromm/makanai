@@ -12,40 +12,37 @@ header h1{font-size:16px;font-weight:700;letter-spacing:0.06em}
 header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 .tab-bar{display:flex;background:#fff;border-bottom:2px solid #e8e8e0;position:sticky;top:52px;z-index:99;overflow-x:auto}
 .tab-bar::-webkit-scrollbar{display:none}
-.tab{padding:12px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888;-webkit-tap-highlight-color:transparent}
+.tab{padding:11px 13px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888;-webkit-tap-highlight-color:transparent}
 .tab.active{color:#2d4a2d;border-bottom-color:#2d4a2d}
 .tab-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
-.container{max-width:700px;margin:0 auto;padding:16px 14px 80px}
+.container{max-width:700px;margin:0 auto;padding:14px 12px 80px}
 .page{display:none}
 .page.active{display:block}
-.search-box{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:10px;font-size:14px;background:#fff;margin-bottom:14px;outline:none}
+.search-box{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:10px;font-size:14px;background:#fff;margin-bottom:12px;outline:none}
 .search-box:focus{border-color:#2d4a2d}
-.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.menu-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative}
-.menu-card.selected{border-color:#2d4a2d;background:#f0f5f0}
-.card-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:#2d4a2d;display:none;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
-.menu-card.selected .card-check{display:flex}
-.card-color{width:100%;height:4px;border-radius:2px;margin-bottom:8px}
-.card-name{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:4px;line-height:1.3}
-.card-kcal{font-size:11px;font-weight:600;color:#c0392b;margin-top:3px}
-.card-meta{font-size:10px;color:#888;margin-top:2px}
-.detail-btn{display:inline-block;font-size:10px;color:#2d4a2d;margin-top:6px;cursor:pointer;border-bottom:1px solid #c5ddc5}
-.drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,0.12);z-index:200;padding:0 16px 40px;transform:translateY(100%);transition:transform 0.3s ease;max-height:85vh;overflow-y:auto}
-.drawer.open{transform:translateY(0)}
-.drawer-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 16px}
-.drawer-close{position:absolute;top:14px;right:16px;font-size:22px;cursor:pointer;color:#aaa}
-.drawer-title{font-size:17px;font-weight:700;margin-bottom:4px}
-.drawer-sub{font-size:11px;color:#888;margin-bottom:14px}
-.drawer-section{font-size:11px;font-weight:700;letter-spacing:0.08em;color:#888;margin:14px 0 6px}
-.drawer-ing{font-size:13px;color:#444;line-height:2}
-.drawer-step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
-.step-num{min-width:22px;height:22px;background:#2d4a2d;color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.step-text{font-size:13px;color:#444;line-height:1.7}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:199;display:none}
-.overlay.show{display:block}
+.menu-list{display:flex;flex-direction:column;gap:8px}
+.menu-card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden}
+.menu-card.selected{border-color:#2d4a2d}
+.card-header{display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:11px 12px}
+.card-color-bar{width:4px;height:40px;border-radius:2px;margin-right:10px;flex-shrink:0}
+.card-info{flex:1;min-width:0}
+.card-name{font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.3}
+.card-kcal{font-size:11px;font-weight:600;color:#c0392b;margin-top:2px}
+.card-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;margin-left:8px}
+.select-btn{font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #ddd;background:#fff;color:#666;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.select-btn.on{background:#2d4a2d;border-color:#2d4a2d;color:#fff}
+.toggle-btn{font-size:10px;color:#2d4a2d;cursor:pointer;white-space:nowrap;text-decoration:none;border:none;background:none;padding:0}
+.accordion-body{display:none;padding:0 12px 12px 26px;border-top:1px solid #f0f0f0}
+.accordion-body.open{display:block}
+.acc-section{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#aaa;margin:10px 0 5px}
+.acc-ing{font-size:12px;color:#555;line-height:2}
+.acc-step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+.snum{min-width:20px;height:20px;background:#2d4a2d;color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.stxt{font-size:12px;color:#444;line-height:1.7}
 .plan-section{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin-bottom:12px}
 .plan-label{font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.plan-dish{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:8px 0}
+.plan-dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.plan-dish{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:6px 0}
 .plan-dish-name{font-size:14px;font-weight:600}
 .plan-dish-meta{font-size:11px;color:#888;margin-top:2px}
 .plan-dish-kcal{font-size:12px;font-weight:700;white-space:nowrap;color:#c0392b}
@@ -54,7 +51,7 @@ header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 .total-label{font-size:12px;color:#a8c5a8;margin-bottom:4px}
 .total-val{font-size:24px;font-weight:700}
 .btn-clear{width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;color:#888;margin-top:6px}
-@media(max-width:380px){.menu-grid{grid-template-columns:1fr}}
+@media(max-width:380px){.card-name{font-size:13px}}
 </style>
 </head>
 <body>
@@ -72,17 +69,11 @@ header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 </div>
 <div class="container">
   <div class="page active" id="page-plan"><div id="plan-content"></div></div>
-  <div class="page" id="page-main"><input class="search-box" type="text" placeholder="主菜を検索..." oninput="filterCards('main',this.value)"><div class="menu-grid" id="grid-main"></div></div>
-  <div class="page" id="page-green"><input class="search-box" type="text" placeholder="緑の副菜を検索..." oninput="filterCards('green',this.value)"><div class="menu-grid" id="grid-green"></div></div>
-  <div class="page" id="page-yellow"><input class="search-box" type="text" placeholder="黄色の副菜を検索..." oninput="filterCards('yellow',this.value)"><div class="menu-grid" id="grid-yellow"></div></div>
-  <div class="page" id="page-white"><input class="search-box" type="text" placeholder="白系の副菜を検索..." oninput="filterCards('white',this.value)"><div class="menu-grid" id="grid-white"></div></div>
-  <div class="page" id="page-red"><input class="search-box" type="text" placeholder="赤系の副菜を検索..." oninput="filterCards('red',this.value)"><div class="menu-grid" id="grid-red"></div></div>
-</div>
-<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer">
-  <div class="drawer-handle"></div>
-  <span class="drawer-close" onclick="closeDrawer()">×</span>
-  <div id="drawer-content"></div>
+  <div class="page" id="page-main"><input class="search-box" type="text" placeholder="主菜を検索..." oninput="filterCards('main',this.value)"><div class="menu-list" id="grid-main"></div></div>
+  <div class="page" id="page-green"><input class="search-box" type="text" placeholder="緑の副菜を検索..." oninput="filterCards('green',this.value)"><div class="menu-list" id="grid-green"></div></div>
+  <div class="page" id="page-yellow"><input class="search-box" type="text" placeholder="黄色の副菜を検索..." oninput="filterCards('yellow',this.value)"><div class="menu-list" id="grid-yellow"></div></div>
+  <div class="page" id="page-white"><input class="search-box" type="text" placeholder="白系の副菜を検索..." oninput="filterCards('white',this.value)"><div class="menu-list" id="grid-white"></div></div>
+  <div class="page" id="page-red"><input class="search-box" type="text" placeholder="赤系の副菜を検索..." oninput="filterCards('red',this.value)"><div class="menu-list" id="grid-red"></div></div>
 </div>
 <script>
 var MAIN=[
@@ -94,14 +85,14 @@ var MAIN=[
 {name:"豚の味噌炒め",kcal:200,ing:["豚こま60g","味噌大さじ1","みりん大さじ1","長ねぎ1/4本"],steps:["豚肉を炒める","長ねぎを加える","味噌だれを絡める"]},
 {name:"チキンカツ",kcal:280,ing:["鶏むね肉80g","小麦粉大さじ1","卵1/2個","パン粉大さじ2"],steps:["鶏むね肉を薄く切り下味をつける","衣をつける","170度で揚げる"]},
 {name:"サバの味噌煮",kcal:190,ing:["サバ60g","味噌大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["サバに塩を振り熱湯をかける","鍋でたれを煮立てサバを入れる","落とし蓋をして10分煮る"]},
-{name:"卵焼き甘め",kcal:120,ing:["卵2個","だし大さじ2","砂糖小さじ1","しょうゆ小さじ1/2"],steps:["卵をよく溶いてだし・調味料を混ぜる","卵焼き器で薄焼きにして巻く","粗熱をとって切る"]},
+{name:"卵焼き甘め",kcal:120,ing:["卵2個","だし大さじ2","砂糖小さじ1","しょうゆ小さじ1/2"],steps:["卵をよく溶いてだしと調味料を混ぜる","卵焼き器で薄焼きにして巻く","粗熱をとって切る"]},
 {name:"肉団子甘酢あん",kcal:230,ing:["豚ひき肉70g","玉ねぎ1/4個","酢大さじ1","砂糖大さじ1","ケチャップ大さじ1"],steps:["ひき肉に調味料を混ぜ丸める","油で揚げる","甘酢あんを絡める"]},
-{name:"エビのマヨ炒め",kcal:180,ing:["エビ60g","マヨネーズ大さじ1","ケチャップ小さじ1"],steps:["エビに下味をつけ炒める","マヨネーズとケチャップを合わせる","エビと絡める"]},
+{name:"エビのマヨ炒め",kcal:180,ing:["エビ60g","マヨネーズ大さじ1","ケチャップ小さじ1","レモン汁少々"],steps:["エビに下味をつけ炒める","マヨネーズとケチャップを合わせる","エビと絡める"]},
 {name:"牛肉の甘辛炒め",kcal:250,ing:["牛切り落とし70g","しょうゆ大さじ1","みりん大さじ1","白ごま適量"],steps:["牛肉を炒める","たれを加える","ごまを振って仕上げる"]},
 {name:"豚バラいんげん巻き",kcal:200,ing:["豚バラ60g","いんげん50g","塩こしょう少々"],steps:["いんげんを茹でる","豚バラで巻いて塩こしょう","フライパンで全面焼く"]},
 {name:"鶏むね肉のピカタ",kcal:190,ing:["鶏むね肉70g","卵1個","粉チーズ大さじ1","塩こしょう少々"],steps:["鶏むね肉を薄く切り下味をつける","卵と粉チーズを混ぜてくぐらせる","バターで両面焼く"]},
 {name:"メンチカツ",kcal:270,ing:["合い挽き肉70g","玉ねぎ1/4個","キャベツ30g","衣適量"],steps:["野菜とひき肉を混ぜて成形","衣をつける","170度で揚げる"]},
-{name:"鶏肉のケチャップ炒め",kcal:200,ing:["鶏もも肉80g","玉ねぎ1/4個","ピーマン1個","ケチャップ大さじ2"],steps:["鶏肉・野菜を炒める","ケチャップとウスターソースで味付け","強火で仕上げる"]},
+{name:"鶏肉のケチャップ炒め",kcal:200,ing:["鶏もも肉80g","玉ねぎ1/4個","ピーマン1個","ケチャップ大さじ2"],steps:["鶏肉と野菜を炒める","ケチャップとウスターソースで味付け","強火で仕上げる"]},
 {name:"豚こまボール",kcal:210,ing:["豚こま60g","片栗粉大さじ1","しょうゆ小さじ1","ごま油小さじ1"],steps:["豚こまを丸めて片栗粉をまぶす","油で揚げ焼きにする","たれを絡める"]},
 {name:"タラのフライ",kcal:200,ing:["タラ60g","小麦粉大さじ1","卵1/2個","パン粉大さじ2"],steps:["タラに塩こしょうをする","衣をつける","170度で揚げる"]},
 {name:"鶏むね肉の梅しそ巻き",kcal:160,ing:["鶏むね肉70g","梅干し1個","大葉3枚","塩こしょう少々"],steps:["鶏むね肉を薄く開く","梅と大葉をのせて巻く","フライパンで焼く"]},
@@ -127,7 +118,7 @@ var MAIN=[
 {name:"かぼちゃそぼろ煮",kcal:180,ing:["かぼちゃ60g","鶏ひき肉40g","だし100ml","しょうゆ小さじ1"],steps:["かぼちゃを切る","ひき肉を炒めかぼちゃを加える","だしとしょうゆで煮る"]},
 {name:"豚肉の梅炒め",kcal:190,ing:["豚こま60g","梅干し1個","しょうゆ小さじ1","みりん小さじ1"],steps:["梅干しをたたいてペーストにする","豚肉を炒める","梅ペーストと調味料で絡める"]},
 {name:"鶏肉の甘辛焼き",kcal:210,ing:["鶏もも肉80g","しょうゆ大さじ1","砂糖小さじ1","みりん大さじ1"],steps:["鶏肉を漬けこむ","フライパンで焼く","ごまを振る"]},
-{name:"しゅうまい",kcal:180,ing:["豚ひき肉50g","玉ねぎ1/4個","しゅうまいの皮10枚","オイスターソース小さじ1"],steps:["ひき肉・玉ねぎ・調味料を混ぜる","皮で包む","蒸し器で8分蒸す"]},
+{name:"しゅうまい",kcal:180,ing:["豚ひき肉50g","玉ねぎ1/4個","しゅうまいの皮10枚","オイスターソース小さじ1"],steps:["ひき肉と玉ねぎと調味料を混ぜる","皮で包む","蒸し器で8分蒸す"]},
 {name:"豚肉のしぐれ煮",kcal:200,ing:["豚こま60g","しょうが1片","しょうゆ大さじ1","みりん大さじ1"],steps:["しょうがを千切りにする","豚肉としょうがを炒める","調味料を加えて煮詰める"]},
 {name:"鶏むね肉の竜田揚げ",kcal:240,ing:["鶏むね肉70g","しょうゆ大さじ1","みりん大さじ1","片栗粉大さじ2"],steps:["鶏肉をそぎ切りにして漬ける","片栗粉をまぶす","170度で揚げる"]},
 {name:"タコのから揚げ",kcal:150,ing:["ゆでタコ60g","片栗粉大さじ1","しょうゆ小さじ1","レモン適量"],steps:["タコを一口大に切る","片栗粉をまぶす","180度でカリッと揚げる"]},
@@ -138,7 +129,7 @@ var MAIN=[
 {name:"鶏肉のカレー醤油焼き",kcal:200,ing:["鶏もも肉80g","カレー粉小さじ1","しょうゆ大さじ1","みりん大さじ1"],steps:["鶏肉にカレー醤油だれを漬ける","フライパンで焼く","蒸し焼きにする"]},
 {name:"豚バラの照り焼き",kcal:250,ing:["豚バラ60g","しょうゆ大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["豚バラをフライパンで焼く","余分な脂をふく","たれを絡める"]},
 {name:"イカのかき揚げ",kcal:200,ing:["イカ50g","玉ねぎ1/4個","天ぷら粉大さじ3"],steps:["イカと玉ねぎを切る","天ぷら粉で衣を作る","160度でゆっくり揚げる"]},
-{name:"鶏松風焼き",kcal:170,ing:["鶏ひき肉60g","みそ大さじ1","みりん大さじ1","卵1個"],steps:["ひき肉・みそ・みりん・卵を混ぜる","型に入れてケシの実をのせる","オーブンで焼く"]},
+{name:"鶏松風焼き",kcal:170,ing:["鶏ひき肉60g","みそ大さじ1","みりん大さじ1","卵1個"],steps:["ひき肉とみそとみりんと卵を混ぜる","型に入れてケシの実をのせる","オーブンで焼く"]},
 {name:"豚肉の塩炒め",kcal:190,ing:["豚こま60g","塩こしょう少々","にんにく1片","ごま油小さじ1"],steps:["にんにくを炒める","豚肉を加えて炒める","塩こしょうで仕上げる"]},
 {name:"アジフライ",kcal:210,ing:["アジ1尾","小麦粉大さじ1","卵1/2個","パン粉大さじ2"],steps:["アジを三枚おろしにする","衣をつける","170度で揚げる"]},
 {name:"鶏肉のレモン醤油焼き",kcal:190,ing:["鶏もも肉80g","レモン汁大さじ1","しょうゆ大さじ1","みりん大さじ1"],steps:["鶏肉をレモン醤油だれに漬ける","フライパンで焼く","レモンを添える"]},
@@ -148,10 +139,9 @@ var MAIN=[
 {name:"豚こまの辛味噌炒め",kcal:220,ing:["豚こま60g","豆板醤小さじ1","味噌大さじ1","みりん大さじ1"],steps:["長ねぎを炒める","豚肉を加える","辛味噌だれで仕上げる"]},
 {name:"サバの竜田揚げ",kcal:200,ing:["サバ60g","しょうゆ大さじ1","みりん大さじ1","片栗粉大さじ2"],steps:["サバを漬ける","片栗粉をまぶす","170度で揚げる"]}
 ];
-
 var SIDE_GREEN=[
 {name:"ほうれん草のごまあえ",kcal:45,ing:["ほうれん草50g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["ほうれん草を塩茹でする","水気を絞り切る","ごまとしょうゆと砂糖で和える"]},
-{name:"小松菜の煮びたし",kcal:35,ing:["小松菜50g","だし100ml","しょうゆ小さじ1","みりん小さじ1"],steps:["小松菜を4cm切りにする","だし・しょうゆ・みりんで煮る","冷まして味をなじませる"]},
+{name:"小松菜の煮びたし",kcal:35,ing:["小松菜50g","だし100ml","しょうゆ小さじ1","みりん小さじ1"],steps:["小松菜を4cm切りにする","だしとしょうゆとみりんで煮る","冷まして味をなじませる"]},
 {name:"ブロッコリーのマヨあえ",kcal:70,ing:["ブロッコリー50g","マヨネーズ大さじ1","塩こしょう少々"],steps:["ブロッコリーを小房にして茹でる","水気を切る","マヨネーズと塩こしょうで和える"]},
 {name:"いんげんのごま炒め",kcal:50,ing:["いんげん50g","ごま油小さじ1","しょうゆ小さじ1","ごま適量"],steps:["いんげんを茹でて斜め切り","ごま油で炒める","しょうゆとごまで仕上げる"]},
 {name:"アスパラのバター炒め",kcal:55,ing:["アスパラ50g","バター5g","塩こしょう少々"],steps:["アスパラを斜め切りにする","バターで炒める","塩こしょうで仕上げる"]},
@@ -171,7 +161,6 @@ var SIDE_GREEN=[
 {name:"アボカドのわさびしょうゆ",kcal:90,ing:["アボカド50g","わさび少々","しょうゆ小さじ1"],steps:["アボカドを切る","わさびしょうゆで和える","レモン汁をかける"]},
 {name:"アスパラの胡麻マヨ",kcal:70,ing:["アスパラ50g","ごま大さじ1","マヨネーズ大さじ1"],steps:["アスパラを茹でる","水気を切って切る","ごまとマヨネーズで和える"]}
 ];
-
 var SIDE_YELLOW=[
 {name:"かぼちゃのそぼろ煮",kcal:90,ing:["かぼちゃ60g","鶏ひき肉30g","だし100ml","しょうゆ小さじ1"],steps:["かぼちゃを一口大に切る","ひき肉とかぼちゃをだしで煮る","しょうゆとみりんで味付け"]},
 {name:"だし巻き卵",kcal:100,ing:["卵2個","だし大さじ3","みりん小さじ1","薄口しょうゆ小さじ1/2"],steps:["卵とだしを混ぜる","卵焼き器で少しずつ巻く","冷まして切る"]},
@@ -194,7 +183,6 @@ var SIDE_YELLOW=[
 {name:"コーンのかき揚げ",kcal:100,ing:["コーン40g","天ぷら粉大さじ2","塩少々"],steps:["コーンに天ぷら粉を絡める","まとめる","160度でゆっくり揚げる"]},
 {name:"かぼちゃのマッシュ",kcal:90,ing:["かぼちゃ60g","バター5g","塩こしょう少々","牛乳大さじ1"],steps:["かぼちゃを茹でる","バターと牛乳を加えてつぶす","塩こしょうで整える"]}
 ];
-
 var SIDE_WHITE=[
 {name:"大根の煮物",kcal:30,ing:["大根60g","だし150ml","しょうゆ小さじ1","みりん小さじ1"],steps:["大根を輪切りにして面取りする","だしと調味料で20分煮る","味をなじませる"]},
 {name:"豆腐のそぼろ",kcal:80,ing:["木綿豆腐60g","鶏ひき肉30g","しょうゆ小さじ1","みりん小さじ1"],steps:["豆腐の水切りをする","ひき肉と豆腐を炒める","しょうゆとみりんで水分を飛ばす"]},
@@ -210,14 +198,13 @@ var SIDE_WHITE=[
 {name:"かぶの煮物",kcal:30,ing:["かぶ60g","だし100ml","薄口しょうゆ小さじ1","みりん小さじ1"],steps:["かぶを切る","だしと調味料で煮る","やわらかくなったら完成"]},
 {name:"大根のおかか和え",kcal:25,ing:["大根60g","かつお節1パック","しょうゆ小さじ1"],steps:["大根を千切りにする","塩もみして水気を絞る","かつお節としょうゆで和える"]},
 {name:"山芋の短冊",kcal:50,ing:["山芋50g","しょうゆ小さじ1","わさび少々"],steps:["山芋を短冊切りにする","わさびしょうゆで和える","海苔を添える"]},
-{name:"豆腐の白和え",kcal:80,ing:["木綿豆腐50g","ほうれん草30g","ごま大さじ1","砂糖小さじ1"],steps:["豆腐の水切りをする","野菜を茹でて切る","豆腐とごまと砂糖とみそで和える"]},
+{name:"豆腐の白和え",kcal:80,ing:["木綿豆腐50g","ほうれん草30g","ごま大さじ1","みそ小さじ1"],steps:["豆腐の水切りをする","野菜を茹でて切る","豆腐とごまと砂糖とみそで和える"]},
 {name:"れんこんのはさみ揚げ",kcal:120,ing:["れんこん50g","豚ひき肉30g","片栗粉大さじ1"],steps:["れんこんを薄切りにする","ひき肉を挟む","片栗粉をまぶして揚げる"]},
 {name:"大根と油揚げの煮物",kcal:55,ing:["大根50g","油揚げ1/2枚","だし150ml","しょうゆ小さじ1"],steps:["大根と油揚げを切る","だしと調味料で煮る","味をなじませる"]},
 {name:"里芋のそぼろあん",kcal:90,ing:["里芋60g","鶏ひき肉30g","だし150ml","片栗粉小さじ1"],steps:["里芋を煮る","ひき肉のそぼろあんを作る","里芋にかける"]},
 {name:"ごぼうのパリパリ揚げ",kcal:80,ing:["ごぼう50g","片栗粉大さじ1","塩少々"],steps:["ごぼうをささがきにする","片栗粉をまぶす","170度でカリッと揚げる"]},
 {name:"白菜のごまあえ",kcal:30,ing:["白菜60g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["白菜を茹でる","水気を絞る","すりごまとしょうゆと砂糖で和える"]}
 ];
-
 var SIDE_RED=[
 {name:"トマトのマリネ",kcal:40,ing:["トマト50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["トマトを切る","オリーブ油と酢と塩こしょうで和える","バジルをちぎってのせる"]},
 {name:"にんじんのグラッセ",kcal:55,ing:["にんじん50g","バター5g","砂糖小さじ1","塩少々"],steps:["にんじんを花形に切る","バターと砂糖と塩で煮る","つやが出るまで煮詰める"]},
@@ -240,8 +227,7 @@ var SIDE_RED=[
 {name:"金時豆のトマト煮",kcal:70,ing:["金時豆40g","トマト缶50g","塩少々","オリーブ油小さじ1"],steps:["トマト缶を鍋に入れる","金時豆を加えて煮る","塩とオリーブ油で整える"]},
 {name:"甘酢れんこん",kcal:55,ing:["れんこん50g","酢大さじ1","砂糖大さじ1","クコの実適量"],steps:["れんこんを薄切りにして茹でる","酢と砂糖と塩で和える","クコの実を加える"]}
 ];
-</script>
-<script>
+
 var CAT_MAP={
   main:{data:MAIN,color:"#c0392b",label:"主菜",planKey:"planMain"},
   green:{data:SIDE_GREEN,color:"#27ae60",label:"緑の副菜",planKey:"planGreen"},
@@ -268,16 +254,46 @@ function renderCards(cat,dataArr){
     var d=dataArr[i];
     var realIdx=c.data.indexOf(d);
     var sel=(window[c.planKey]===d);
-    html+='<div class="menu-card'+(sel?' selected':'')+'" onclick="selectDish(\''+cat+'\','+realIdx+')">'
-      +'<div class="card-check">&#10003;</div>'
-      +'<div class="card-color" style="background:'+c.color+'"></div>'
+    var ingHtml='';
+    for(var a=0;a<d.ing.length;a++)ingHtml+='<div>'+d.ing[a]+'</div>';
+    var stepsHtml='';
+    for(var b=0;b<d.steps.length;b++){
+      stepsHtml+='<div class="acc-step"><div class="snum">'+(b+1)+'</div><div class="stxt">'+d.steps[b]+'</div></div>';
+    }
+    html+='<div class="menu-card'+(sel?' selected':'')+'" id="card-'+cat+'-'+realIdx+'">'
+      +'<div class="card-header" onclick="toggleAcc(\''+cat+'\','+realIdx+')">'
+      +'<div class="card-color-bar" style="background:'+c.color+'"></div>'
+      +'<div class="card-info">'
       +'<div class="card-name">'+d.name+'</div>'
       +'<div class="card-kcal">'+d.kcal+'kcal</div>'
-      +'<div class="card-meta">'+d.ing[0]+'など</div>'
-      +'<span class="detail-btn" onclick="showDetail(event,\''+cat+'\','+realIdx+')">詳細を見る &#9660;</span>'
+      +'</div>'
+      +'<div class="card-right">'
+      +'<button class="select-btn'+(sel?' on':'')+'" onclick="selectDish(event,\''+cat+'\','+realIdx+')">'+(sel?'選択済':'選択する')+'</button>'
+      +'<span style="font-size:10px;color:#2d4a2d;" id="arr-'+cat+'-'+realIdx+'">詳細 ▼</span>'
+      +'</div>'
+      +'</div>'
+      +'<div class="accordion-body" id="acc-'+cat+'-'+realIdx+'">'
+      +'<div class="acc-section">材料（1人分）</div>'
+      +'<div class="acc-ing">'+ingHtml+'</div>'
+      +'<div class="acc-section">作り方</div>'
+      +stepsHtml
+      +'</div>'
       +'</div>';
   }
   document.getElementById('grid-'+cat).innerHTML=html;
+}
+
+function toggleAcc(cat,idx){
+  var body=document.getElementById('acc-'+cat+'-'+idx);
+  var arr=document.getElementById('arr-'+cat+'-'+idx);
+  if(!body)return;
+  if(body.classList.contains('open')){
+    body.classList.remove('open');
+    if(arr)arr.textContent='詳細 ▼';
+  }else{
+    body.classList.add('open');
+    if(arr)arr.textContent='詳細 ▲';
+  }
 }
 
 function filterCards(cat,val){
@@ -286,40 +302,12 @@ function filterCards(cat,val){
   renderCards(cat,filtered);
 }
 
-function selectDish(cat,idx){
+function selectDish(e,cat,idx){
+  e.stopPropagation();
   var c=CAT_MAP[cat];
   var d=c.data[idx];
   window[c.planKey]=(window[c.planKey]===d)?null:d;
   renderCards(cat,c.data);
-}
-
-function showDetail(e,cat,idx){
-  e.stopPropagation();
-  var c=CAT_MAP[cat];
-  var d=c.data[idx];
-  var ingHtml='';
-  for(var i=0;i<d.ing.length;i++)ingHtml+='<div>'+d.ing[i]+'</div>';
-  var stepsHtml='';
-  for(var j=0;j<d.steps.length;j++){
-    stepsHtml+='<div class="drawer-step"><div class="step-num">'+(j+1)+'</div><div class="step-text">'+d.steps[j]+'</div></div>';
-  }
-  document.getElementById('drawer-content').innerHTML=
-    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
-    +'<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.color+'"></span>'
-    +'<span style="font-size:11px;color:#888">'+c.label+'</span></div>'
-    +'<div class="drawer-title">'+d.name+'</div>'
-    +'<div class="drawer-sub">'+d.kcal+'kcal / 1人前</div>'
-    +'<div class="drawer-section">材料（1人分）</div>'
-    +'<div class="drawer-ing">'+ingHtml+'</div>'
-    +'<div class="drawer-section">作り方</div>'
-    +stepsHtml;
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('overlay').classList.add('show');
-}
-
-function closeDrawer(){
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
 }
 
 function renderPlan(){
@@ -341,7 +329,7 @@ function renderPlan(){
     var c=cats[j];
     var d=window[c.key];
     html+='<div class="plan-section">'
-      +'<div class="plan-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.color+'"></span>'+c.label+'</div>';
+      +'<div class="plan-label"><span class="plan-dot" style="background:'+c.color+'"></span>'+c.label+'</div>';
     if(d){
       html+='<div class="plan-dish">'
         +'<div><div class="plan-dish-name">'+d.name+'</div>'
