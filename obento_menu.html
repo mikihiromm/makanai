@@ -12,9 +12,9 @@ header h1{font-size:16px;font-weight:700;letter-spacing:0.06em}
 header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 .tab-bar{display:flex;background:#fff;border-bottom:2px solid #e8e8e0;position:sticky;top:52px;z-index:99;overflow-x:auto}
 .tab-bar::-webkit-scrollbar{display:none}
-.tab{padding:11px 13px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888;-webkit-tap-highlight-color:transparent}
+.tab{padding:11px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888;-webkit-tap-highlight-color:transparent}
 .tab.active{color:#2d4a2d;border-bottom-color:#2d4a2d}
-.tab-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.tab-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle}
 .container{max-width:700px;margin:0 auto;padding:14px 12px 80px}
 .page{display:none}
 .page.active{display:block}
@@ -23,15 +23,15 @@ header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 .menu-list{display:flex;flex-direction:column;gap:8px}
 .menu-card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden}
 .menu-card.selected{border-color:#2d4a2d}
-.card-header{display:flex;align-items:center;gap:0;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:11px 12px}
+.card-header{display:flex;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;padding:11px 12px}
 .card-color-bar{width:4px;height:40px;border-radius:2px;margin-right:10px;flex-shrink:0}
 .card-info{flex:1;min-width:0}
 .card-name{font-size:14px;font-weight:600;color:#1a1a1a;line-height:1.3}
 .card-kcal{font-size:11px;font-weight:600;color:#c0392b;margin-top:2px}
-.card-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;margin-left:8px}
-.select-btn{font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #ddd;background:#fff;color:#666;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.card-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;margin-left:8px}
+.select-btn{font-size:11px;padding:4px 10px;border-radius:16px;border:1px solid #ddd;background:#fff;color:#666;cursor:pointer;white-space:nowrap}
 .select-btn.on{background:#2d4a2d;border-color:#2d4a2d;color:#fff}
-.toggle-btn{font-size:10px;color:#2d4a2d;cursor:pointer;white-space:nowrap;text-decoration:none;border:none;background:none;padding:0}
+.acc-arrow{font-size:10px;color:#2d4a2d}
 .accordion-body{display:none;padding:0 12px 12px 26px;border-top:1px solid #f0f0f0}
 .accordion-body.open{display:block}
 .acc-section{font-size:10px;font-weight:700;letter-spacing:0.08em;color:#aaa;margin:10px 0 5px}
@@ -39,6 +39,17 @@ header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 .acc-step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
 .snum{min-width:20px;height:20px;background:#2d4a2d;color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .stxt{font-size:12px;color:#444;line-height:1.7}
+.add-btn{display:flex;align-items:center;gap:6px;width:100%;padding:12px 14px;background:#fff;border:1px dashed #a8c5a8;border-radius:12px;color:#2d4a2d;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px}
+.my-form{display:none;background:#f0f8f0;border:1px solid #c5ddc5;border-radius:12px;padding:14px;margin-bottom:12px}
+.my-form label{font-size:11px;font-weight:700;color:#2d4a2d;display:block;margin-bottom:4px;margin-top:10px}
+.my-form label:first-of-type{margin-top:0}
+.my-form input,.my-form textarea{width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff}
+.my-form textarea{resize:vertical;min-height:70px;line-height:1.6}
+.my-form-hint{font-size:10px;color:#888;margin-top:3px}
+.my-form-btns{display:flex;gap:8px;margin-top:12px}
+.my-form-btns button{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-save-green{background:#2d4a2d;color:#fff;border:none}
+.btn-cancel-gray{background:#fff;color:#888;border:1px solid #ddd}
 .plan-section{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin-bottom:12px}
 .plan-label{font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .plan-dot{display:inline-block;width:10px;height:10px;border-radius:50%}
@@ -51,16 +62,49 @@ header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 .total-label{font-size:12px;color:#a8c5a8;margin-bottom:4px}
 .total-val{font-size:24px;font-weight:700}
 .btn-clear{width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;color:#888;margin-top:6px}
-@media(max-width:380px){.card-name{font-size:13px}}
+/* カレンダー */
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-month-label{font-size:16px;font-weight:700;color:#2d4a2d}
+.cal-nav-btn{background:#fff;border:1px solid #ddd;border-radius:8px;padding:6px 14px;font-size:15px;cursor:pointer;color:#2d4a2d}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:16px}
+.cal-dow{text-align:center;font-size:10px;font-weight:700;color:#888;padding:4px 0}
+.cal-dow:first-child{color:#e74c3c}
+.cal-dow:last-child{color:#2980b9}
+.cal-cell{min-height:60px;border:1px solid #eee;border-radius:8px;padding:4px 3px;cursor:pointer;background:#fff;-webkit-tap-highlight-color:transparent}
+.cal-cell.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-cell.today{border-color:#2d4a2d;background:#f0f8f0}
+.cal-cell.has-plan{border-color:#a8c5a8;background:#fafff8}
+.cal-dnum{font-size:11px;font-weight:600;color:#333;margin-bottom:2px}
+.cal-dnum.sun{color:#e74c3c}
+.cal-dnum.sat{color:#2980b9}
+.cal-dots{display:flex;flex-direction:column;gap:1px}
+.cal-dot-text{font-size:7px;line-height:1.4;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.cal-list-title{font-size:12px;font-weight:700;color:#2d4a2d;margin:16px 0 8px}
+.cal-list-item{background:#fff;border:1px solid #eee;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.cal-list-date{font-size:12px;font-weight:700;color:#555;margin-bottom:5px}
+.cal-list-dish{font-size:11px;line-height:1.8}
+/* モーダル */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;display:none;align-items:flex-end}
+.modal-bg.show{display:flex}
+.modal-box{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:88vh;overflow-y:auto;padding:0 16px 40px}
+.modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 14px}
+.modal-title{font-size:15px;font-weight:700;color:#2d4a2d;margin-bottom:14px}
+.modal-sec{font-size:11px;font-weight:700;color:#888;letter-spacing:0.08em;margin:12px 0 5px}
+.modal-sel{width:100%;font-size:13px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-family:inherit;outline:none}
+.modal-btns{display:flex;gap:8px;margin-top:16px}
+.modal-btns button{flex:1;padding:11px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none}
+.mbtn-save{background:#2d4a2d;color:#fff}
+.mbtn-clear{background:#fff;color:#c0392b;border:1px solid #f0b0b0 !important}
+@media(max-width:380px){.card-name{font-size:13px}.tab{padding:10px 9px;font-size:11px}}
 </style>
 </head>
 <body>
 <header>
   <h1>お弁当献立プランナー</h1>
-  <p>主菜1品＋副菜3品をセレクト</p>
+  <p>主菜1品＋副菜3品 ＋ カレンダー管理</p>
 </header>
 <div class="tab-bar">
-  <div class="tab active" onclick="showPage('plan')">献立プラン</div>
+  <div class="tab active" onclick="showPage('plan')">献立</div>
   <div class="tab" onclick="showPage('calendar')"><span class="tab-dot" style="background:#8e44ad"></span>カレンダー</div>
   <div class="tab" onclick="showPage('main')"><span class="tab-dot" style="background:#c0392b"></span>主菜</div>
   <div class="tab" onclick="showPage('green')"><span class="tab-dot" style="background:#27ae60"></span>緑</div>
@@ -70,14 +114,58 @@ header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 </div>
 <div class="container">
   <div class="page active" id="page-plan"><div id="plan-content"></div></div>
-  <div class="page" id="page-main"><input class="search-box" type="text" placeholder="主菜を検索..." oninput="filterCards('main',this.value)"><div class="menu-list" id="grid-main"></div></div>
-  <div class="page" id="page-green"><input class="search-box" type="text" placeholder="緑の副菜を検索..." oninput="filterCards('green',this.value)"><div class="menu-list" id="grid-green"></div></div>
-  <div class="page" id="page-yellow"><input class="search-box" type="text" placeholder="黄色の副菜を検索..." oninput="filterCards('yellow',this.value)"><div class="menu-list" id="grid-yellow"></div></div>
-  <div class="page" id="page-white"><input class="search-box" type="text" placeholder="白系の副菜を検索..." oninput="filterCards('white',this.value)"><div class="menu-list" id="grid-white"></div></div>
-  <div class="page" id="page-calendar"><div id="calendar-content"></div></div>
-  <div class="page" id="page-red"><input class="search-box" type="text" placeholder="赤系の副菜を検索..." oninput="filterCards('red',this.value)"><div class="menu-list" id="grid-red"></div></div>
+  <div class="page" id="page-calendar"><div id="cal-content"></div></div>
+  <div class="page" id="page-main">
+    <button class="add-btn" onclick="openMyForm('main')"><span style="font-size:20px;line-height:1">+</span> マイレシピを追加</button>
+    <div class="my-form" id="my-form-main"></div>
+    <input class="search-box" type="text" placeholder="主菜を検索..." oninput="filterCards('main',this.value)">
+    <div class="menu-list" id="grid-main"></div>
+  </div>
+  <div class="page" id="page-green">
+    <button class="add-btn" onclick="openMyForm('green')"><span style="font-size:20px;line-height:1">+</span> マイレシピを追加</button>
+    <div class="my-form" id="my-form-green"></div>
+    <input class="search-box" type="text" placeholder="緑の副菜を検索..." oninput="filterCards('green',this.value)">
+    <div class="menu-list" id="grid-green"></div>
+  </div>
+  <div class="page" id="page-yellow">
+    <button class="add-btn" onclick="openMyForm('yellow')"><span style="font-size:20px;line-height:1">+</span> マイレシピを追加</button>
+    <div class="my-form" id="my-form-yellow"></div>
+    <input class="search-box" type="text" placeholder="黄色の副菜を検索..." oninput="filterCards('yellow',this.value)">
+    <div class="menu-list" id="grid-yellow"></div>
+  </div>
+  <div class="page" id="page-white">
+    <button class="add-btn" onclick="openMyForm('white')"><span style="font-size:20px;line-height:1">+</span> マイレシピを追加</button>
+    <div class="my-form" id="my-form-white"></div>
+    <input class="search-box" type="text" placeholder="白系の副菜を検索..." oninput="filterCards('white',this.value)">
+    <div class="menu-list" id="grid-white"></div>
+  </div>
+  <div class="page" id="page-red">
+    <button class="add-btn" onclick="openMyForm('red')"><span style="font-size:20px;line-height:1">+</span> マイレシピを追加</button>
+    <div class="my-form" id="my-form-red"></div>
+    <input class="search-box" type="text" placeholder="赤系の副菜を検索..." oninput="filterCards('red',this.value)">
+    <div class="menu-list" id="grid-red"></div>
+  </div>
 </div>
+
+<!-- カレンダーモーダル -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sec">主菜</div><select class="modal-sel" id="msel-main"></select>
+    <div class="modal-sec">緑の副菜</div><select class="modal-sel" id="msel-green"></select>
+    <div class="modal-sec">黄色の副菜</div><select class="modal-sel" id="msel-yellow"></select>
+    <div class="modal-sec">白系の副菜</div><select class="modal-sel" id="msel-white"></select>
+    <div class="modal-sec">赤系の副菜</div><select class="modal-sel" id="msel-red"></select>
+    <div class="modal-btns">
+      <button class="mbtn-clear" onclick="clearDay()">この日をクリア</button>
+      <button class="mbtn-save" onclick="saveDay()">保存する</button>
+    </div>
+  </div>
+</div>
+
 <script>
+// ===== データ =====
 var MAIN=[
 {name:"鶏の照り焼き",kcal:210,ing:["鶏もも肉80g","しょうゆ大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["鶏肉を一口大に切り下味をつける","フライパンで皮面から焼く","たれを加えて煮絡める"]},
 {name:"豚の生姜焼き",kcal:220,ing:["豚こま60g","しょうが1片","しょうゆ大さじ1","みりん大さじ1"],steps:["豚肉をたれに漬ける","フライパンで炒める","たれを絡めてしっかり火を通す"]},
@@ -89,7 +177,7 @@ var MAIN=[
 {name:"サバの味噌煮",kcal:190,ing:["サバ60g","味噌大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["サバに塩を振り熱湯をかける","鍋でたれを煮立てサバを入れる","落とし蓋をして10分煮る"]},
 {name:"卵焼き甘め",kcal:120,ing:["卵2個","だし大さじ2","砂糖小さじ1","しょうゆ小さじ1/2"],steps:["卵をよく溶いてだしと調味料を混ぜる","卵焼き器で薄焼きにして巻く","粗熱をとって切る"]},
 {name:"肉団子甘酢あん",kcal:230,ing:["豚ひき肉70g","玉ねぎ1/4個","酢大さじ1","砂糖大さじ1","ケチャップ大さじ1"],steps:["ひき肉に調味料を混ぜ丸める","油で揚げる","甘酢あんを絡める"]},
-{name:"エビのマヨ炒め",kcal:180,ing:["エビ60g","マヨネーズ大さじ1","ケチャップ小さじ1","レモン汁少々"],steps:["エビに下味をつけ炒める","マヨネーズとケチャップを合わせる","エビと絡める"]},
+{name:"エビのマヨ炒め",kcal:180,ing:["エビ60g","マヨネーズ大さじ1","ケチャップ小さじ1"],steps:["エビに下味をつけ炒める","マヨネーズとケチャップを合わせる","エビと絡める"]},
 {name:"牛肉の甘辛炒め",kcal:250,ing:["牛切り落とし70g","しょうゆ大さじ1","みりん大さじ1","白ごま適量"],steps:["牛肉を炒める","たれを加える","ごまを振って仕上げる"]},
 {name:"豚バラいんげん巻き",kcal:200,ing:["豚バラ60g","いんげん50g","塩こしょう少々"],steps:["いんげんを茹でる","豚バラで巻いて塩こしょう","フライパンで全面焼く"]},
 {name:"鶏むね肉のピカタ",kcal:190,ing:["鶏むね肉70g","卵1個","粉チーズ大さじ1","塩こしょう少々"],steps:["鶏むね肉を薄く切り下味をつける","卵と粉チーズを混ぜてくぐらせる","バターで両面焼く"]},
@@ -142,7 +230,7 @@ var MAIN=[
 {name:"サバの竜田揚げ",kcal:200,ing:["サバ60g","しょうゆ大さじ1","みりん大さじ1","片栗粉大さじ2"],steps:["サバを漬ける","片栗粉をまぶす","170度で揚げる"]}
 ];
 var SIDE_GREEN=[
-{name:"ほうれん草のごまあえ",kcal:45,ing:["ほうれん草50g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["ほうれん草を塩茹でする","水気を絞り切る","ごまとしょうゆと砂糖で和える"]},
+{name:"ほうれん草のごまあえ",kcal:45,ing:["ほうれん草50g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["ほうれん草を塩茹でする","水気を絞る","ごまとしょうゆと砂糖で和える"]},
 {name:"小松菜の煮びたし",kcal:35,ing:["小松菜50g","だし100ml","しょうゆ小さじ1","みりん小さじ1"],steps:["小松菜を4cm切りにする","だしとしょうゆとみりんで煮る","冷まして味をなじませる"]},
 {name:"ブロッコリーのマヨあえ",kcal:70,ing:["ブロッコリー50g","マヨネーズ大さじ1","塩こしょう少々"],steps:["ブロッコリーを小房にして茹でる","水気を切る","マヨネーズと塩こしょうで和える"]},
 {name:"いんげんのごま炒め",kcal:50,ing:["いんげん50g","ごま油小さじ1","しょうゆ小さじ1","ごま適量"],steps:["いんげんを茹でて斜め切り","ごま油で炒める","しょうゆとごまで仕上げる"]},
@@ -208,9 +296,9 @@ var SIDE_WHITE=[
 {name:"白菜のごまあえ",kcal:30,ing:["白菜60g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["白菜を茹でる","水気を絞る","すりごまとしょうゆと砂糖で和える"]}
 ];
 var SIDE_RED=[
-{name:"トマトのマリネ",kcal:40,ing:["トマト50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["トマトを切る","オリーブ油と酢と塩こしょうで和える","バジルをちぎってのせる"]},
+{name:"トマトのマリネ",kcal:40,ing:["トマト50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["トマトを切る","オリーブ油と酢と塩こしょうで和える","バジルをのせる"]},
 {name:"にんじんのグラッセ",kcal:55,ing:["にんじん50g","バター5g","砂糖小さじ1","塩少々"],steps:["にんじんを花形に切る","バターと砂糖と塩で煮る","つやが出るまで煮詰める"]},
-{name:"赤パプリカのマリネ",kcal:35,ing:["赤パプリカ50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["パプリカを焼いて皮を剥く","細切りにする","オリーブ油と酢と塩こしょうで和える"]},
+{name:"赤パプリカのマリネ",kcal:35,ing:["赤パプリカ50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["パプリカを焼いて皮を剥く","細切りにする","オリーブ油と酢で和える"]},
 {name:"にんじんのきんぴら",kcal:50,ing:["にんじん50g","ごま油小さじ1","しょうゆ小さじ1","みりん小さじ1"],steps:["にんじんを千切りにする","ごま油で炒める","しょうゆとみりんとごまで仕上げる"]},
 {name:"梅の甘露煮",kcal:25,ing:["梅干し2個","砂糖大さじ1","みりん大さじ1"],steps:["梅干しを水に漬けて塩抜きする","砂糖とみりんで煮る","つやが出るまで煮詰める"]},
 {name:"タコのマリネ",kcal:60,ing:["ゆでタコ40g","トマト30g","オリーブ油小さじ1","レモン汁少々"],steps:["タコとトマトを切る","オリーブ油とレモン汁で和える","冷蔵庫で冷やす"]},
@@ -230,72 +318,99 @@ var SIDE_RED=[
 {name:"甘酢れんこん",kcal:55,ing:["れんこん50g","酢大さじ1","砂糖大さじ1","クコの実適量"],steps:["れんこんを薄切りにして茹でる","酢と砂糖と塩で和える","クコの実を加える"]}
 ];
 
+// ===== 設定 =====
 var CAT_MAP={
-  main:{data:MAIN,color:"#c0392b",label:"主菜",planKey:"planMain"},
-  green:{data:SIDE_GREEN,color:"#27ae60",label:"緑の副菜",planKey:"planGreen"},
-  yellow:{data:SIDE_YELLOW,color:"#e67e22",label:"黄色の副菜",planKey:"planYellow"},
-  white:{data:SIDE_WHITE,color:"#95a5a6",label:"白系の副菜",planKey:"planWhite"},
-  red:{data:SIDE_RED,color:"#e74c3c",label:"赤系の副菜",planKey:"planRed"}
+  main:{data:MAIN,color:"#c0392b",label:"主菜"},
+  green:{data:SIDE_GREEN,color:"#27ae60",label:"緑の副菜"},
+  yellow:{data:SIDE_YELLOW,color:"#e67e22",label:"黄色の副菜"},
+  white:{data:SIDE_WHITE,color:"#95a5a6",label:"白系の副菜"},
+  red:{data:SIDE_RED,color:"#e74c3c",label:"赤系の副菜"}
 };
+var PLAN_KEYS={main:'planMain',green:'planGreen',yellow:'planYellow',white:'planWhite',red:'planRed'};
 window.planMain=null;window.planGreen=null;window.planYellow=null;window.planWhite=null;window.planRed=null;
 
+var MY_KEY='obento_my_menus';
+var CAL_KEY='obento_calendar';
+
+function loadMy(){try{var s=localStorage.getItem(MY_KEY);return s?JSON.parse(s):{main:[],green:[],yellow:[],white:[],red:[]};}catch(e){return{main:[],green:[],yellow:[],white:[],red:[]};}}
+function saveMy(d){try{localStorage.setItem(MY_KEY,JSON.stringify(d));}catch(e){}}
+function loadCal(){try{var s=localStorage.getItem(CAL_KEY);return s?JSON.parse(s):{};}catch(e){return{};}}
+function saveCal(d){try{localStorage.setItem(CAL_KEY,JSON.stringify(d));}catch(e){}}
+
+// ===== タブ切替 =====
+var PAGE_ORDER=['plan','calendar','main','green','yellow','white','red'];
 function showPage(id){
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById('page-'+id).classList.add('active');
-  var order=['plan','calendar','main','green','yellow','white','red'];
-  document.querySelectorAll('.tab')[order.indexOf(id)].classList.add('active');
+  var idx=PAGE_ORDER.indexOf(id);
+  if(idx>=0)document.querySelectorAll('.tab')[idx].classList.add('active');
+  if(id==='calendar')renderCal();
   if(id==='plan')renderPlan();
 }
 
+// ===== メニューカード描画 =====
 function renderCards(cat,dataArr){
   var c=CAT_MAP[cat];
+  var pk=PLAN_KEYS[cat];
+  var myData=loadMy();
+  var myList=myData[cat]||[];
   if(!dataArr)dataArr=c.data;
   var html='';
+  // マイレシピ
+  if(myList.length){
+    html+='<div style="font-size:11px;font-weight:700;color:'+c.color+';margin-bottom:6px">MY RECIPE</div>';
+    for(var m=0;m<myList.length;m++){
+      var dm=myList[m];
+      var selm=(window[pk]&&window[pk]._isMy&&window[pk]._myIdx===m&&window[pk]._myCat===cat);
+      var imgm='';for(var a=0;a<dm.ing.length;a++)imgm+='<div>'+dm.ing[a]+'</div>';
+      var stm='';for(var b=0;b<dm.steps.length;b++)stm+='<div class="acc-step"><div class="snum">'+(b+1)+'</div><div class="stxt">'+dm.steps[b]+'</div></div>';
+      html+='<div class="menu-card'+(selm?' selected':'')+'" id="mycard-'+cat+'-'+m+'" style="border-left:3px solid '+c.color+'">'
+        +'<div class="card-header" onclick="toggleAcc(\'myacc-'+cat+'-'+m+'\')">'
+        +'<div class="card-color-bar" style="background:'+c.color+'"></div>'
+        +'<div class="card-info"><div class="card-name">'+dm.name+' <span style="font-size:9px;background:'+c.color+';color:#fff;padding:1px 5px;border-radius:8px">MY</span></div>'
+        +'<div class="card-kcal">'+(dm.kcal?dm.kcal+'kcal':'カロリー未設定')+'</div></div>'
+        +'<div class="card-right">'
+        +'<button class="select-btn'+(selm?' on':'')+'" onclick="selectMyDish(event,\''+cat+'\','+m+')">'+(selm?'選択済':'選択する')+'</button>'
+        +'<span class="acc-arrow" id="arr-myacc-'+cat+'-'+m+'">詳細 ▼</span>'
+        +'</div></div>'
+        +'<div class="accordion-body" id="myacc-'+cat+'-'+m+'">'
+        +'<div class="acc-section">材料</div><div class="acc-ing">'+imgm+'</div>'
+        +'<div class="acc-section">作り方</div>'+stm
+        +'<button onclick="deleteMyDish(\''+cat+'\','+m+')" style="margin-top:10px;font-size:11px;color:#c0392b;background:#fff;border:1px solid #f0b0b0;border-radius:8px;padding:5px 12px;cursor:pointer">削除</button>'
+        +'</div></div>';
+    }
+    html+='<hr style="border:none;border-top:1px dashed #e0e0e0;margin:10px 0">';
+  }
+  // 通常レシピ
   for(var i=0;i<dataArr.length;i++){
     var d=dataArr[i];
-    var realIdx=c.data.indexOf(d);
-    var sel=(window[c.planKey]===d);
-    var ingHtml='';
-    for(var a=0;a<d.ing.length;a++)ingHtml+='<div>'+d.ing[a]+'</div>';
-    var stepsHtml='';
-    for(var b=0;b<d.steps.length;b++){
-      stepsHtml+='<div class="acc-step"><div class="snum">'+(b+1)+'</div><div class="stxt">'+d.steps[b]+'</div></div>';
-    }
-    html+='<div class="menu-card'+(sel?' selected':'')+'" id="card-'+cat+'-'+realIdx+'">'
-      +'<div class="card-header" onclick="toggleAcc(\''+cat+'\','+realIdx+')">'
+    var ri=c.data.indexOf(d);
+    var sel=(window[pk]===d);
+    var igh='';for(var a2=0;a2<d.ing.length;a2++)igh+='<div>'+d.ing[a2]+'</div>';
+    var sth='';for(var b2=0;b2<d.steps.length;b2++)sth+='<div class="acc-step"><div class="snum">'+(b2+1)+'</div><div class="stxt">'+d.steps[b2]+'</div></div>';
+    html+='<div class="menu-card'+(sel?' selected':'')+'" id="card-'+cat+'-'+ri+'">'
+      +'<div class="card-header" onclick="toggleAcc(\'acc-'+cat+'-'+ri+'\')">'
       +'<div class="card-color-bar" style="background:'+c.color+'"></div>'
-      +'<div class="card-info">'
-      +'<div class="card-name">'+d.name+'</div>'
-      +'<div class="card-kcal">'+d.kcal+'kcal</div>'
-      +'</div>'
+      +'<div class="card-info"><div class="card-name">'+d.name+'</div><div class="card-kcal">'+d.kcal+'kcal</div></div>'
       +'<div class="card-right">'
-      +'<button class="select-btn'+(sel?' on':'')+'" onclick="selectDish(event,\''+cat+'\','+realIdx+')">'+(sel?'選択済':'選択する')+'</button>'
-      +'<span style="font-size:10px;color:#2d4a2d;" id="arr-'+cat+'-'+realIdx+'">詳細 ▼</span>'
-      +'</div>'
-      +'</div>'
-      +'<div class="accordion-body" id="acc-'+cat+'-'+realIdx+'">'
-      +'<div class="acc-section">材料（1人分）</div>'
-      +'<div class="acc-ing">'+ingHtml+'</div>'
-      +'<div class="acc-section">作り方</div>'
-      +stepsHtml
-      +'</div>'
-      +'</div>';
+      +'<button class="select-btn'+(sel?' on':'')+'" onclick="selectDish(event,\''+cat+'\','+ri+')">'+(sel?'選択済':'選択する')+'</button>'
+      +'<span class="acc-arrow" id="arr-acc-'+cat+'-'+ri+'">詳細 ▼</span>'
+      +'</div></div>'
+      +'<div class="accordion-body" id="acc-'+cat+'-'+ri+'">'
+      +'<div class="acc-section">材料（1人分）</div><div class="acc-ing">'+igh+'</div>'
+      +'<div class="acc-section">作り方</div>'+sth
+      +'</div></div>';
   }
   document.getElementById('grid-'+cat).innerHTML=html;
 }
 
-function toggleAcc(cat,idx){
-  var body=document.getElementById('acc-'+cat+'-'+idx);
-  var arr=document.getElementById('arr-'+cat+'-'+idx);
+function toggleAcc(id){
+  var body=document.getElementById(id);
+  var arr=document.getElementById('arr-'+id);
   if(!body)return;
-  if(body.classList.contains('open')){
-    body.classList.remove('open');
-    if(arr)arr.textContent='詳細 ▼';
-  }else{
-    body.classList.add('open');
-    if(arr)arr.textContent='詳細 ▲';
-  }
+  var open=body.classList.toggle('open');
+  if(arr)arr.textContent=open?'詳細 ▲':'詳細 ▼';
 }
 
 function filterCards(cat,val){
@@ -306,12 +421,75 @@ function filterCards(cat,val){
 
 function selectDish(e,cat,idx){
   e.stopPropagation();
-  var c=CAT_MAP[cat];
-  var d=c.data[idx];
-  window[c.planKey]=(window[c.planKey]===d)?null:d;
-  renderCards(cat,c.data);
+  var pk=PLAN_KEYS[cat];
+  var d=CAT_MAP[cat].data[idx];
+  window[pk]=(window[pk]===d)?null:d;
+  renderCards(cat);
 }
 
+function selectMyDish(e,cat,myIdx){
+  e.stopPropagation();
+  var pk=PLAN_KEYS[cat];
+  var d=loadMy()[cat][myIdx];
+  if(window[pk]&&window[pk]._isMy&&window[pk]._myIdx===myIdx&&window[pk]._myCat===cat){
+    window[pk]=null;
+  }else{
+    d._isMy=true;d._myIdx=myIdx;d._myCat=cat;
+    window[pk]=d;
+  }
+  renderCards(cat);
+}
+
+function deleteMyDish(cat,myIdx){
+  if(!confirm('このレシピを削除しますか？'))return;
+  var data=loadMy();
+  data[cat].splice(myIdx,1);
+  saveMy(data);
+  var pk=PLAN_KEYS[cat];
+  if(window[pk]&&window[pk]._isMy&&window[pk]._myIdx===myIdx)window[pk]=null;
+  renderCards(cat);
+}
+
+// ===== マイレシピ追加フォーム =====
+var CAT_LABELS={main:'主菜',green:'緑の副菜',yellow:'黄色の副菜',white:'白系の副菜',red:'赤系の副菜'};
+function openMyForm(cat){
+  var f=document.getElementById('my-form-'+cat);
+  var c=CAT_MAP[cat];
+  f.innerHTML='<div style="font-size:13px;font-weight:700;color:'+c.color+';margin-bottom:10px">'+CAT_LABELS[cat]+'を追加</div>'
+    +'<label>料理名 <span style="color:#c0392b">*</span></label>'
+    +'<input type="text" id="myn-'+cat+'" placeholder="例：鶏の照り焼き">'
+    +'<label>カロリー（kcal）</label>'
+    +'<input type="number" id="mykcal-'+cat+'" placeholder="例：200" min="0">'
+    +'<label>材料（1行に1つ）<span style="color:#c0392b">*</span></label>'
+    +'<textarea id="mying-'+cat+'" placeholder="鶏もも肉80g\nしょうゆ大さじ1\nみりん大さじ1" rows="4"></textarea>'
+    +'<label>作り方（1行に1手順）<span style="color:#c0392b">*</span></label>'
+    +'<textarea id="mysteps-'+cat+'" placeholder="鶏肉を一口大に切る\nフライパンで焼く\nたれを絡める" rows="4"></textarea>'
+    +'<div class="my-form-btns">'
+    +'<button class="btn-cancel-gray" onclick="closeMyForm(\''+cat+'\')">キャンセル</button>'
+    +'<button class="btn-save-green" onclick="saveMyForm(\''+cat+'\')">保存する</button>'
+    +'</div>';
+  f.style.display='block';
+  document.getElementById('myn-'+cat).focus();
+}
+
+function closeMyForm(cat){document.getElementById('my-form-'+cat).style.display='none';}
+
+function saveMyForm(cat){
+  var name=document.getElementById('myn-'+cat).value.trim();
+  var kcal=parseInt(document.getElementById('mykcal-'+cat).value)||0;
+  var ing=document.getElementById('mying-'+cat).value.trim().split('\n').map(function(s){return s.trim();}).filter(function(s){return s;});
+  var steps=document.getElementById('mysteps-'+cat).value.trim().split('\n').map(function(s){return s.trim();}).filter(function(s){return s;});
+  if(!name){alert('料理名を入力してください');return;}
+  if(!ing.length){alert('材料を入力してください');return;}
+  if(!steps.length){alert('作り方を入力してください');return;}
+  var data=loadMy();
+  data[cat].push({name:name,kcal:kcal,ing:ing,steps:steps});
+  saveMy(data);
+  closeMyForm(cat);
+  renderCards(cat);
+}
+
+// ===== 献立プラン =====
 function renderPlan(){
   var cats=[
     {key:'planMain',label:'主菜',color:'#c0392b'},
@@ -321,27 +499,21 @@ function renderPlan(){
     {key:'planRed',label:'赤系の副菜',color:'#e74c3c'}
   ];
   var total=0;
-  for(var i=0;i<cats.length;i++){if(window[cats[i].key])total+=window[cats[i].key].kcal;}
-  var html='<div class="total-box">'
-    +'<div><div class="total-label">合計カロリー（主菜＋副菜）</div>'
-    +'<div class="total-val">'+(total?total+' kcal':'-- kcal')+'</div></div>'
-    +'<div style="font-size:11px;color:#a8c5a8;text-align:right">目標<br>500〜700kcal</div>'
-    +'</div>';
-  for(var j=0;j<cats.length;j++){
-    var c=cats[j];
+  cats.forEach(function(c){if(window[c.key])total+=window[c.key].kcal||0;});
+  var html='<div class="total-box"><div><div class="total-label">合計カロリー</div><div class="total-val">'+(total?total+' kcal':'-- kcal')+'</div></div>'
+    +'<div style="font-size:11px;color:#a8c5a8;text-align:right">目標<br>500〜700kcal</div></div>';
+  cats.forEach(function(c){
     var d=window[c.key];
-    html+='<div class="plan-section">'
-      +'<div class="plan-label"><span class="plan-dot" style="background:'+c.color+'"></span>'+c.label+'</div>';
+    html+='<div class="plan-section"><div class="plan-label"><span class="plan-dot" style="background:'+c.color+'"></span>'+c.label+'</div>';
     if(d){
-      html+='<div class="plan-dish">'
-        +'<div><div class="plan-dish-name">'+d.name+'</div>'
-        +'<div class="plan-dish-meta">'+d.ing.slice(0,2).join('・')+'など</div></div>'
-        +'<div class="plan-dish-kcal">'+d.kcal+'kcal</div></div>';
+      html+='<div class="plan-dish"><div><div class="plan-dish-name">'+d.name+'</div>'
+        +'<div class="plan-dish-meta">'+(d.ing?d.ing.slice(0,2).join('・')+'など':'')+'</div></div>'
+        +'<div class="plan-dish-kcal">'+(d.kcal?d.kcal+'kcal':'')+'</div></div>';
     }else{
       html+='<div class="empty-plan">未選択 — '+c.label+'タブから選んでください</div>';
     }
     html+='</div>';
-  }
+  });
   if(total)html+='<button class="btn-clear" onclick="clearPlan()">プランをリセット</button>';
   document.getElementById('plan-content').innerHTML=html;
 }
@@ -351,464 +523,140 @@ function clearPlan(){
   renderPlan();
 }
 
-renderCards('main');renderCards('green');renderCards('yellow');renderCards('white');renderCards('red');
-renderPlan();
+// ===== カレンダー =====
+var calY,calM;
+function dkey(y,m,d){return y+'-'+(m<10?'0'+m:m)+'-'+(d<10?'0'+d:d);}
 
-// ===== マイメニュー機能 =====
-var MY_STORAGE_KEY = 'obento_my_menus';
+function renderCal(){
+  var now=new Date();
+  if(!calY){calY=now.getFullYear();calM=now.getMonth()+1;}
+  var data=loadCal();
+  var first=new Date(calY,calM-1,1).getDay();
+  var last=new Date(calY,calM,0).getDate();
+  var todayKey=dkey(now.getFullYear(),now.getMonth()+1,now.getDate());
+  var KC={main:'#c0392b',green:'#27ae60',yellow:'#e67e22',white:'#95a5a6',red:'#e74c3c'};
+  var KL={main:'主',green:'緑',yellow:'黄',white:'白',red:'赤'};
 
-function loadMyMenus() {
-  try {
-    var s = localStorage.getItem(MY_STORAGE_KEY);
-    return s ? JSON.parse(s) : {main:[],green:[],yellow:[],white:[],red:[]};
-  } catch(e) { return {main:[],green:[],yellow:[],white:[],red:[]}; }
-}
-
-function saveMyMenus(data) {
-  try { localStorage.setItem(MY_STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
-}
-
-function addMyMenu(cat) {
-  var name = document.getElementById('my-name-'+cat).value.trim();
-  var kcal = parseInt(document.getElementById('my-kcal-'+cat).value) || 0;
-  var ingRaw = document.getElementById('my-ing-'+cat).value.trim();
-  var stepsRaw = document.getElementById('my-steps-'+cat).value.trim();
-  if (!name) { alert('料理名を入力してください'); return; }
-  if (!ingRaw) { alert('材料を入力してください'); return; }
-  if (!stepsRaw) { alert('作り方を入力してください'); return; }
-  var ing = ingRaw.split('\n').map(function(s){return s.trim();}).filter(function(s){return s;});
-  var steps = stepsRaw.split('\n').map(function(s){return s.trim();}).filter(function(s){return s;});
-  var data = loadMyMenus();
-  data[cat].push({name:name, kcal:kcal, ing:ing, steps:steps, my:true});
-  saveMyMenus(data);
-  closeMyForm(cat);
-  renderCards(cat);
-  alert(name + ' を追加しました！');
-}
-
-function deleteMyMenu(cat, myIdx) {
-  if (!confirm('このレシピを削除しますか？')) return;
-  var data = loadMyMenus();
-  data[cat].splice(myIdx, 1);
-  saveMyMenus(data);
-  renderCards(cat);
-}
-
-function openMyForm(cat) {
-  document.getElementById('my-form-'+cat).style.display='block';
-  document.getElementById('my-name-'+cat).value='';
-  document.getElementById('my-kcal-'+cat).value='';
-  document.getElementById('my-ing-'+cat).value='';
-  document.getElementById('my-steps-'+cat).value='';
-  document.getElementById('my-name-'+cat).focus();
-}
-
-function closeMyForm(cat) {
-  document.getElementById('my-form-'+cat).style.display='none';
-}
-
-// renderCardsをオーバーライドしてマイメニューも含める
-var _origRenderCards = renderCards;
-renderCards = function(cat, dataArr) {
-  var c = CAT_MAP[cat];
-  var myData = loadMyMenus();
-  var myList = myData[cat] || [];
-  var baseList = dataArr || c.data;
-
-  var html = '';
-
-  // マイメニューを先頭に表示
-  if (myList.length > 0) {
-    html += '<div style="font-size:11px;font-weight:700;color:'+c.color+';letter-spacing:0.08em;margin-bottom:6px;margin-top:4px">MY RECIPE ('+myList.length+'品)</div>';
-    for (var m = 0; m < myList.length; m++) {
-      var d = myList[m];
-      var myIdx = m;
-      var ingHtml = '';
-      for (var a = 0; a < d.ing.length; a++) ingHtml += '<div>' + d.ing[a] + '</div>';
-      var stepsHtml = '';
-      for (var b = 0; b < d.steps.length; b++) {
-        stepsHtml += '<div class="acc-step"><div class="snum">'+(b+1)+'</div><div class="stxt">'+d.steps[b]+'</div></div>';
-      }
-      var sel = false;
-      if (window[c.planKey] && window[c.planKey]._myIdx === myIdx && window[c.planKey]._myCat === cat) sel = true;
-      html += '<div class="menu-card'+(sel?' selected':'')+'" id="mycard-'+cat+'-'+myIdx+'" style="border-left:3px solid '+c.color+'">'
-        + '<div class="card-header" onclick="toggleMyAcc(\''+cat+'\','+myIdx+')">'
-        + '<div class="card-color-bar" style="background:'+c.color+'"></div>'
-        + '<div class="card-info">'
-        + '<div class="card-name">'+d.name+' <span style="font-size:9px;background:'+c.color+';color:#fff;padding:1px 5px;border-radius:8px;vertical-align:middle">MY</span></div>'
-        + '<div class="card-kcal">'+(d.kcal?d.kcal+'kcal':'カロリー未設定')+'</div>'
-        + '</div>'
-        + '<div class="card-right">'
-        + '<button class="select-btn'+(sel?' on':'')+'" onclick="selectMyDish(event,\''+cat+'\','+myIdx+')">'+(sel?'選択済':'選択する')+'</button>'
-        + '<span style="font-size:10px;color:#2d4a2d;" id="myarr-'+cat+'-'+myIdx+'">詳細 ▼</span>'
-        + '</div>'
-        + '</div>'
-        + '<div class="accordion-body" id="myacc-'+cat+'-'+myIdx+'">'
-        + '<div class="acc-section">材料</div>'
-        + '<div class="acc-ing">'+ingHtml+'</div>'
-        + '<div class="acc-section">作り方</div>'
-        + stepsHtml
-        + '<button onclick="deleteMyMenu(\''+cat+'\','+myIdx+')" style="margin-top:10px;font-size:11px;color:#c0392b;background:#fff;border:1px solid #e0b0b0;border-radius:8px;padding:5px 12px;cursor:pointer">このレシピを削除</button>'
-        + '</div>'
-        + '</div>';
-    }
-    html += '<hr style="border:none;border-top:1px dashed #e0e0e0;margin:10px 0">';
-  }
-
-  // 通常メニュー
-  for (var i = 0; i < baseList.length; i++) {
-    var d2 = baseList[i];
-    var realIdx = c.data.indexOf(d2);
-    var sel2 = (window[c.planKey] === d2);
-    var ingHtml2 = '';
-    for (var a2 = 0; a2 < d2.ing.length; a2++) ingHtml2 += '<div>' + d2.ing[a2] + '</div>';
-    var stepsHtml2 = '';
-    for (var b2 = 0; b2 < d2.steps.length; b2++) {
-      stepsHtml2 += '<div class="acc-step"><div class="snum">'+(b2+1)+'</div><div class="stxt">'+d2.steps[b2]+'</div></div>';
-    }
-    html += '<div class="menu-card'+(sel2?' selected':'')+'" id="card-'+cat+'-'+realIdx+'">'
-      + '<div class="card-header" onclick="toggleAcc(\''+cat+'\','+realIdx+')">'
-      + '<div class="card-color-bar" style="background:'+c.color+'"></div>'
-      + '<div class="card-info">'
-      + '<div class="card-name">'+d2.name+'</div>'
-      + '<div class="card-kcal">'+d2.kcal+'kcal</div>'
-      + '</div>'
-      + '<div class="card-right">'
-      + '<button class="select-btn'+(sel2?' on':'')+'" onclick="selectDish(event,\''+cat+'\','+realIdx+')">'+(sel2?'選択済':'選択する')+'</button>'
-      + '<span style="font-size:10px;color:#2d4a2d;" id="arr-'+cat+'-'+realIdx+'">詳細 ▼</span>'
-      + '</div>'
-      + '</div>'
-      + '<div class="accordion-body" id="acc-'+cat+'-'+realIdx+'">'
-      + '<div class="acc-section">材料（1人分）</div>'
-      + '<div class="acc-ing">'+ingHtml2+'</div>'
-      + '<div class="acc-section">作り方</div>'
-      + stepsHtml2
-      + '</div>'
-      + '</div>';
-  }
-
-  document.getElementById('grid-'+cat).innerHTML = html;
-};
-
-function toggleMyAcc(cat, idx) {
-  var body = document.getElementById('myacc-'+cat+'-'+idx);
-  var arr = document.getElementById('myarr-'+cat+'-'+idx);
-  if (!body) return;
-  if (body.classList.contains('open')) {
-    body.classList.remove('open');
-    if (arr) arr.textContent = '詳細 ▼';
-  } else {
-    body.classList.add('open');
-    if (arr) arr.textContent = '詳細 ▲';
-  }
-}
-
-function selectMyDish(e, cat, myIdx) {
-  e.stopPropagation();
-  var c = CAT_MAP[cat];
-  var myData = loadMyMenus();
-  var d = myData[cat][myIdx];
-  d._myIdx = myIdx;
-  d._myCat = cat;
-  if (window[c.planKey] && window[c.planKey]._myIdx === myIdx && window[c.planKey]._myCat === cat) {
-    window[c.planKey] = null;
-  } else {
-    window[c.planKey] = d;
-  }
-  renderCards(cat);
-}
-
-// 再初期化
-renderCards('main');renderCards('green');renderCards('yellow');renderCards('white');renderCards('red');
-renderPlan();
-</script>
-
-<!-- マイメニュー追加フォーム（各ページに埋め込み） -->
-<style>
-.add-btn{display:flex;align-items:center;gap:6px;width:100%;padding:12px 14px;background:#fff;border:1px dashed #a8c5a8;border-radius:12px;color:#2d4a2d;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;-webkit-tap-highlight-color:transparent}
-.add-btn:active{background:#f0f5f0}
-.my-form{display:none;background:#f0f8f0;border:1px solid #c5ddc5;border-radius:12px;padding:14px;margin-bottom:12px}
-.my-form label{font-size:11px;font-weight:700;color:#2d4a2d;display:block;margin-bottom:4px;margin-top:10px}
-.my-form label:first-child{margin-top:0}
-.my-form input,.my-form textarea{width:100%;padding:8px 10px;border:1px solid #ccc;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:#fff}
-.my-form input:focus,.my-form textarea:focus{border-color:#2d4a2d}
-.my-form textarea{resize:vertical;min-height:70px;line-height:1.6}
-.my-form-hint{font-size:10px;color:#888;margin-top:3px}
-.my-form-btns{display:flex;gap:8px;margin-top:12px}
-.my-form-btns button{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none}
-.btn-save{background:#2d4a2d;color:#fff}
-.btn-save:active{opacity:0.8}
-.btn-cancel{background:#fff;color:#888;border:1px solid #ddd !important}
-</style>
-<script>
-// 各ページに追加ボタンとフォームを注入
-(function(){
-  var cats = ['main','green','yellow','white','red'];
-  var labels = {main:'主菜',green:'緑の副菜',yellow:'黄色の副菜',white:'白系の副菜',red:'赤系の副菜'};
-  var colors = {main:'#c0392b',green:'#27ae60',yellow:'#e67e22',white:'#95a5a6',red:'#e74c3c'};
-  cats.forEach(function(cat){
-    var page = document.getElementById('page-'+cat);
-    var btn = document.createElement('button');
-    btn.className = 'add-btn';
-    btn.innerHTML = '<span style="font-size:20px;line-height:1">+</span> マイレシピを追加する';
-    btn.setAttribute('onclick','openMyForm(\''+cat+'\')');
-    var form = document.createElement('div');
-    form.className = 'my-form';
-    form.id = 'my-form-'+cat;
-    form.innerHTML =
-      '<div style="font-size:13px;font-weight:700;color:'+colors[cat]+';margin-bottom:10px">'+labels[cat]+' を追加</div>'
-      +'<label>料理名 <span style="color:#c0392b">*</span></label>'
-      +'<input type="text" id="my-name-'+cat+'" placeholder="例：鶏の照り焼き">'
-      +'<label>カロリー（kcal）</label>'
-      +'<input type="number" id="my-kcal-'+cat+'" placeholder="例：200" min="0">'
-      +'<label>材料（1人分）<span style="color:#c0392b">*</span></label>'
-      +'<textarea id="my-ing-'+cat+'" placeholder="例：&#10;鶏もも肉80g&#10;しょうゆ大さじ1&#10;みりん大さじ1"></textarea>'
-      +'<div class="my-form-hint">1行に1つずつ入力してください</div>'
-      +'<label>作り方 <span style="color:#c0392b">*</span></label>'
-      +'<textarea id="my-steps-'+cat+'" placeholder="例：&#10;鶏肉を一口大に切る&#10;フライパンで焼く&#10;たれを絡める"></textarea>'
-      +'<div class="my-form-hint">1行に1手順ずつ入力してください</div>'
-      +'<div class="my-form-btns">'
-      +'<button class="btn-cancel" onclick="closeMyForm(\''+cat+\')">キャンセル</button>'
-      +'<button class="btn-save" onclick="addMyMenu(\''+cat+\')">保存する</button>'
-      +'</div>';
-    page.insertBefore(form, page.querySelector('.menu-list'));
-    page.insertBefore(btn, form);
-  });
-})();
-
-<!-- カレンダー機能 -->
-<style>
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.cal-month-label{font-size:16px;font-weight:700;color:#2d4a2d}
-.cal-nav{background:none;border:1px solid #ddd;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;color:#2d4a2d;-webkit-tap-highlight-color:transparent}
-.cal-nav:active{background:#f0f5f0}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:16px}
-.cal-dow{text-align:center;font-size:10px;font-weight:700;color:#888;padding:4px 0}
-.cal-dow:first-child{color:#e74c3c}
-.cal-dow:last-child{color:#2980b9}
-.cal-day{min-height:58px;border:1px solid #eee;border-radius:8px;padding:4px 3px;cursor:pointer;background:#fff;-webkit-tap-highlight-color:transparent;position:relative;transition:border-color 0.15s}
-.cal-day:active{background:#f5f5f5}
-.cal-day.empty{background:transparent;border-color:transparent;cursor:default}
-.cal-day.today{border-color:#2d4a2d;background:#f0f8f0}
-.cal-day.has-plan{border-color:#a8c5a8}
-.cal-day-num{font-size:11px;font-weight:600;color:#333;margin-bottom:2px}
-.cal-day-num.sun{color:#e74c3c}
-.cal-day-num.sat{color:#2980b9}
-.cal-day-dishes{display:flex;flex-direction:column;gap:1px}
-.cal-dish-dot{font-size:8px;line-height:1.4;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cal-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:300;display:none}
-.cal-modal-bg.show{display:flex;align-items:flex-end}
-.cal-modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:90vh;overflow-y:auto;padding:0 16px 40px}
-.cal-modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 16px}
-.cal-modal-title{font-size:16px;font-weight:700;color:#2d4a2d;margin-bottom:4px}
-.cal-modal-date{font-size:12px;color:#888;margin-bottom:16px}
-.cal-modal-section{font-size:11px;font-weight:700;color:#888;letter-spacing:0.08em;margin:14px 0 8px}
-.cal-select-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.cal-select-label{font-size:11px;font-weight:600;min-width:60px}
-.cal-select{flex:1;font-size:13px;padding:7px 10px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;font-family:inherit}
-.cal-modal-btns{display:flex;gap:8px;margin-top:16px}
-.cal-modal-btns button{flex:1;padding:11px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none}
-.cal-btn-save{background:#2d4a2d;color:#fff}
-.cal-btn-clear{background:#fff;color:#888;border:1px solid #ddd !important}
-.cal-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.cal-legend-item{font-size:10px;color:#888;display:flex;align-items:center;gap:3px}
-.cal-legend-dot{width:8px;height:8px;border-radius:50%}
-</style>
-<script>
-var CAL_KEY = 'obento_calendar';
-var calYear, calMonth;
-
-function loadCal(){
-  try{ var s=localStorage.getItem(CAL_KEY); return s?JSON.parse(s):{}; }catch(e){return {};}
-}
-function saveCal(data){
-  try{ localStorage.setItem(CAL_KEY, JSON.stringify(data)); }catch(e){}
-}
-function calDateKey(y,m,d){ return y+'-'+(m<10?'0'+m:m)+'-'+(d<10?'0'+d:d); }
-
-function initCalendar(){
-  var now = new Date();
-  calYear = now.getFullYear();
-  calMonth = now.getMonth()+1;
-  renderCalendar();
-}
-
-function renderCalendar(){
-  var data = loadCal();
-  var y = calYear, m = calMonth;
-  var firstDay = new Date(y, m-1, 1).getDay();
-  var lastDate = new Date(y, m, 0).getDate();
-  var today = new Date();
-  var todayKey = calDateKey(today.getFullYear(), today.getMonth()+1, today.getDate());
-
-  var html = '<div class="cal-header">'
-    +'<button class="cal-nav" onclick="calMove(-1)">&#9664;</button>'
-    +'<div class="cal-month-label">'+y+'年 '+m+'月</div>'
-    +'<button class="cal-nav" onclick="calMove(1)">&#9654;</button>'
-    +'</div>'
-    +'<div class="cal-legend">'
-    +'<div class="cal-legend-item"><div class="cal-legend-dot" style="background:#2d4a2d"></div>今日</div>'
-    +'<div class="cal-legend-item"><div class="cal-legend-dot" style="background:#a8c5a8"></div>献立あり</div>'
+  var html='<div class="cal-nav-row">'
+    +'<button class="cal-nav-btn" onclick="calMove(-1)">&#9664;</button>'
+    +'<div class="cal-month-label">'+calY+'年 '+calM+'月</div>'
+    +'<button class="cal-nav-btn" onclick="calMove(1)">&#9654;</button>'
     +'</div>'
     +'<div class="cal-grid">'
     +'<div class="cal-dow">日</div><div class="cal-dow">月</div><div class="cal-dow">火</div>'
     +'<div class="cal-dow">水</div><div class="cal-dow">木</div><div class="cal-dow">金</div>'
     +'<div class="cal-dow">土</div>';
-
-  for(var i=0;i<firstDay;i++) html+='<div class="cal-day empty"></div>';
-
-  for(var d=1;d<=lastDate;d++){
-    var key = calDateKey(y,m,d);
-    var dow = (firstDay+d-1)%7;
-    var isToday = (key===todayKey);
-    var plan = data[key];
-    var hasPlan = plan && (plan.main||plan.green||plan.yellow||plan.white||plan.red);
-    var cls = 'cal-day'+(isToday?' today':'')+(hasPlan?' has-plan':'');
-    var numCls = 'cal-day-num'+(dow===0?' sun':dow===6?' sat':'');
-    html += '<div class="'+cls+'" onclick="openCalModal('+y+','+m+','+d+')">'
-      +'<div class="'+numCls+'">'+d+'</div>'
-      +'<div class="cal-day-dishes">';
+  for(var i=0;i<first;i++)html+='<div class="cal-cell empty"></div>';
+  for(var d=1;d<=last;d++){
+    var k=dkey(calY,calM,d);
+    var dow=(first+d-1)%7;
+    var plan=data[k];
+    var hasPlan=plan&&(plan.main||plan.green||plan.yellow||plan.white||plan.red);
+    var cls='cal-cell'+(k===todayKey?' today':'')+(hasPlan?' has-plan':'');
+    var numCls='cal-dnum'+(dow===0?' sun':dow===6?' sat':'');
+    html+='<div class="'+cls+'" onclick="openModal('+calY+','+calM+','+d+')">'
+      +'<div class="'+numCls+'">'+d+'</div><div class="cal-dots">';
     if(plan){
-      var dotColors = {main:'#c0392b',green:'#27ae60',yellow:'#e67e22',white:'#95a5a6',red:'#e74c3c'};
-      var dotLabels = {main:'主',green:'緑',yellow:'黄',white:'白',red:'赤'};
-      ['main','green','yellow','white','red'].forEach(function(k){
-        if(plan[k]){
-          html += '<div class="cal-dish-dot" style="color:'+dotColors[k]+'">'+dotLabels[k]+' '+plan[k]+'</div>';
-        }
+      ['main','green','yellow','white','red'].forEach(function(kk){
+        if(plan[kk])html+='<div class="cal-dot-text" style="color:'+KC[kk]+'">'+KL[kk]+' '+plan[kk]+'</div>';
       });
     }
-    html += '</div></div>';
+    html+='</div></div>';
   }
-  html += '</div>';
+  html+='</div>';
 
-  // 月の献立一覧
-  var listed = false;
-  for(var dd=1;dd<=lastDate;dd++){
-    var dkey = calDateKey(y,m,dd);
-    var dp = data[dkey];
-    if(dp && (dp.main||dp.green||dp.yellow||dp.white||dp.red)){
-      if(!listed){ html+='<div style="font-size:12px;font-weight:700;color:#2d4a2d;margin-bottom:8px">今月の献立一覧</div>'; listed=true; }
-      html+='<div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer" onclick="openCalModal('+y+','+m+','+dd+')">'
-        +'<div style="font-size:12px;font-weight:700;color:#555;margin-bottom:5px">'+m+'月'+dd+'日</div>';
+  // 一覧
+  var listed=false;
+  for(var dd=1;dd<=last;dd++){
+    var dk=dkey(calY,calM,dd);
+    var dp=data[dk];
+    if(dp&&(dp.main||dp.green||dp.yellow||dp.white||dp.red)){
+      if(!listed){html+='<div class="cal-list-title">今月の献立一覧</div>';listed=true;}
+      html+='<div class="cal-list-item" onclick="openModal('+calY+','+calM+','+dd+')">'
+        +'<div class="cal-list-date">'+calM+'月'+dd+'日</div>'
+        +'<div class="cal-list-dish">';
       var knames={main:'主菜',green:'緑',yellow:'黄',white:'白',red:'赤'};
-      var kcolors={main:'#c0392b',green:'#27ae60',yellow:'#e67e22',white:'#95a5a6',red:'#e74c3c'};
-      ['main','green','yellow','white','red'].forEach(function(k){
-        if(dp[k]) html+='<div style="font-size:11px;color:'+kcolors[k]+'">'+knames[k]+'：'+dp[k]+'</div>';
+      ['main','green','yellow','white','red'].forEach(function(kk){
+        if(dp[kk])html+='<span style="color:'+KC[kk]+';margin-right:8px">'+knames[kk]+'：'+dp[kk]+'</span>';
       });
-      html+='</div>';
+      html+='</div></div>';
     }
   }
-
-  document.getElementById('calendar-content').innerHTML = html;
+  document.getElementById('cal-content').innerHTML=html;
 }
 
 function calMove(dir){
-  calMonth += dir;
-  if(calMonth>12){calMonth=1;calYear++;}
-  if(calMonth<1){calMonth=12;calYear--;}
-  renderCalendar();
+  calM+=dir;
+  if(calM>12){calM=1;calY++;}
+  if(calM<1){calM=12;calY--;}
+  renderCal();
 }
 
-var calModalY, calModalM, calModalD;
+var modalY,modalM,modalD;
+function openModal(y,m,d){
+  modalY=y;modalM=m;modalD=d;
+  var k=dkey(y,m,d);
+  var data=loadCal();
+  var plan=data[k]||{};
+  var dow=['日','月','火','水','木','金','土'][new Date(y,m-1,d).getDay()];
+  document.getElementById('modal-title').textContent=y+'年'+m+'月'+d+'日（'+dow+'）';
 
-function openCalModal(y,m,d){
-  calModalY=y; calModalM=m; calModalD=d;
-  var key = calDateKey(y,m,d);
-  var data = loadCal();
-  var plan = data[key] || {};
-
-  var dow = ['日','月','火','水','木','金','土'][new Date(y,m-1,d).getDay()];
-  document.getElementById('cal-modal-title').textContent = y+'年'+m+'月'+d+'日（'+dow+'）の献立';
-
-  // 各セレクトに選択肢を設定
-  var cats = [
-    {id:'cal-sel-main', data:MAIN, label:'主菜', key:'main'},
-    {id:'cal-sel-green', data:SIDE_GREEN, label:'緑の副菜', key:'green'},
-    {id:'cal-sel-yellow', data:SIDE_YELLOW, label:'黄色の副菜', key:'yellow'},
-    {id:'cal-sel-white', data:SIDE_WHITE, label:'白系の副菜', key:'white'},
-    {id:'cal-sel-red', data:SIDE_RED, label:'赤系の副菜', key:'red'},
+  var cats=[
+    {id:'msel-main',data:MAIN,cat:'main'},
+    {id:'msel-green',data:SIDE_GREEN,cat:'green'},
+    {id:'msel-yellow',data:SIDE_YELLOW,cat:'yellow'},
+    {id:'msel-white',data:SIDE_WHITE,cat:'white'},
+    {id:'msel-red',data:SIDE_RED,cat:'red'}
   ];
-
   cats.forEach(function(c){
-    var sel = document.getElementById(c.id);
-    var myData = loadMyMenus();
-    var myList = myData[c.key] || [];
-    var opts = '<option value="">-- 未選択 --</option>';
-    // マイレシピ
+    var sel=document.getElementById(c.id);
+    var myData=loadMy();
+    var myList=myData[c.cat]||[];
+    var opts='<option value="">-- 未選択 --</option>';
     if(myList.length){
-      opts += '<optgroup label="マイレシピ">';
-      myList.forEach(function(d){ opts+='<option value="MY:'+d.name+'"'+(plan[c.key]==='MY:'+d.name?' selected':'')+'>'+d.name+'</option>'; });
-      opts += '</optgroup>';
+      opts+='<optgroup label="マイレシピ">';
+      myList.forEach(function(d){opts+='<option value="'+d.name+'"'+(plan[c.cat]===d.name?' selected':'')+'>'+d.name+'</option>';});
+      opts+='</optgroup>';
     }
-    opts += '<optgroup label="レシピ一覧">';
-    c.data.forEach(function(d){ opts+='<option value="'+d.name+'"'+(plan[c.key]===d.name?' selected':'')+'>'+d.name+'</option>'; });
-    opts += '</optgroup>';
-    sel.innerHTML = opts;
+    opts+='<optgroup label="レシピ一覧">';
+    c.data.forEach(function(d){opts+='<option value="'+d.name+'"'+(plan[c.cat]===d.name?' selected':'')+'>'+d.name+'</option>';});
+    opts+='</optgroup>';
+    sel.innerHTML=opts;
   });
-
-  document.getElementById('cal-modal-bg').classList.add('show');
+  document.getElementById('modal-bg').classList.add('show');
 }
 
-function closeCalModal(){
-  document.getElementById('cal-modal-bg').classList.remove('show');
-}
+function closeModal(){document.getElementById('modal-bg').classList.remove('show');}
 
-function saveCalPlan(){
-  var key = calDateKey(calModalY, calModalM, calModalD);
-  var data = loadCal();
-  var plan = {
-    main: document.getElementById('cal-sel-main').value,
-    green: document.getElementById('cal-sel-green').value,
-    yellow: document.getElementById('cal-sel-yellow').value,
-    white: document.getElementById('cal-sel-white').value,
-    red: document.getElementById('cal-sel-red').value,
+function saveDay(){
+  var k=dkey(modalY,modalM,modalD);
+  var data=loadCal();
+  var plan={
+    main:document.getElementById('msel-main').value,
+    green:document.getElementById('msel-green').value,
+    yellow:document.getElementById('msel-yellow').value,
+    white:document.getElementById('msel-white').value,
+    red:document.getElementById('msel-red').value
   };
-  // すべて空なら削除
-  var hasAny = plan.main||plan.green||plan.yellow||plan.white||plan.red;
-  if(hasAny){ data[key]=plan; } else { delete data[key]; }
+  var hasAny=plan.main||plan.green||plan.yellow||plan.white||plan.red;
+  if(hasAny){data[k]=plan;}else{delete data[k];}
   saveCal(data);
-  closeCalModal();
-  renderCalendar();
+  closeModal();
+  renderCal();
 }
 
-function clearCalDay(){
-  var key = calDateKey(calModalY, calModalM, calModalD);
-  var data = loadCal();
-  delete data[key];
+function clearDay(){
+  var k=dkey(modalY,modalM,modalD);
+  var data=loadCal();
+  delete data[k];
   saveCal(data);
-  closeCalModal();
-  renderCalendar();
+  closeModal();
+  renderCal();
 }
 
-// showPageにカレンダー初期化を追加
-var _origShowPage = showPage;
-showPage = function(id){
-  _origShowPage(id);
-  if(id==='calendar'){ initCalendar(); }
-};
+// ===== 初期化 =====
+renderCards('main');renderCards('green');renderCards('yellow');renderCards('white');renderCards('red');
+renderPlan();
 </script>
-
-<!-- カレンダーモーダル -->
-<div class="cal-modal-bg" id="cal-modal-bg" onclick="if(event.target===this)closeCalModal()">
-  <div class="cal-modal">
-    <div class="cal-modal-handle"></div>
-    <div class="cal-modal-title" id="cal-modal-title"></div>
-    <div class="cal-modal-section">主菜を選ぶ</div>
-    <select class="cal-select" id="cal-sel-main"></select>
-    <div class="cal-modal-section">緑の副菜を選ぶ</div>
-    <select class="cal-select" id="cal-sel-green"></select>
-    <div class="cal-modal-section">黄色の副菜を選ぶ</div>
-    <select class="cal-select" id="cal-sel-yellow"></select>
-    <div class="cal-modal-section">白系の副菜を選ぶ</div>
-    <select class="cal-select" id="cal-sel-white"></select>
-    <div class="cal-modal-section">赤系の副菜を選ぶ</div>
-    <select class="cal-select" id="cal-sel-red"></select>
-    <div class="cal-modal-btns">
-      <button class="cal-btn-clear" onclick="clearCalDay()">この日をクリア</button>
-      <button class="cal-btn-save" onclick="saveCalPlan()">保存する</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
