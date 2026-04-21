@@ -12,435 +12,356 @@ header h1{font-size:16px;font-weight:700;letter-spacing:0.06em}
 header p{font-size:11px;color:#a8c5a8;margin-top:2px}
 .tab-bar{display:flex;background:#fff;border-bottom:2px solid #e8e8e0;position:sticky;top:52px;z-index:99;overflow-x:auto}
 .tab-bar::-webkit-scrollbar{display:none}
-.tab{padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888;transition:all 0.2s;-webkit-tap-highlight-color:transparent}
+.tab{padding:12px 14px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-2px;color:#888;-webkit-tap-highlight-color:transparent}
 .tab.active{color:#2d4a2d;border-bottom-color:#2d4a2d}
-.tab-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.tab-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
 .container{max-width:700px;margin:0 auto;padding:16px 14px 80px}
 .page{display:none}
 .page.active{display:block}
-.section-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:10px;margin-top:20px}
 .search-box{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:10px;font-size:14px;background:#fff;margin-bottom:14px;outline:none}
 .search-box:focus{border-color:#2d4a2d}
 .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.menu-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent;position:relative}
-.menu-card:active{transform:scale(0.97)}
+.menu-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;position:relative}
 .menu-card.selected{border-color:#2d4a2d;background:#f0f5f0}
-.menu-card .check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:#2d4a2d;display:none;align-items:center;justify-content:center}
-.menu-card.selected .check{display:flex}
-.check-mark{color:#fff;font-size:11px;font-weight:700}
+.card-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:#2d4a2d;display:none;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.menu-card.selected .card-check{display:flex}
 .card-color{width:100%;height:4px;border-radius:2px;margin-bottom:8px}
 .card-name{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:4px;line-height:1.3}
-.card-meta{font-size:10px;color:#888;line-height:1.6}
 .card-kcal{font-size:11px;font-weight:600;color:#c0392b;margin-top:3px}
-.detail-btn{font-size:10px;color:#2d4a2d;margin-top:4px;cursor:pointer;display:inline-block}
-.drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,0.12);z-index:200;padding:0 16px 30px;transform:translateY(100%);transition:transform 0.3s ease;max-height:85vh;overflow-y:auto}
+.card-meta{font-size:10px;color:#888;margin-top:2px}
+.detail-btn{display:inline-block;font-size:10px;color:#2d4a2d;margin-top:6px;cursor:pointer;border-bottom:1px solid #c5ddc5}
+.drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,0.12);z-index:200;padding:0 16px 40px;transform:translateY(100%);transition:transform 0.3s ease;max-height:85vh;overflow-y:auto}
 .drawer.open{transform:translateY(0)}
 .drawer-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:12px auto 16px}
-.drawer-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.drawer-close{position:absolute;top:14px;right:16px;font-size:22px;cursor:pointer;color:#aaa}
+.drawer-title{font-size:17px;font-weight:700;margin-bottom:4px}
 .drawer-sub{font-size:11px;color:#888;margin-bottom:14px}
-.drawer-section{font-size:11px;font-weight:700;letter-spacing:0.08em;color:#888;margin:12px 0 6px}
-.drawer-body{font-size:13px;color:#444;line-height:1.8}
-.drawer-steps{font-size:13px;color:#444;line-height:1.9}
-.drawer-step{display:flex;gap:8px;margin-bottom:6px}
-.step-num{min-width:20px;height:20px;background:#2d4a2d;color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
-.drawer-close{position:absolute;top:14px;right:16px;font-size:20px;cursor:pointer;color:#aaa;line-height:1}
+.drawer-section{font-size:11px;font-weight:700;letter-spacing:0.08em;color:#888;margin:14px 0 6px}
+.drawer-ing{font-size:13px;color:#444;line-height:2}
+.drawer-step{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start}
+.step-num{min-width:22px;height:22px;background:#2d4a2d;color:#fff;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:13px;color:#444;line-height:1.7}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:199;display:none}
 .overlay.show{display:block}
-/* プランページ */
-.plan-section{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin-bottom:14px}
-.plan-label{font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px}
-.plan-main-label{color:#c0392b}
-.plan-green-label{color:#27ae60}
-.plan-yellow-label{color:#e67e22}
-.plan-white-label{color:#7f8c8d}
-.plan-red-label{color:#e74c3c}
-.plan-dish{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5}
-.plan-dish:last-child{border-bottom:none}
-.plan-dish-name{font-size:14px;font-weight:600;color:#1a1a1a}
+.plan-section{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin-bottom:12px}
+.plan-label{font-size:10px;font-weight:700;letter-spacing:0.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.plan-dish{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:8px 0}
+.plan-dish-name{font-size:14px;font-weight:600}
 .plan-dish-meta{font-size:11px;color:#888;margin-top:2px}
-.plan-dish-kcal{font-size:12px;color:#c0392b;font-weight:600;white-space:nowrap}
-.empty-plan{font-size:13px;color:#bbb;padding:12px 0;text-align:center}
-.total-kcal-box{background:#2d4a2d;color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
-.total-label{font-size:12px;color:#a8c5a8}
-.total-val{font-size:22px;font-weight:700}
-.btn-clear{width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;color:#888;margin-top:8px}
-.badge-color{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
-.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.filter-btn{padding:5px 12px;border-radius:16px;border:1px solid #ddd;font-size:12px;cursor:pointer;background:#fff;color:#666;-webkit-tap-highlight-color:transparent}
-.filter-btn.active{background:#2d4a2d;border-color:#2d4a2d;color:#fff}
-@media(max-width:380px){.menu-grid{grid-template-columns:1fr}.tab{padding:10px 12px;font-size:12px}}
+.plan-dish-kcal{font-size:12px;font-weight:700;white-space:nowrap;color:#c0392b}
+.empty-plan{font-size:13px;color:#bbb;padding:10px 0;text-align:center}
+.total-box{background:#2d4a2d;color:#fff;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.total-label{font-size:12px;color:#a8c5a8;margin-bottom:4px}
+.total-val{font-size:24px;font-weight:700}
+.btn-clear{width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;color:#888;margin-top:6px}
+@media(max-width:380px){.menu-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <header>
   <h1>お弁当献立プランナー</h1>
   <p>主菜1品＋副菜3品をセレクト</p>
 </header>
-
 <div class="tab-bar">
   <div class="tab active" onclick="showPage('plan')">献立プラン</div>
-  <div class="tab" onclick="showPage('main')"><span class="tab-dot" style="background:#c0392b"></span>主菜 60品</div>
-  <div class="tab" onclick="showPage('green')"><span class="tab-dot" style="background:#27ae60"></span>緑 20品</div>
-  <div class="tab" onclick="showPage('yellow')"><span class="tab-dot" style="background:#e67e22"></span>黄 20品</div>
-  <div class="tab" onclick="showPage('white')"><span class="tab-dot" style="background:#95a5a6"></span>白 20品</div>
-  <div class="tab" onclick="showPage('red')"><span class="tab-dot" style="background:#e74c3c"></span>赤 20品</div>
+  <div class="tab" onclick="showPage('main')"><span class="tab-dot" style="background:#c0392b"></span>主菜</div>
+  <div class="tab" onclick="showPage('green')"><span class="tab-dot" style="background:#27ae60"></span>緑</div>
+  <div class="tab" onclick="showPage('yellow')"><span class="tab-dot" style="background:#e67e22"></span>黄</div>
+  <div class="tab" onclick="showPage('white')"><span class="tab-dot" style="background:#95a5a6"></span>白</div>
+  <div class="tab" onclick="showPage('red')"><span class="tab-dot" style="background:#e74c3c"></span>赤</div>
 </div>
-
 <div class="container">
-
-<!-- 献立プランページ -->
-<div class="page active" id="page-plan">
-  <div id="plan-content"></div>
+  <div class="page active" id="page-plan"><div id="plan-content"></div></div>
+  <div class="page" id="page-main"><input class="search-box" type="text" placeholder="主菜を検索..." oninput="filterCards('main',this.value)"><div class="menu-grid" id="grid-main"></div></div>
+  <div class="page" id="page-green"><input class="search-box" type="text" placeholder="緑の副菜を検索..." oninput="filterCards('green',this.value)"><div class="menu-grid" id="grid-green"></div></div>
+  <div class="page" id="page-yellow"><input class="search-box" type="text" placeholder="黄色の副菜を検索..." oninput="filterCards('yellow',this.value)"><div class="menu-grid" id="grid-yellow"></div></div>
+  <div class="page" id="page-white"><input class="search-box" type="text" placeholder="白系の副菜を検索..." oninput="filterCards('white',this.value)"><div class="menu-grid" id="grid-white"></div></div>
+  <div class="page" id="page-red"><input class="search-box" type="text" placeholder="赤系の副菜を検索..." oninput="filterCards('red',this.value)"><div class="menu-grid" id="grid-red"></div></div>
 </div>
-
-<!-- 主菜ページ -->
-<div class="page" id="page-main">
-  <input class="search-box" type="text" placeholder="主菜を検索..." oninput="filterCards('main',this.value)">
-  <div class="menu-grid" id="grid-main"></div>
-</div>
-
-<!-- 緑副菜ページ -->
-<div class="page" id="page-green">
-  <input class="search-box" type="text" placeholder="緑の副菜を検索..." oninput="filterCards('green',this.value)">
-  <div class="menu-grid" id="grid-green"></div>
-</div>
-
-<!-- 黄副菜ページ -->
-<div class="page" id="page-yellow">
-  <input class="search-box" type="text" placeholder="黄色の副菜を検索..." oninput="filterCards('yellow',this.value)">
-  <div class="menu-grid" id="grid-yellow"></div>
-</div>
-
-<!-- 白副菜ページ -->
-<div class="page" id="page-white">
-  <input class="search-box" type="text" placeholder="白系の副菜を検索..." oninput="filterCards('white',this.value)">
-  <div class="menu-grid" id="grid-white"></div>
-</div>
-
-<!-- 赤副菜ページ -->
-<div class="page" id="page-red">
-  <input class="search-box" type="text" placeholder="赤系の副菜を検索..." oninput="filterCards('red',this.value)">
-  <div class="menu-grid" id="grid-red"></div>
-</div>
-
-</div><!-- /container -->
-
-<!-- 詳細ドロワー -->
 <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-handle"></div>
   <span class="drawer-close" onclick="closeDrawer()">×</span>
   <div id="drawer-content"></div>
 </div>
-
 <script>
-// ==================== データ ====================
-
-const MAIN = [
-  {name:"鶏の照り焼き",kcal:210,ing:"鶏もも肉80g・しょうゆ・みりん・砂糖",steps:["鶏肉を一口大に切り下味をつける","フライパンで皮面から焼く","たれを加えて煮絡める"]},
-  {name:"豚の生姜焼き",kcal:220,ing:"豚こま60g・しょうが・しょうゆ・みりん",steps:["豚肉をたれに漬ける","フライパンで炒める","たれを絡めてしっかり火を通す"]},
-  {name:"ハンバーグ",kcal:240,ing:"合い挽き肉70g・玉ねぎ・卵・パン粉",steps:["玉ねぎを炒め冷ます","ひき肉と混ぜて成形","フライパンで蒸し焼きにする"]},
-  {name:"鮭の塩焼き",kcal:160,ing:"鮭60g・塩・レモン",steps:["鮭に塩を振り15分おく","グリルまたはフライパンで焼く","レモンを添えて盛る"]},
-  {name:"鶏の唐揚げ",kcal:260,ing:"鶏もも肉80g・しょうゆ・酒・にんにく・しょうが・片栗粉",steps:["鶏肉に下味をつけ15分置く","片栗粉をまぶす","170℃の油で4分揚げる"]},
-  {name:"豚の味噌炒め",kcal:200,ing:"豚こま60g・味噌・みりん・酒・長ねぎ",steps:["豚肉を炒める","長ねぎを加える","味噌だれを絡める"]},
-  {name:"チキンカツ",kcal:280,ing:"鶏むね肉80g・小麦粉・卵・パン粉",steps:["鶏むね肉を薄く切り下味をつける","衣をつける","170℃で揚げる"]},
-  {name:"サバの味噌煮",kcal:190,ing:"サバ60g・味噌・みりん・砂糖・しょうが",steps:["サバに塩を振り熱湯をかける","鍋でたれを煮立てサバを入れる","落とし蓋をして10分煮る"]},
-  {name:"卵焼き（甘め）",kcal:120,ing:"卵2個・だし・砂糖・しょうゆ・みりん",steps:["卵をよく溶いてだし・調味料を混ぜる","卵焼き器で薄焼きにして巻く","粗熱をとって切る"]},
-  {name:"肉団子甘酢あん",kcal:230,ing:"豚ひき肉70g・玉ねぎ・酢・砂糖・しょうゆ・ケチャップ",steps:["ひき肉に調味料を混ぜ丸める","油で揚げる","甘酢あんを絡める"]},
-  {name:"エビのマヨ炒め",kcal:180,ing:"エビ60g・マヨネーズ・ケチャップ・レモン",steps:["エビに下味をつけ炒める","マヨネーズ・ケチャップを合わせる","エビと絡める"]},
-  {name:"牛肉の甘辛炒め",kcal:250,ing:"牛切り落とし70g・しょうゆ・みりん・砂糖・ごま",steps:["牛肉を炒める","たれを加える","ごまを振って仕上げる"]},
-  {name:"豚バラ巻き串",kcal:200,ing:"豚バラ60g・インゲン・塩こしょう",steps:["インゲンを茹でる","豚バラで巻いて塩こしょう","フライパンで全面焼く"]},
-  {name:"鶏むね肉のピカタ",kcal:190,ing:"鶏むね肉70g・卵・粉チーズ・塩こしょう",steps:["鶏むね肉を薄く切り下味をつける","卵・粉チーズを混ぜてくぐらせる","バターで両面焼く"]},
-  {name:"メンチカツ",kcal:270,ing:"合い挽き肉70g・玉ねぎ・キャベツ・衣",steps:["野菜とひき肉を混ぜて成形","衣をつける","170℃で揚げる"]},
-  {name:"鶏肉のケチャップ炒め",kcal:200,ing:"鶏もも肉80g・玉ねぎ・ピーマン・ケチャップ・ウスターソース",steps:["鶏肉・野菜を炒める","ケチャップ・ウスターソースで味付け","強火で仕上げる"]},
-  {name:"豚こまボール",kcal:210,ing:"豚こま60g・片栗粉・しょうゆ・ごま油",steps:["豚こまを丸めて片栗粉をまぶす","油で揚げ焼きにする","たれを絡める"]},
-  {name:"タラのフライ",kcal:200,ing:"タラ60g・小麦粉・卵・パン粉・塩こしょう",steps:["タラに塩こしょうをする","衣をつける","170℃で揚げる"]},
-  {name:"鶏むね肉の梅しそ巻き",kcal:160,ing:"鶏むね肉70g・梅干し・大葉・塩こしょう",steps:["鶏むね肉を薄く開く","梅・大葉をのせて巻く","フライパンで焼く"]},
-  {name:"豚の角煮風",kcal:300,ing:"豚バラ70g・しょうゆ・みりん・砂糖・酒・しょうが",steps:["豚バラを切って下茹でする","たれで30分煮込む","汁を煮詰める"]},
-  {name:"いわしの蒲焼き",kcal:170,ing:"いわし1尾・しょうゆ・みりん・砂糖",steps:["いわしを開いて骨を取る","フライパンで焼く","たれを絡める"]},
-  {name:"鶏そぼろ",kcal:150,ing:"鶏ひき肉60g・しょうゆ・みりん・砂糖・しょうが",steps:["フライパンでひき肉を炒める","調味料を加える","水分を飛ばしてそぼろ状にする"]},
-  {name:"豚ロースの塩麹焼き",kcal:230,ing:"豚ロース70g・塩麹・ごま油",steps:["豚肉に塩麹を塗り30分置く","ごま油をひいたフライパンで焼く","蓋をして蒸し焼きにする"]},
-  {name:"アジの南蛮漬け",kcal:180,ing:"アジ60g・玉ねぎ・人参・酢・砂糖・しょうゆ",steps:["アジに粉をまぶして揚げる","南蛮酢を作る","漬け込む"]},
-  {name:"鶏肉の黒酢炒め",kcal:210,ing:"鶏もも肉80g・黒酢・しょうゆ・砂糖・片栗粉",steps:["鶏肉に下味をつけ揚げる","黒酢あんを作る","絡める"]},
-  {name:"豚ひき肉のレンコン挟み揚げ",kcal:240,ing:"れんこん・豚ひき肉50g・片栗粉・塩こしょう",steps:["れんこんを薄切りにする","ひき肉を挟んで片栗粉をまぶす","揚げ焼きにする"]},
-  {name:"スコッチエッグ風",kcal:280,ing:"うずら卵・豚ひき肉50g・衣",steps:["ひき肉でうずら卵を包む","衣をつける","油で揚げる"]},
-  {name:"チキンロール",kcal:220,ing:"鶏むね肉70g・ほうれん草・チーズ・塩こしょう",steps:["鶏むね肉を開いてのばす","具材をのせて巻く","フライパンで焼く"]},
-  {name:"豚肉のプルコギ風",kcal:220,ing:"豚こま60g・玉ねぎ・にんじん・しょうゆ・ごま油・砂糖・にんにく",steps:["野菜と豚肉をたれに漬ける","フライパンで炒める","ごまを振る"]},
-  {name:"エビフライ",kcal:200,ing:"エビ60g・小麦粉・卵・パン粉",steps:["エビの背わたを取る","衣をつける","170℃で揚げる"]},
-  {name:"鮭のちゃんちゃん焼き風",kcal:190,ing:"鮭60g・キャベツ・バター・味噌・みりん",steps:["鮭とキャベツを並べる","バター・味噌だれをのせる","蒸し焼きにする"]},
-  {name:"豚の角切りカレー炒め",kcal:230,ing:"豚こま60g・カレー粉・しょうゆ・玉ねぎ",steps:["玉ねぎを炒める","豚肉を加えて炒める","カレー粉としょうゆで味付け"]},
-  {name:"鶏肉のゆず胡椒焼き",kcal:190,ing:"鶏もも肉80g・ゆず胡椒・酒・みりん",steps:["鶏肉にゆず胡椒だれを漬ける","フライパンで皮面から焼く","蒸し焼きにする"]},
-  {name:"豚バラのキムチ炒め",kcal:240,ing:"豚バラ60g・キムチ・ごま油・しょうゆ",steps:["豚バラを炒める","キムチを加える","ごま油としょうゆで仕上げる"]},
-  {name:"ちくわの磯辺揚げ",kcal:160,ing:"ちくわ2本・天ぷら粉・青のり",steps:["天ぷら粉に青のりを混ぜる","ちくわをくぐらせる","170℃で揚げる"]},
-  {name:"牛肉の柳川風",kcal:230,ing:"牛切り落とし60g・ごぼう・卵・だし・しょうゆ・みりん",steps:["ごぼうをささがきにする","だしで牛肉とごぼうを煮る","卵を回し入れ半熟にする"]},
-  {name:"鶏肉のタンドーリ風",kcal:200,ing:"鶏もも肉80g・ヨーグルト・カレー粉・塩・にんにく",steps:["鶏肉をヨーグルトだれに漬ける","オーブンまたはフライパンで焼く","仕上げに香辛料を振る"]},
-  {name:"豚こまの天ぷら",kcal:220,ing:"豚こま60g・天ぷら粉・塩こしょう",steps:["豚こまを丸めて天ぷら粉にくぐらせる","160℃でゆっくり揚げる","塩で食べる"]},
-  {name:"かぼちゃそぼろ煮",kcal:180,ing:"かぼちゃ60g・鶏ひき肉40g・だし・しょうゆ・みりん",steps:["かぼちゃを切る","鍋でひき肉を炒め、かぼちゃを加える","だし・しょうゆ・みりんで煮る"]},
-  {name:"豚肉の梅炒め",kcal:190,ing:"豚こま60g・梅干し・しょうゆ・みりん・大葉",steps:["梅干しをたたいてペーストにする","豚肉を炒める","梅ペーストと調味料で絡める"]},
-  {name:"鶏肉の甘辛焼き",kcal:210,ing:"鶏もも肉80g・しょうゆ・砂糖・みりん・白ごま",steps:["鶏肉を漬けこむ","フライパンで焼く","ごまを振る"]},
-  {name:"しゅうまい",kcal:180,ing:"豚ひき肉50g・玉ねぎ・しゅうまいの皮・オイスターソース",steps:["ひき肉・玉ねぎ・調味料を混ぜる","皮で包む","蒸し器で8分蒸す"]},
-  {name:"豚肉のしぐれ煮",kcal:200,ing:"豚こま60g・しょうが・しょうゆ・みりん・砂糖",steps:["しょうがを千切りにする","豚肉としょうがを炒める","調味料を加えて煮詰める"]},
-  {name:"鶏むね肉の竜田揚げ",kcal:240,ing:"鶏むね肉70g・しょうゆ・みりん・しょうが・片栗粉",steps:["鶏肉をそぎ切りにして漬ける","片栗粉をまぶす","170℃で揚げる"]},
-  {name:"タコのから揚げ",kcal:150,ing:"ゆでタコ60g・片栗粉・しょうゆ・レモン",steps:["タコを一口大に切る","片栗粉をまぶす","180℃でカリッと揚げる"]},
-  {name:"豚ひき肉の甜麺醤炒め",kcal:210,ing:"豚ひき肉60g・甜麺醤・しょうゆ・にんにく・しょうが",steps:["にんにく・しょうがを炒める","ひき肉を加えて炒める","甜麺醤・しょうゆで味付けする"]},
-  {name:"鮭フレークの卵焼き",kcal:150,ing:"卵2個・鮭フレーク・だし・みりん",steps:["卵を溶いて鮭フレーク・だしを混ぜる","卵焼き器で巻く","切り分ける"]},
-  {name:"豚肉のみぞれ煮",kcal:190,ing:"豚こま60g・大根おろし・ポン酢・みりん",steps:["豚肉を炒める","大根おろし・ポン酢・みりんで煮る","大葉を添える"]},
-  {name:"牛肉コロッケ",kcal:280,ing:"牛こま50g・じゃがいも60g・衣",steps:["じゃがいもを茹でてつぶす","牛こまと混ぜて成形する","衣をつけて揚げる"]},
-  {name:"鶏肉のカレー醤油焼き",kcal:200,ing:"鶏もも肉80g・カレー粉・しょうゆ・みりん",steps:["鶏肉にカレー醤油だれを漬ける","フライパンで焼く","蒸し焼きにする"]},
-  {name:"豚バラの照り焼き",kcal:250,ing:"豚バラ60g・しょうゆ・みりん・砂糖",steps:["豚バラをフライパンで焼く","余分な脂をふく","たれを絡める"]},
-  {name:"イカのかき揚げ",kcal:200,ing:"イカ50g・玉ねぎ・天ぷら粉",steps:["イカと玉ねぎを切る","天ぷら粉で衣を作る","160℃でゆっくり揚げる"]},
-  {name:"鶏ひき肉の松風焼き",kcal:170,ing:"鶏ひき肉60g・みそ・みりん・卵・ケシの実",steps:["ひき肉・みそ・みりん・卵を混ぜる","型に入れてケシの実をのせる","オーブンで焼く"]},
-  {name:"豚肉の塩炒め",kcal:190,ing:"豚こま60g・塩・こしょう・にんにく・ごま油",steps:["にんにくを炒める","豚肉を加えて炒める","塩こしょうで仕上げる"]},
-  {name:"アジフライ",kcal:210,ing:"アジ1尾・小麦粉・卵・パン粉",steps:["アジを三枚おろしにする","衣をつける","170℃で揚げる"]},
-  {name:"鶏肉のレモン醤油焼き",kcal:190,ing:"鶏もも肉80g・レモン汁・しょうゆ・みりん",steps:["鶏肉をレモン醤油だれに漬ける","フライパンで焼く","レモンを添える"]},
-  {name:"豚こまのゴマ味噌炒め",kcal:210,ing:"豚こま60g・ごま・味噌・みりん・酒",steps:["豚肉を炒める","味噌・みりんで味付け","ごまを振る"]},
-  {name:"マグロの竜田揚げ",kcal:180,ing:"マグロ60g・しょうゆ・みりん・しょうが・片栗粉",steps:["マグロを漬ける","片栗粉をまぶす","高温でカリッと揚げる"]},
-  {name:"鶏肉のネギ塩焼き",kcal:200,ing:"鶏もも肉80g・長ねぎ・塩・レモン汁・ごま油",steps:["鶏肉を一口大に切る","ネギ塩だれを作る","フライパンで焼いてたれをかける"]},
-  {name:"豚こまの辛味噌炒め",kcal:220,ing:"豚こま60g・豆板醤・味噌・みりん・長ねぎ",steps:["長ねぎを炒める","豚肉を加える","辛味噌だれで仕上げる"]},
-  {name:"サバの竜田揚げ",kcal:200,ing:"サバ60g・しょうゆ・みりん・しょうが・片栗粉",steps:["サバを漬ける","片栗粉をまぶす","170℃で揚げる"]},
+var MAIN=[
+{name:"鶏の照り焼き",kcal:210,ing:["鶏もも肉80g","しょうゆ大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["鶏肉を一口大に切り下味をつける","フライパンで皮面から焼く","たれを加えて煮絡める"]},
+{name:"豚の生姜焼き",kcal:220,ing:["豚こま60g","しょうが1片","しょうゆ大さじ1","みりん大さじ1"],steps:["豚肉をたれに漬ける","フライパンで炒める","たれを絡めてしっかり火を通す"]},
+{name:"ハンバーグ",kcal:240,ing:["合い挽き肉70g","玉ねぎ1/4個","卵1/2個","パン粉大さじ1"],steps:["玉ねぎを炒め冷ます","ひき肉と混ぜて成形","フライパンで蒸し焼きにする"]},
+{name:"鮭の塩焼き",kcal:160,ing:["鮭60g","塩少々","レモン適量"],steps:["鮭に塩を振り15分おく","グリルまたはフライパンで焼く","レモンを添えて盛る"]},
+{name:"鶏の唐揚げ",kcal:260,ing:["鶏もも肉80g","しょうゆ大さじ1","酒大さじ1","にんにく1片","片栗粉大さじ2"],steps:["鶏肉に下味をつけ15分置く","片栗粉をまぶす","170度の油で4分揚げる"]},
+{name:"豚の味噌炒め",kcal:200,ing:["豚こま60g","味噌大さじ1","みりん大さじ1","長ねぎ1/4本"],steps:["豚肉を炒める","長ねぎを加える","味噌だれを絡める"]},
+{name:"チキンカツ",kcal:280,ing:["鶏むね肉80g","小麦粉大さじ1","卵1/2個","パン粉大さじ2"],steps:["鶏むね肉を薄く切り下味をつける","衣をつける","170度で揚げる"]},
+{name:"サバの味噌煮",kcal:190,ing:["サバ60g","味噌大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["サバに塩を振り熱湯をかける","鍋でたれを煮立てサバを入れる","落とし蓋をして10分煮る"]},
+{name:"卵焼き甘め",kcal:120,ing:["卵2個","だし大さじ2","砂糖小さじ1","しょうゆ小さじ1/2"],steps:["卵をよく溶いてだし・調味料を混ぜる","卵焼き器で薄焼きにして巻く","粗熱をとって切る"]},
+{name:"肉団子甘酢あん",kcal:230,ing:["豚ひき肉70g","玉ねぎ1/4個","酢大さじ1","砂糖大さじ1","ケチャップ大さじ1"],steps:["ひき肉に調味料を混ぜ丸める","油で揚げる","甘酢あんを絡める"]},
+{name:"エビのマヨ炒め",kcal:180,ing:["エビ60g","マヨネーズ大さじ1","ケチャップ小さじ1"],steps:["エビに下味をつけ炒める","マヨネーズとケチャップを合わせる","エビと絡める"]},
+{name:"牛肉の甘辛炒め",kcal:250,ing:["牛切り落とし70g","しょうゆ大さじ1","みりん大さじ1","白ごま適量"],steps:["牛肉を炒める","たれを加える","ごまを振って仕上げる"]},
+{name:"豚バラいんげん巻き",kcal:200,ing:["豚バラ60g","いんげん50g","塩こしょう少々"],steps:["いんげんを茹でる","豚バラで巻いて塩こしょう","フライパンで全面焼く"]},
+{name:"鶏むね肉のピカタ",kcal:190,ing:["鶏むね肉70g","卵1個","粉チーズ大さじ1","塩こしょう少々"],steps:["鶏むね肉を薄く切り下味をつける","卵と粉チーズを混ぜてくぐらせる","バターで両面焼く"]},
+{name:"メンチカツ",kcal:270,ing:["合い挽き肉70g","玉ねぎ1/4個","キャベツ30g","衣適量"],steps:["野菜とひき肉を混ぜて成形","衣をつける","170度で揚げる"]},
+{name:"鶏肉のケチャップ炒め",kcal:200,ing:["鶏もも肉80g","玉ねぎ1/4個","ピーマン1個","ケチャップ大さじ2"],steps:["鶏肉・野菜を炒める","ケチャップとウスターソースで味付け","強火で仕上げる"]},
+{name:"豚こまボール",kcal:210,ing:["豚こま60g","片栗粉大さじ1","しょうゆ小さじ1","ごま油小さじ1"],steps:["豚こまを丸めて片栗粉をまぶす","油で揚げ焼きにする","たれを絡める"]},
+{name:"タラのフライ",kcal:200,ing:["タラ60g","小麦粉大さじ1","卵1/2個","パン粉大さじ2"],steps:["タラに塩こしょうをする","衣をつける","170度で揚げる"]},
+{name:"鶏むね肉の梅しそ巻き",kcal:160,ing:["鶏むね肉70g","梅干し1個","大葉3枚","塩こしょう少々"],steps:["鶏むね肉を薄く開く","梅と大葉をのせて巻く","フライパンで焼く"]},
+{name:"豚の角煮風",kcal:300,ing:["豚バラ70g","しょうゆ大さじ1","みりん大さじ1","砂糖大さじ1"],steps:["豚バラを切って下茹でする","たれで30分煮込む","汁を煮詰める"]},
+{name:"いわしの蒲焼き",kcal:170,ing:["いわし1尾","しょうゆ大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["いわしを開いて骨を取る","フライパンで焼く","たれを絡める"]},
+{name:"鶏そぼろ",kcal:150,ing:["鶏ひき肉60g","しょうゆ大さじ1","みりん大さじ1","しょうが1片"],steps:["フライパンでひき肉を炒める","調味料を加える","水分を飛ばしてそぼろ状にする"]},
+{name:"豚ロースの塩麹焼き",kcal:230,ing:["豚ロース70g","塩麹大さじ1","ごま油小さじ1"],steps:["豚肉に塩麹を塗り30分置く","ごま油をひいたフライパンで焼く","蓋をして蒸し焼きにする"]},
+{name:"アジの南蛮漬け",kcal:180,ing:["アジ60g","玉ねぎ1/4個","酢大さじ2","砂糖大さじ1"],steps:["アジに粉をまぶして揚げる","南蛮酢を作る","漬け込む"]},
+{name:"鶏肉の黒酢炒め",kcal:210,ing:["鶏もも肉80g","黒酢大さじ1","しょうゆ大さじ1","砂糖大さじ1"],steps:["鶏肉に下味をつけ揚げる","黒酢あんを作る","絡める"]},
+{name:"れんこん挟み揚げ",kcal:240,ing:["れんこん60g","豚ひき肉50g","片栗粉大さじ1"],steps:["れんこんを薄切りにする","ひき肉を挟んで片栗粉をまぶす","揚げ焼きにする"]},
+{name:"スコッチエッグ風",kcal:280,ing:["うずら卵6個","豚ひき肉50g","衣適量"],steps:["ひき肉でうずら卵を包む","衣をつける","油で揚げる"]},
+{name:"チキンロール",kcal:220,ing:["鶏むね肉70g","ほうれん草30g","チーズ20g","塩こしょう少々"],steps:["鶏むね肉を開いてのばす","具材をのせて巻く","フライパンで焼く"]},
+{name:"豚肉のプルコギ風",kcal:220,ing:["豚こま60g","玉ねぎ1/4個","しょうゆ大さじ1","ごま油小さじ1"],steps:["野菜と豚肉をたれに漬ける","フライパンで炒める","ごまを振る"]},
+{name:"エビフライ",kcal:200,ing:["エビ60g","小麦粉大さじ1","卵1/2個","パン粉大さじ2"],steps:["エビの背わたを取る","衣をつける","170度で揚げる"]},
+{name:"鮭のちゃんちゃん焼き風",kcal:190,ing:["鮭60g","キャベツ40g","バター10g","味噌大さじ1"],steps:["鮭とキャベツを並べる","バターと味噌だれをのせる","蒸し焼きにする"]},
+{name:"豚こまカレー炒め",kcal:230,ing:["豚こま60g","カレー粉小さじ1","しょうゆ小さじ1","玉ねぎ1/4個"],steps:["玉ねぎを炒める","豚肉を加えて炒める","カレー粉としょうゆで味付け"]},
+{name:"鶏肉のゆず胡椒焼き",kcal:190,ing:["鶏もも肉80g","ゆず胡椒小さじ1","酒大さじ1","みりん大さじ1"],steps:["鶏肉にゆず胡椒だれを漬ける","フライパンで皮面から焼く","蒸し焼きにする"]},
+{name:"豚バラのキムチ炒め",kcal:240,ing:["豚バラ60g","キムチ50g","ごま油小さじ1","しょうゆ小さじ1"],steps:["豚バラを炒める","キムチを加える","ごま油としょうゆで仕上げる"]},
+{name:"ちくわの磯辺揚げ",kcal:160,ing:["ちくわ2本","天ぷら粉大さじ3","青のり小さじ1"],steps:["天ぷら粉に青のりを混ぜる","ちくわをくぐらせる","170度で揚げる"]},
+{name:"牛肉の柳川風",kcal:230,ing:["牛切り落とし60g","ごぼう40g","卵1個","だし100ml"],steps:["ごぼうをささがきにする","だしで牛肉とごぼうを煮る","卵を回し入れ半熟にする"]},
+{name:"鶏タンドーリ風",kcal:200,ing:["鶏もも肉80g","ヨーグルト大さじ2","カレー粉小さじ1","塩少々"],steps:["鶏肉をヨーグルトだれに漬ける","フライパンで焼く","仕上げに香辛料を振る"]},
+{name:"豚こまの天ぷら",kcal:220,ing:["豚こま60g","天ぷら粉大さじ3","塩こしょう少々"],steps:["豚こまを丸めて天ぷら粉にくぐらせる","160度でゆっくり揚げる","塩で食べる"]},
+{name:"かぼちゃそぼろ煮",kcal:180,ing:["かぼちゃ60g","鶏ひき肉40g","だし100ml","しょうゆ小さじ1"],steps:["かぼちゃを切る","ひき肉を炒めかぼちゃを加える","だしとしょうゆで煮る"]},
+{name:"豚肉の梅炒め",kcal:190,ing:["豚こま60g","梅干し1個","しょうゆ小さじ1","みりん小さじ1"],steps:["梅干しをたたいてペーストにする","豚肉を炒める","梅ペーストと調味料で絡める"]},
+{name:"鶏肉の甘辛焼き",kcal:210,ing:["鶏もも肉80g","しょうゆ大さじ1","砂糖小さじ1","みりん大さじ1"],steps:["鶏肉を漬けこむ","フライパンで焼く","ごまを振る"]},
+{name:"しゅうまい",kcal:180,ing:["豚ひき肉50g","玉ねぎ1/4個","しゅうまいの皮10枚","オイスターソース小さじ1"],steps:["ひき肉・玉ねぎ・調味料を混ぜる","皮で包む","蒸し器で8分蒸す"]},
+{name:"豚肉のしぐれ煮",kcal:200,ing:["豚こま60g","しょうが1片","しょうゆ大さじ1","みりん大さじ1"],steps:["しょうがを千切りにする","豚肉としょうがを炒める","調味料を加えて煮詰める"]},
+{name:"鶏むね肉の竜田揚げ",kcal:240,ing:["鶏むね肉70g","しょうゆ大さじ1","みりん大さじ1","片栗粉大さじ2"],steps:["鶏肉をそぎ切りにして漬ける","片栗粉をまぶす","170度で揚げる"]},
+{name:"タコのから揚げ",kcal:150,ing:["ゆでタコ60g","片栗粉大さじ1","しょうゆ小さじ1","レモン適量"],steps:["タコを一口大に切る","片栗粉をまぶす","180度でカリッと揚げる"]},
+{name:"豚ひき肉の甜麺醤炒め",kcal:210,ing:["豚ひき肉60g","甜麺醤大さじ1","しょうゆ小さじ1","にんにく1片"],steps:["にんにくを炒める","ひき肉を加えて炒める","甜麺醤としょうゆで味付けする"]},
+{name:"鮭フレークの卵焼き",kcal:150,ing:["卵2個","鮭フレーク大さじ2","だし大さじ1","みりん小さじ1"],steps:["卵を溶いて鮭フレークとだしを混ぜる","卵焼き器で巻く","切り分ける"]},
+{name:"豚肉のみぞれ煮",kcal:190,ing:["豚こま60g","大根おろし100g","ポン酢大さじ2","みりん小さじ1"],steps:["豚肉を炒める","大根おろしとポン酢で煮る","大葉を添える"]},
+{name:"牛肉コロッケ",kcal:280,ing:["牛こま50g","じゃがいも60g","衣適量"],steps:["じゃがいもを茹でてつぶす","牛こまと混ぜて成形する","衣をつけて揚げる"]},
+{name:"鶏肉のカレー醤油焼き",kcal:200,ing:["鶏もも肉80g","カレー粉小さじ1","しょうゆ大さじ1","みりん大さじ1"],steps:["鶏肉にカレー醤油だれを漬ける","フライパンで焼く","蒸し焼きにする"]},
+{name:"豚バラの照り焼き",kcal:250,ing:["豚バラ60g","しょうゆ大さじ1","みりん大さじ1","砂糖小さじ1"],steps:["豚バラをフライパンで焼く","余分な脂をふく","たれを絡める"]},
+{name:"イカのかき揚げ",kcal:200,ing:["イカ50g","玉ねぎ1/4個","天ぷら粉大さじ3"],steps:["イカと玉ねぎを切る","天ぷら粉で衣を作る","160度でゆっくり揚げる"]},
+{name:"鶏松風焼き",kcal:170,ing:["鶏ひき肉60g","みそ大さじ1","みりん大さじ1","卵1個"],steps:["ひき肉・みそ・みりん・卵を混ぜる","型に入れてケシの実をのせる","オーブンで焼く"]},
+{name:"豚肉の塩炒め",kcal:190,ing:["豚こま60g","塩こしょう少々","にんにく1片","ごま油小さじ1"],steps:["にんにくを炒める","豚肉を加えて炒める","塩こしょうで仕上げる"]},
+{name:"アジフライ",kcal:210,ing:["アジ1尾","小麦粉大さじ1","卵1/2個","パン粉大さじ2"],steps:["アジを三枚おろしにする","衣をつける","170度で揚げる"]},
+{name:"鶏肉のレモン醤油焼き",kcal:190,ing:["鶏もも肉80g","レモン汁大さじ1","しょうゆ大さじ1","みりん大さじ1"],steps:["鶏肉をレモン醤油だれに漬ける","フライパンで焼く","レモンを添える"]},
+{name:"豚こまのゴマ味噌炒め",kcal:210,ing:["豚こま60g","ごま大さじ1","味噌大さじ1","みりん大さじ1"],steps:["豚肉を炒める","味噌とみりんで味付け","ごまを振る"]},
+{name:"マグロの竜田揚げ",kcal:180,ing:["マグロ60g","しょうゆ大さじ1","みりん大さじ1","片栗粉大さじ2"],steps:["マグロを漬ける","片栗粉をまぶす","高温でカリッと揚げる"]},
+{name:"鶏肉のネギ塩焼き",kcal:200,ing:["鶏もも肉80g","長ねぎ1/4本","塩少々","ごま油小さじ1"],steps:["鶏肉を一口大に切る","ネギ塩だれを作る","フライパンで焼いてたれをかける"]},
+{name:"豚こまの辛味噌炒め",kcal:220,ing:["豚こま60g","豆板醤小さじ1","味噌大さじ1","みりん大さじ1"],steps:["長ねぎを炒める","豚肉を加える","辛味噌だれで仕上げる"]},
+{name:"サバの竜田揚げ",kcal:200,ing:["サバ60g","しょうゆ大さじ1","みりん大さじ1","片栗粉大さじ2"],steps:["サバを漬ける","片栗粉をまぶす","170度で揚げる"]}
 ];
 
-const SIDE_GREEN = [
-  {name:"ほうれん草のごまあえ",kcal:45,ing:"ほうれん草50g・すりごま・しょうゆ・砂糖",steps:["ほうれん草を塩茹でする","水気を絞り切る","ごま・しょうゆ・砂糖で和える"]},
-  {name:"小松菜の煮びたし",kcal:35,ing:"小松菜50g・だし・しょうゆ・みりん",steps:["小松菜を4cm切りにする","だし・しょうゆ・みりんで煮る","冷まして味をなじませる"]},
-  {name:"ブロッコリーのマヨあえ",kcal:70,ing:"ブロッコリー50g・マヨネーズ・塩こしょう",steps:["ブロッコリーを小房にして茹でる","水気を切る","マヨネーズ・塩こしょうで和える"]},
-  {name:"いんげんのごま炒め",kcal:50,ing:"いんげん50g・ごま油・しょうゆ・ごま",steps:["いんげんを茹でて斜め切り","ごま油で炒める","しょうゆ・ごまで仕上げる"]},
-  {name:"アスパラのバター炒め",kcal:55,ing:"アスパラ50g・バター・塩こしょう",steps:["アスパラを斜め切りにする","バターで炒める","塩こしょうで仕上げる"]},
-  {name:"ピーマンのきんぴら",kcal:45,ing:"ピーマン50g・ごま油・しょうゆ・みりん・ごま",steps:["ピーマンを細切りにする","ごま油で炒める","しょうゆ・みりん・ごまで仕上げる"]},
-  {name:"枝豆の塩ゆで",kcal:60,ing:"枝豆50g・塩",steps:["枝豆を塩でもむ","熱湯で5分茹でる","ざるに上げて冷ます"]},
-  {name:"きゅうりの浅漬け",kcal:15,ing:"きゅうり50g・塩・しょうゆ・酢",steps:["きゅうりを薄切りにする","塩もみして水気を絞る","しょうゆ・酢で和える"]},
-  {name:"小松菜の炒め物",kcal:40,ing:"小松菜50g・にんにく・ごま油・塩こしょう",steps:["小松菜を4cm切りにする","ごま油・にんにくで炒める","塩こしょうで整える"]},
-  {name:"ほうれん草のおひたし",kcal:30,ing:"ほうれん草50g・だし・しょうゆ・みりん",steps:["ほうれん草を茹でる","水気を絞る","だし・しょうゆ・みりんに浸す"]},
-  {name:"ブロッコリーのおかか和え",kcal:40,ing:"ブロッコリー50g・かつお節・しょうゆ",steps:["ブロッコリーを茹でる","水気を切る","かつお節・しょうゆで和える"]},
-  {name:"きぬさやの卵炒め",kcal:65,ing:"きぬさや40g・卵1個・塩こしょう",steps:["きぬさやの筋を取る","卵を溶く","フライパンで炒め合わせる"]},
-  {name:"ズッキーニのソテー",kcal:45,ing:"ズッキーニ50g・オリーブ油・塩こしょう・にんにく",steps:["ズッキーニを輪切りにする","オリーブ油・にんにくで炒める","塩こしょうで整える"]},
-  {name:"菜の花のからし和え",kcal:35,ing:"菜の花50g・からし・しょうゆ・みりん",steps:["菜の花を茹でる","水気を絞る","からし・しょうゆ・みりんで和える"]},
-  {name:"オクラのおかか和え",kcal:30,ing:"オクラ50g・かつお節・しょうゆ",steps:["オクラを塩ずりして茹でる","輪切りにする","かつお節・しょうゆで和える"]},
-  {name:"チンゲン菜の炒め物",kcal:40,ing:"チンゲン菜50g・にんにく・ごま油・塩こしょう",steps:["チンゲン菜を切る","ごま油・にんにくで炒める","塩こしょうで整える"]},
-  {name:"さやえんどうのごまあえ",kcal:40,ing:"さやえんどう50g・すりごま・しょうゆ・砂糖",steps:["さやえんどうを茹でる","水気を切る","ごま・しょうゆ・砂糖で和える"]},
-  {name:"ゴーヤの塩炒め",kcal:30,ing:"ゴーヤ50g・塩・ごま油",steps:["ゴーヤを半月切りにして塩もみ","ごま油で炒める","塩で整える"]},
-  {name:"アボカドのわさびしょうゆ",kcal:90,ing:"アボカド50g・わさび・しょうゆ",steps:["アボカドを切る","わさびしょうゆで和える","レモン汁をかける"]},
-  {name:"グリーンアスパラの胡麻マヨ",kcal:70,ing:"アスパラ50g・ごま・マヨネーズ",steps:["アスパラを茹でる","水気を切って切る","ごま・マヨネーズで和える"]},
+var SIDE_GREEN=[
+{name:"ほうれん草のごまあえ",kcal:45,ing:["ほうれん草50g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["ほうれん草を塩茹でする","水気を絞り切る","ごまとしょうゆと砂糖で和える"]},
+{name:"小松菜の煮びたし",kcal:35,ing:["小松菜50g","だし100ml","しょうゆ小さじ1","みりん小さじ1"],steps:["小松菜を4cm切りにする","だし・しょうゆ・みりんで煮る","冷まして味をなじませる"]},
+{name:"ブロッコリーのマヨあえ",kcal:70,ing:["ブロッコリー50g","マヨネーズ大さじ1","塩こしょう少々"],steps:["ブロッコリーを小房にして茹でる","水気を切る","マヨネーズと塩こしょうで和える"]},
+{name:"いんげんのごま炒め",kcal:50,ing:["いんげん50g","ごま油小さじ1","しょうゆ小さじ1","ごま適量"],steps:["いんげんを茹でて斜め切り","ごま油で炒める","しょうゆとごまで仕上げる"]},
+{name:"アスパラのバター炒め",kcal:55,ing:["アスパラ50g","バター5g","塩こしょう少々"],steps:["アスパラを斜め切りにする","バターで炒める","塩こしょうで仕上げる"]},
+{name:"ピーマンのきんぴら",kcal:45,ing:["ピーマン50g","ごま油小さじ1","しょうゆ小さじ1","みりん小さじ1"],steps:["ピーマンを細切りにする","ごま油で炒める","しょうゆとみりんとごまで仕上げる"]},
+{name:"枝豆の塩ゆで",kcal:60,ing:["枝豆50g","塩適量"],steps:["枝豆を塩でもむ","熱湯で5分茹でる","ざるに上げて冷ます"]},
+{name:"きゅうりの浅漬け",kcal:15,ing:["きゅうり50g","塩少々","しょうゆ小さじ1","酢小さじ1"],steps:["きゅうりを薄切りにする","塩もみして水気を絞る","しょうゆと酢で和える"]},
+{name:"小松菜の炒め物",kcal:40,ing:["小松菜50g","にんにく1片","ごま油小さじ1","塩こしょう少々"],steps:["小松菜を4cm切りにする","ごま油とにんにくで炒める","塩こしょうで整える"]},
+{name:"ほうれん草のおひたし",kcal:30,ing:["ほうれん草50g","だし大さじ2","しょうゆ小さじ1","みりん小さじ1"],steps:["ほうれん草を茹でる","水気を絞る","だしとしょうゆとみりんに浸す"]},
+{name:"ブロッコリーのおかか和え",kcal:40,ing:["ブロッコリー50g","かつお節1パック","しょうゆ小さじ1"],steps:["ブロッコリーを茹でる","水気を切る","かつお節としょうゆで和える"]},
+{name:"きぬさやの卵炒め",kcal:65,ing:["きぬさや40g","卵1個","塩こしょう少々"],steps:["きぬさやの筋を取る","卵を溶く","フライパンで炒め合わせる"]},
+{name:"ズッキーニのソテー",kcal:45,ing:["ズッキーニ50g","オリーブ油小さじ1","塩こしょう少々","にんにく1片"],steps:["ズッキーニを輪切りにする","オリーブ油とにんにくで炒める","塩こしょうで整える"]},
+{name:"菜の花のからし和え",kcal:35,ing:["菜の花50g","からし小さじ1/2","しょうゆ小さじ1","みりん小さじ1"],steps:["菜の花を茹でる","水気を絞る","からしとしょうゆとみりんで和える"]},
+{name:"オクラのおかか和え",kcal:30,ing:["オクラ50g","かつお節1パック","しょうゆ小さじ1"],steps:["オクラを塩ずりして茹でる","輪切りにする","かつお節としょうゆで和える"]},
+{name:"チンゲン菜の炒め物",kcal:40,ing:["チンゲン菜50g","にんにく1片","ごま油小さじ1","塩こしょう少々"],steps:["チンゲン菜を切る","ごま油とにんにくで炒める","塩こしょうで整える"]},
+{name:"さやえんどうのごまあえ",kcal:40,ing:["さやえんどう50g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["さやえんどうを茹でる","水気を切る","ごまとしょうゆと砂糖で和える"]},
+{name:"ゴーヤの塩炒め",kcal:30,ing:["ゴーヤ50g","塩少々","ごま油小さじ1"],steps:["ゴーヤを半月切りにして塩もみ","ごま油で炒める","塩で整える"]},
+{name:"アボカドのわさびしょうゆ",kcal:90,ing:["アボカド50g","わさび少々","しょうゆ小さじ1"],steps:["アボカドを切る","わさびしょうゆで和える","レモン汁をかける"]},
+{name:"アスパラの胡麻マヨ",kcal:70,ing:["アスパラ50g","ごま大さじ1","マヨネーズ大さじ1"],steps:["アスパラを茹でる","水気を切って切る","ごまとマヨネーズで和える"]}
 ];
 
-const SIDE_YELLOW = [
-  {name:"かぼちゃのそぼろ煮",kcal:90,ing:"かぼちゃ60g・鶏ひき肉30g・だし・しょうゆ・みりん",steps:["かぼちゃを一口大に切る","ひき肉・かぼちゃをだしで煮る","しょうゆ・みりんで味付け"]},
-  {name:"卵焼き（だし巻き）",kcal:100,ing:"卵2個・だし・みりん・薄口しょうゆ",steps:["卵とだしを混ぜる","卵焼き器で少しずつ巻く","冷まして切る"]},
-  {name:"コーンのバター炒め",kcal:80,ing:"コーン50g・バター・塩こしょう",steps:["フライパンでバターを溶かす","コーンを炒める","塩こしょうで整える"]},
-  {name:"さつまいもの甘煮",kcal:100,ing:"さつまいも60g・砂糖・みりん・しょうゆ",steps:["さつまいもを輪切りにする","水・砂糖・みりんで煮る","しょうゆを少し加える"]},
-  {name:"玉ねぎのフライ",kcal:110,ing:"玉ねぎ50g・天ぷら粉・塩",steps:["玉ねぎを輪切りにする","天ぷら粉をつける","170℃で揚げる"]},
-  {name:"カボチャのサラダ",kcal:85,ing:"かぼちゃ60g・マヨネーズ・塩こしょう・レーズン",steps:["かぼちゃを茹でてつぶす","マヨネーズ・塩こしょうで和える","レーズンを加える"]},
-  {name:"たまごのマヨサラダ",kcal:130,ing:"卵2個・マヨネーズ・塩こしょう・からし",steps:["卵を固ゆでにする","粗くつぶす","マヨネーズ・からし・塩こしょうで和える"]},
-  {name:"ニンジンのグラッセ",kcal:60,ing:"人参50g・バター・砂糖・塩",steps:["人参を花形に切る","バター・砂糖・塩で煮る","つやが出るまで煮詰める"]},
-  {name:"とうもろこしの天ぷら",kcal:100,ing:"コーン40g・天ぷら粉",steps:["コーンに天ぷら粉を絡める","まとめて形をつくる","160℃で揚げる"]},
-  {name:"さつまいもの甘辛炒め",kcal:110,ing:"さつまいも60g・しょうゆ・みりん・ごま",steps:["さつまいもを切って水にさらす","揚げ焼きにする","しょうゆ・みりん・ごまで絡める"]},
-  {name:"かぼちゃのチーズ焼き",kcal:100,ing:"かぼちゃ60g・チーズ・塩こしょう",steps:["かぼちゃをレンジで柔らかくする","チーズをのせる","トースターで焼く"]},
-  {name:"黄パプリカのマリネ",kcal:35,ing:"黄パプリカ50g・オリーブ油・酢・塩こしょう",steps:["パプリカを細切りにする","オリーブ油・酢・塩こしょうで和える","冷蔵庫で冷やす"]},
-  {name:"コーンの卵炒め",kcal:110,ing:"コーン40g・卵1個・塩こしょう・バター",steps:["卵を溶く","バターでコーンを炒める","卵を加えてふんわり炒める"]},
-  {name:"じゃがいものきんぴら",kcal:80,ing:"じゃがいも60g・ごま油・しょうゆ・みりん",steps:["じゃがいもを細切りにして水にさらす","ごま油で炒める","しょうゆ・みりんで仕上げる"]},
-  {name:"たくあんのごま炒め",kcal:40,ing:"たくあん40g・ごま油・ごま・砂糖",steps:["たくあんを細切りにする","ごま油で炒める","ごま・砂糖で仕上げる"]},
-  {name:"かぼちゃの煮物",kcal:80,ing:"かぼちゃ60g・だし・しょうゆ・みりん・砂糖",steps:["かぼちゃを切る","だし・調味料で煮る","柔らかくなるまで10分煮る"]},
-  {name:"さつまいもスティック",kcal:120,ing:"さつまいも60g・バター・塩",steps:["さつまいもをスティック切りにする","バターで炒める","塩で整える"]},
-  {name:"玉子のそぼろ",kcal:120,ing:"卵2個・砂糖・みりん・しょうゆ",steps:["卵をよく溶く","調味料を加える","フライパンで混ぜながら炒り卵にする"]},
-  {name:"コーンのかき揚げ",kcal:100,ing:"コーン40g・天ぷら粉・塩",steps:["コーンに天ぷら粉を絡める","まとめる","160℃でゆっくり揚げる"]},
-  {name:"かぼちゃのマッシュ",kcal:90,ing:"かぼちゃ60g・バター・塩こしょう・牛乳",steps:["かぼちゃを茹でる","バター・牛乳を加えてつぶす","塩こしょうで整える"]},
+var SIDE_YELLOW=[
+{name:"かぼちゃのそぼろ煮",kcal:90,ing:["かぼちゃ60g","鶏ひき肉30g","だし100ml","しょうゆ小さじ1"],steps:["かぼちゃを一口大に切る","ひき肉とかぼちゃをだしで煮る","しょうゆとみりんで味付け"]},
+{name:"だし巻き卵",kcal:100,ing:["卵2個","だし大さじ3","みりん小さじ1","薄口しょうゆ小さじ1/2"],steps:["卵とだしを混ぜる","卵焼き器で少しずつ巻く","冷まして切る"]},
+{name:"コーンのバター炒め",kcal:80,ing:["コーン50g","バター5g","塩こしょう少々"],steps:["フライパンでバターを溶かす","コーンを炒める","塩こしょうで整える"]},
+{name:"さつまいもの甘煮",kcal:100,ing:["さつまいも60g","砂糖大さじ1","みりん大さじ1","しょうゆ少々"],steps:["さつまいもを輪切りにする","水と砂糖とみりんで煮る","しょうゆを少し加える"]},
+{name:"玉ねぎのフライ",kcal:110,ing:["玉ねぎ50g","天ぷら粉大さじ3","塩少々"],steps:["玉ねぎを輪切りにする","天ぷら粉をつける","170度で揚げる"]},
+{name:"かぼちゃのサラダ",kcal:85,ing:["かぼちゃ60g","マヨネーズ大さじ1","塩こしょう少々","レーズン適量"],steps:["かぼちゃを茹でてつぶす","マヨネーズと塩こしょうで和える","レーズンを加える"]},
+{name:"たまごのマヨサラダ",kcal:130,ing:["卵2個","マヨネーズ大さじ1","塩こしょう少々","からし少々"],steps:["卵を固ゆでにする","粗くつぶす","マヨネーズとからしと塩こしょうで和える"]},
+{name:"にんじんのグラッセ",kcal:60,ing:["人参50g","バター5g","砂糖小さじ1","塩少々"],steps:["人参を花形に切る","バターと砂糖と塩で煮る","つやが出るまで煮詰める"]},
+{name:"コーンの天ぷら",kcal:100,ing:["コーン40g","天ぷら粉大さじ2"],steps:["コーンに天ぷら粉を絡める","まとめて形をつくる","160度で揚げる"]},
+{name:"さつまいもの甘辛炒め",kcal:110,ing:["さつまいも60g","しょうゆ小さじ1","みりん小さじ1","ごま適量"],steps:["さつまいもを切って水にさらす","揚げ焼きにする","しょうゆとみりんとごまで絡める"]},
+{name:"かぼちゃのチーズ焼き",kcal:100,ing:["かぼちゃ60g","チーズ20g","塩こしょう少々"],steps:["かぼちゃをレンジで柔らかくする","チーズをのせる","トースターで焼く"]},
+{name:"黄パプリカのマリネ",kcal:35,ing:["黄パプリカ50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["パプリカを細切りにする","オリーブ油と酢と塩こしょうで和える","冷蔵庫で冷やす"]},
+{name:"コーンの卵炒め",kcal:110,ing:["コーン40g","卵1個","塩こしょう少々","バター5g"],steps:["卵を溶く","バターでコーンを炒める","卵を加えてふんわり炒める"]},
+{name:"じゃがいものきんぴら",kcal:80,ing:["じゃがいも60g","ごま油小さじ1","しょうゆ小さじ1","みりん小さじ1"],steps:["じゃがいもを細切りにして水にさらす","ごま油で炒める","しょうゆとみりんで仕上げる"]},
+{name:"たくあんのごま炒め",kcal:40,ing:["たくあん40g","ごま油小さじ1","ごま適量","砂糖少々"],steps:["たくあんを細切りにする","ごま油で炒める","ごまと砂糖で仕上げる"]},
+{name:"かぼちゃの煮物",kcal:80,ing:["かぼちゃ60g","だし100ml","しょうゆ小さじ1","みりん小さじ1"],steps:["かぼちゃを切る","だしと調味料で煮る","柔らかくなるまで10分煮る"]},
+{name:"さつまいもスティック",kcal:120,ing:["さつまいも60g","バター5g","塩少々"],steps:["さつまいもをスティック切りにする","バターで炒める","塩で整える"]},
+{name:"炒り卵",kcal:120,ing:["卵2個","砂糖小さじ1","みりん小さじ1","しょうゆ少々"],steps:["卵をよく溶く","調味料を加える","フライパンで混ぜながら炒り卵にする"]},
+{name:"コーンのかき揚げ",kcal:100,ing:["コーン40g","天ぷら粉大さじ2","塩少々"],steps:["コーンに天ぷら粉を絡める","まとめる","160度でゆっくり揚げる"]},
+{name:"かぼちゃのマッシュ",kcal:90,ing:["かぼちゃ60g","バター5g","塩こしょう少々","牛乳大さじ1"],steps:["かぼちゃを茹でる","バターと牛乳を加えてつぶす","塩こしょうで整える"]}
 ];
 
-const SIDE_WHITE = [
-  {name:"大根の煮物",kcal:30,ing:"大根60g・だし・しょうゆ・みりん・砂糖",steps:["大根を輪切りにして面取りする","だし・調味料で20分煮る","味をなじませる"]},
-  {name:"豆腐のそぼろ",kcal:80,ing:"木綿豆腐60g・鶏ひき肉30g・しょうゆ・みりん",steps:["豆腐の水切りをする","ひき肉・豆腐を炒める","しょうゆ・みりんで水分を飛ばす"]},
-  {name:"れんこんのきんぴら",kcal:60,ing:"れんこん60g・ごま油・しょうゆ・みりん・ごま",steps:["れんこんを薄切りにして水にさらす","ごま油で炒める","しょうゆ・みりん・ごまで仕上げる"]},
-  {name:"かぶの浅漬け",kcal:20,ing:"かぶ60g・塩・昆布",steps:["かぶを薄切りにする","塩・昆布で漬ける","冷蔵庫で30分おく"]},
-  {name:"ごぼうのマヨサラダ",kcal:90,ing:"ごぼう50g・マヨネーズ・しょうゆ",steps:["ごぼうをささがきにして茹でる","水気を切る","マヨネーズ・しょうゆで和える"]},
-  {name:"白菜の浅漬け",kcal:15,ing:"白菜60g・塩・昆布・ごま",steps:["白菜を切る","塩もみして水気を絞る","昆布・ごまで和える"]},
-  {name:"里芋の煮物",kcal:70,ing:"里芋60g・だし・しょうゆ・みりん・砂糖",steps:["里芋を下茹でして皮を剥く","だし・調味料で煮る","味をなじませる"]},
-  {name:"大根のそぼろ煮",kcal:60,ing:"大根60g・鶏ひき肉30g・だし・しょうゆ・みりん",steps:["大根を切る","ひき肉と大根を炒める","だし・調味料で煮る"]},
-  {name:"れんこんの天ぷら",kcal:100,ing:"れんこん60g・天ぷら粉・塩",steps:["れんこんを薄切りにする","天ぷら粉をつける","170℃で揚げる"]},
-  {name:"豆腐のステーキ",kcal:90,ing:"木綿豆腐60g・しょうゆ・みりん・ごま油",steps:["豆腐の水切りをする","ごま油でカリッと焼く","しょうゆ・みりんで仕上げる"]},
-  {name:"ごぼうの唐揚げ",kcal:80,ing:"ごぼう50g・片栗粉・しょうゆ・みりん",steps:["ごぼうを下茹でする","しょうゆ・みりんで漬ける","片栗粉をまぶして揚げる"]},
-  {name:"かぶの煮物",kcal:30,ing:"かぶ60g・だし・薄口しょうゆ・みりん",steps:["かぶを切る","だし・調味料で煮る","やわらかくなったら完成"]},
-  {name:"大根のおかか和え",kcal:25,ing:"大根60g・かつお節・しょうゆ",steps:["大根を千切りにする","塩もみして水気を絞る","かつお節・しょうゆで和える"]},
-  {name:"山芋の短冊",kcal:50,ing:"山芋50g・しょうゆ・わさび",steps:["山芋を短冊切りにする","わさびしょうゆで和える","海苔を添える"]},
-  {name:"豆腐の白和え",kcal:80,ing:"木綿豆腐50g・ほうれん草・にんじん・ごま・砂糖・みそ",steps:["豆腐の水切りをする","野菜を茹でて切る","豆腐・ごま・砂糖・みそで和える"]},
-  {name:"れんこんのはさみ揚げ",kcal:120,ing:"れんこん50g・豚ひき肉30g・片栗粉",steps:["れんこんを薄切りにする","ひき肉を挟む","片栗粉をまぶして揚げる"]},
-  {name:"大根と油揚げの煮物",kcal:55,ing:"大根50g・油揚げ・だし・しょうゆ・みりん",steps:["大根と油揚げを切る","だし・調味料で煮る","味をなじませる"]},
-  {name:"里芋のそぼろあん",kcal:90,ing:"里芋60g・鶏ひき肉30g・だし・しょうゆ・片栗粉",steps:["里芋を煮る","ひき肉のそぼろあんを作る","里芋にかける"]},
-  {name:"ごぼうのパリパリ揚げ",kcal:80,ing:"ごぼう50g・片栗粉・塩",steps:["ごぼうをささがきにする","片栗粉をまぶす","170℃でカリッと揚げる"]},
-  {name:"白菜のごまあえ",kcal:30,ing:"白菜60g・すりごま・しょうゆ・砂糖",steps:["白菜を茹でる","水気を絞る","すりごま・しょうゆ・砂糖で和える"]},
+var SIDE_WHITE=[
+{name:"大根の煮物",kcal:30,ing:["大根60g","だし150ml","しょうゆ小さじ1","みりん小さじ1"],steps:["大根を輪切りにして面取りする","だしと調味料で20分煮る","味をなじませる"]},
+{name:"豆腐のそぼろ",kcal:80,ing:["木綿豆腐60g","鶏ひき肉30g","しょうゆ小さじ1","みりん小さじ1"],steps:["豆腐の水切りをする","ひき肉と豆腐を炒める","しょうゆとみりんで水分を飛ばす"]},
+{name:"れんこんのきんぴら",kcal:60,ing:["れんこん60g","ごま油小さじ1","しょうゆ小さじ1","みりん小さじ1"],steps:["れんこんを薄切りにして水にさらす","ごま油で炒める","しょうゆとみりんとごまで仕上げる"]},
+{name:"かぶの浅漬け",kcal:20,ing:["かぶ60g","塩少々","昆布適量"],steps:["かぶを薄切りにする","塩と昆布で漬ける","冷蔵庫で30分おく"]},
+{name:"ごぼうのマヨサラダ",kcal:90,ing:["ごぼう50g","マヨネーズ大さじ1","しょうゆ小さじ1"],steps:["ごぼうをささがきにして茹でる","水気を切る","マヨネーズとしょうゆで和える"]},
+{name:"白菜の浅漬け",kcal:15,ing:["白菜60g","塩少々","昆布適量","ごま適量"],steps:["白菜を切る","塩もみして水気を絞る","昆布とごまで和える"]},
+{name:"里芋の煮物",kcal:70,ing:["里芋60g","だし150ml","しょうゆ小さじ1","みりん小さじ1"],steps:["里芋を下茹でして皮を剥く","だしと調味料で煮る","味をなじませる"]},
+{name:"大根のそぼろ煮",kcal:60,ing:["大根60g","鶏ひき肉30g","だし150ml","しょうゆ小さじ1"],steps:["大根を切る","ひき肉と大根を炒める","だしと調味料で煮る"]},
+{name:"れんこんの天ぷら",kcal:100,ing:["れんこん60g","天ぷら粉大さじ2","塩少々"],steps:["れんこんを薄切りにする","天ぷら粉をつける","170度で揚げる"]},
+{name:"豆腐のステーキ",kcal:90,ing:["木綿豆腐60g","しょうゆ小さじ1","みりん小さじ1","ごま油小さじ1"],steps:["豆腐の水切りをする","ごま油でカリッと焼く","しょうゆとみりんで仕上げる"]},
+{name:"ごぼうの唐揚げ",kcal:80,ing:["ごぼう50g","片栗粉大さじ1","しょうゆ小さじ1","みりん小さじ1"],steps:["ごぼうを下茹でする","しょうゆとみりんで漬ける","片栗粉をまぶして揚げる"]},
+{name:"かぶの煮物",kcal:30,ing:["かぶ60g","だし100ml","薄口しょうゆ小さじ1","みりん小さじ1"],steps:["かぶを切る","だしと調味料で煮る","やわらかくなったら完成"]},
+{name:"大根のおかか和え",kcal:25,ing:["大根60g","かつお節1パック","しょうゆ小さじ1"],steps:["大根を千切りにする","塩もみして水気を絞る","かつお節としょうゆで和える"]},
+{name:"山芋の短冊",kcal:50,ing:["山芋50g","しょうゆ小さじ1","わさび少々"],steps:["山芋を短冊切りにする","わさびしょうゆで和える","海苔を添える"]},
+{name:"豆腐の白和え",kcal:80,ing:["木綿豆腐50g","ほうれん草30g","ごま大さじ1","砂糖小さじ1"],steps:["豆腐の水切りをする","野菜を茹でて切る","豆腐とごまと砂糖とみそで和える"]},
+{name:"れんこんのはさみ揚げ",kcal:120,ing:["れんこん50g","豚ひき肉30g","片栗粉大さじ1"],steps:["れんこんを薄切りにする","ひき肉を挟む","片栗粉をまぶして揚げる"]},
+{name:"大根と油揚げの煮物",kcal:55,ing:["大根50g","油揚げ1/2枚","だし150ml","しょうゆ小さじ1"],steps:["大根と油揚げを切る","だしと調味料で煮る","味をなじませる"]},
+{name:"里芋のそぼろあん",kcal:90,ing:["里芋60g","鶏ひき肉30g","だし150ml","片栗粉小さじ1"],steps:["里芋を煮る","ひき肉のそぼろあんを作る","里芋にかける"]},
+{name:"ごぼうのパリパリ揚げ",kcal:80,ing:["ごぼう50g","片栗粉大さじ1","塩少々"],steps:["ごぼうをささがきにする","片栗粉をまぶす","170度でカリッと揚げる"]},
+{name:"白菜のごまあえ",kcal:30,ing:["白菜60g","すりごま大さじ1","しょうゆ小さじ1","砂糖小さじ1/2"],steps:["白菜を茹でる","水気を絞る","すりごまとしょうゆと砂糖で和える"]}
 ];
 
-const SIDE_RED = [
-  {name:"トマトのマリネ",kcal:40,ing:"トマト50g・オリーブ油・酢・塩こしょう・バジル",steps:["トマトを切る","オリーブ油・酢・塩こしょうで和える","バジルをちぎってのせる"]},
-  {name:"にんじんのグラッセ",kcal:55,ing:"にんじん50g・バター・砂糖・塩",steps:["にんじんを花形に切る","バター・砂糖・塩で煮る","つやが出るまで煮詰める"]},
-  {name:"赤パプリカのマリネ",kcal:35,ing:"赤パプリカ50g・オリーブ油・酢・塩こしょう",steps:["パプリカを焼いて皮を剥く","細切りにする","オリーブ油・酢・塩こしょうで和える"]},
-  {name:"にんじんのきんぴら",kcal:50,ing:"にんじん50g・ごま油・しょうゆ・みりん・ごま",steps:["にんじんを千切りにする","ごま油で炒める","しょうゆ・みりん・ごまで仕上げる"]},
-  {name:"梅干しの甘露煮",kcal:25,ing:"梅干し2個・砂糖・みりん",steps:["梅干しを水に漬けて塩抜きする","砂糖・みりんで煮る","つやが出るまで煮詰める"]},
-  {name:"タコのマリネ",kcal:60,ing:"ゆでタコ40g・トマト・オリーブ油・レモン汁",steps:["タコとトマトを切る","オリーブ油・レモン汁で和える","冷蔵庫で冷やす"]},
-  {name:"にんじんのラペ",kcal:50,ing:"にんじん50g・酢・オリーブ油・砂糖・塩・レーズン",steps:["にんじんを千切りにする","酢・オリーブ油・砂糖・塩で和える","レーズンを加える"]},
-  {name:"トマトとモッツァレラ",kcal:90,ing:"トマト40g・モッツァレラ30g・オリーブ油・塩",steps:["トマトとチーズを切る","交互に並べる","オリーブ油・塩をかける"]},
-  {name:"にんじんの白和え",kcal:65,ing:"にんじん50g・木綿豆腐40g・ごま・砂糖・みそ",steps:["にんじんを茹でる","豆腐の水切りをする","ごま・砂糖・みそで和える"]},
-  {name:"赤かぶの漬物",kcal:20,ing:"赤かぶ50g・酢・砂糖・塩",steps:["赤かぶを薄切りにする","酢・砂糖・塩で漬ける","冷蔵庫で30分おく"]},
-  {name:"パプリカのソテー",kcal:40,ing:"赤パプリカ50g・オリーブ油・塩こしょう",steps:["パプリカを細切りにする","オリーブ油で炒める","塩こしょうで整える"]},
-  {name:"にんじんのクミン炒め",kcal:55,ing:"にんじん50g・クミンシード・オリーブ油・塩",steps:["にんじんを千切りにする","クミン・オリーブ油で炒める","塩で整える"]},
-  {name:"トマトの卵炒め",kcal:90,ing:"トマト50g・卵1個・塩こしょう・ごま油",steps:["卵を溶く","ごま油でトマトを炒める","卵を加えてふんわり仕上げる"]},
-  {name:"赤パプリカのナムル",kcal:35,ing:"赤パプリカ50g・ごま油・塩・にんにく",steps:["パプリカを細切りにして茹でる","水気を切る","ごま油・塩・にんにくで和える"]},
-  {name:"にんじんしりしり",kcal:70,ing:"にんじん50g・卵1個・ツナ・しょうゆ・ごま油",steps:["にんじんを千切りにしてごま油で炒める","ツナを加える","卵としょうゆで仕上げる"]},
-  {name:"サーモンのマリネ",kcal:100,ing:"スモークサーモン40g・玉ねぎ・ケイパー・レモン",steps:["玉ねぎを薄切りにする","サーモンと盛り付ける","ケイパー・レモンを添える"]},
-  {name:"イクラのしょうゆ漬け風",kcal:60,ing:"明太子30g・しょうゆ・みりん",steps:["明太子をほぐす","しょうゆ・みりんで和える","冷蔵庫で味をなじませる"]},
-  {name:"えびの塩炒め",kcal:80,ing:"えび50g・塩・ごま油・にんにく",steps:["えびの背わたを取る","ごま油・にんにくで炒める","塩で整える"]},
-  {name:"赤いんげんのトマト煮",kcal:70,ing:"金時豆40g・トマト缶・塩・オリーブ油",steps:["トマト缶を鍋に入れる","金時豆を加えて煮る","塩・オリーブ油で整える"]},
-  {name:"クコの実入り甘酢れんこん",kcal:55,ing:"れんこん50g・クコの実・酢・砂糖・塩",steps:["れんこんを薄切りにして茹でる","酢・砂糖・塩で和える","クコの実を加える"]},
+var SIDE_RED=[
+{name:"トマトのマリネ",kcal:40,ing:["トマト50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["トマトを切る","オリーブ油と酢と塩こしょうで和える","バジルをちぎってのせる"]},
+{name:"にんじんのグラッセ",kcal:55,ing:["にんじん50g","バター5g","砂糖小さじ1","塩少々"],steps:["にんじんを花形に切る","バターと砂糖と塩で煮る","つやが出るまで煮詰める"]},
+{name:"赤パプリカのマリネ",kcal:35,ing:["赤パプリカ50g","オリーブ油小さじ1","酢小さじ1","塩こしょう少々"],steps:["パプリカを焼いて皮を剥く","細切りにする","オリーブ油と酢と塩こしょうで和える"]},
+{name:"にんじんのきんぴら",kcal:50,ing:["にんじん50g","ごま油小さじ1","しょうゆ小さじ1","みりん小さじ1"],steps:["にんじんを千切りにする","ごま油で炒める","しょうゆとみりんとごまで仕上げる"]},
+{name:"梅の甘露煮",kcal:25,ing:["梅干し2個","砂糖大さじ1","みりん大さじ1"],steps:["梅干しを水に漬けて塩抜きする","砂糖とみりんで煮る","つやが出るまで煮詰める"]},
+{name:"タコのマリネ",kcal:60,ing:["ゆでタコ40g","トマト30g","オリーブ油小さじ1","レモン汁少々"],steps:["タコとトマトを切る","オリーブ油とレモン汁で和える","冷蔵庫で冷やす"]},
+{name:"にんじんのラペ",kcal:50,ing:["にんじん50g","酢小さじ1","オリーブ油小さじ1","レーズン適量"],steps:["にんじんを千切りにする","酢とオリーブ油と砂糖と塩で和える","レーズンを加える"]},
+{name:"トマトとモッツァレラ",kcal:90,ing:["トマト40g","モッツァレラ30g","オリーブ油小さじ1","塩少々"],steps:["トマトとチーズを切る","交互に並べる","オリーブ油と塩をかける"]},
+{name:"にんじんの白和え",kcal:65,ing:["にんじん50g","木綿豆腐40g","ごま大さじ1","みそ小さじ1"],steps:["にんじんを茹でる","豆腐の水切りをする","ごまと砂糖とみそで和える"]},
+{name:"赤かぶの漬物",kcal:20,ing:["赤かぶ50g","酢大さじ1","砂糖大さじ1","塩少々"],steps:["赤かぶを薄切りにする","酢と砂糖と塩で漬ける","冷蔵庫で30分おく"]},
+{name:"パプリカのソテー",kcal:40,ing:["赤パプリカ50g","オリーブ油小さじ1","塩こしょう少々"],steps:["パプリカを細切りにする","オリーブ油で炒める","塩こしょうで整える"]},
+{name:"にんじんのクミン炒め",kcal:55,ing:["にんじん50g","クミンシード小さじ1/2","オリーブ油小さじ1","塩少々"],steps:["にんじんを千切りにする","クミンとオリーブ油で炒める","塩で整える"]},
+{name:"トマトの卵炒め",kcal:90,ing:["トマト50g","卵1個","塩こしょう少々","ごま油小さじ1"],steps:["卵を溶く","ごま油でトマトを炒める","卵を加えてふんわり仕上げる"]},
+{name:"赤パプリカのナムル",kcal:35,ing:["赤パプリカ50g","ごま油小さじ1","塩少々","にんにく少々"],steps:["パプリカを細切りにして茹でる","水気を切る","ごま油と塩とにんにくで和える"]},
+{name:"にんじんしりしり",kcal:70,ing:["にんじん50g","卵1個","ツナ20g","しょうゆ小さじ1"],steps:["にんじんを千切りにしてごま油で炒める","ツナを加える","卵としょうゆで仕上げる"]},
+{name:"サーモンのマリネ",kcal:100,ing:["スモークサーモン40g","玉ねぎ20g","ケイパー少々","レモン適量"],steps:["玉ねぎを薄切りにする","サーモンと盛り付ける","ケイパーとレモンを添える"]},
+{name:"明太子和え",kcal:60,ing:["明太子30g","しょうゆ少々","みりん少々"],steps:["明太子をほぐす","しょうゆとみりんで和える","冷蔵庫で味をなじませる"]},
+{name:"えびの塩炒め",kcal:80,ing:["えび50g","塩少々","ごま油小さじ1","にんにく少々"],steps:["えびの背わたを取る","ごま油とにんにくで炒める","塩で整える"]},
+{name:"金時豆のトマト煮",kcal:70,ing:["金時豆40g","トマト缶50g","塩少々","オリーブ油小さじ1"],steps:["トマト缶を鍋に入れる","金時豆を加えて煮る","塩とオリーブ油で整える"]},
+{name:"甘酢れんこん",kcal:55,ing:["れんこん50g","酢大さじ1","砂糖大さじ1","クコの実適量"],steps:["れんこんを薄切りにして茹でる","酢と砂糖と塩で和える","クコの実を加える"]}
 ];
+</script>
+<script>
+var CAT_MAP={
+  main:{data:MAIN,color:"#c0392b",label:"主菜",planKey:"planMain"},
+  green:{data:SIDE_GREEN,color:"#27ae60",label:"緑の副菜",planKey:"planGreen"},
+  yellow:{data:SIDE_YELLOW,color:"#e67e22",label:"黄色の副菜",planKey:"planYellow"},
+  white:{data:SIDE_WHITE,color:"#95a5a6",label:"白系の副菜",planKey:"planWhite"},
+  red:{data:SIDE_RED,color:"#e74c3c",label:"赤系の副菜",planKey:"planRed"}
+};
+window.planMain=null;window.planGreen=null;window.planYellow=null;window.planWhite=null;window.planRed=null;
 
-// ==================== 状態 ====================
-let planMain = null;
-let planGreen = null;
-let planYellow = null;
-let planWhite = null;
-let planRed = null;
-
-// ==================== UI ====================
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  const tabs = document.querySelectorAll('.tab');
-  const map = {plan:0, main:1, green:2, yellow:3, white:4, red:5};
-  tabs[map[id]].classList.add('active');
-  if (id === 'plan') renderPlan();
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  var order=['plan','main','green','yellow','white','red'];
+  document.querySelectorAll('.tab')[order.indexOf(id)].classList.add('active');
+  if(id==='plan')renderPlan();
 }
 
-function renderCards(cat, data, color, planKey) {
-  const grid = document.getElementById('grid-' + cat);
-  grid.innerHTML = data.map((d, i) => {
-    const sel = window['plan'+planKey[0].toUpperCase()+planKey.slice(1)] === d;
-    return `<div class="menu-card${sel?' selected':''}" id="card-${cat}-${i}" onclick="selectDish('${cat}','${planKey}',${i})">
-      <div class="check"><span class="check-mark">✓</span></div>
-      <div class="card-color" style="background:${color}"></div>
-      <div class="card-name">${d.name}</div>
-      <div class="card-kcal">${d.kcal}kcal</div>
-      <div class="card-meta">${d.ing.split('・')[0]}など</div>
-      <span class="detail-btn" onclick="showDetail(event,${JSON.stringify(cat)},${i})">詳細を見る ▼</span>
-    </div>`;
-  }).join('');
-}
-
-function filterCards(cat, val) {
-  const map = {main:[MAIN,'#c0392b','main'], green:[SIDE_GREEN,'#27ae60','green'], yellow:[SIDE_YELLOW,'#e67e22','yellow'], white:[SIDE_WHITE,'#95a5a6','white'], red:[SIDE_RED,'#e74c3c','red']};
-  const [data, color, key] = map[cat];
-  const grid = document.getElementById('grid-' + cat);
-  const filtered = data.filter(d => d.name.includes(val) || d.ing.includes(val));
-  grid.innerHTML = filtered.map(d => {
-    const i = data.indexOf(d);
-    const planKey = key;
-    const planVar = window['plan'+planKey[0].toUpperCase()+planKey.slice(1)];
-    const sel = planVar === d;
-    return `<div class="menu-card${sel?' selected':''}" id="card-${cat}-${i}" onclick="selectDish('${cat}','${planKey}',${i})">
-      <div class="check"><span class="check-mark">✓</span></div>
-      <div class="card-color" style="background:${color}"></div>
-      <div class="card-name">${d.name}</div>
-      <div class="card-kcal">${d.kcal}kcal</div>
-      <div class="card-meta">${d.ing.split('・')[0]}など</div>
-      <span class="detail-btn" onclick="showDetail(event,'${cat}',${i})">詳細を見る ▼</span>
-    </div>`;
-  }).join('');
-}
-
-function selectDish(cat, planKey, idx) {
-  const map = {main: MAIN, green: SIDE_GREEN, yellow: SIDE_YELLOW, white: SIDE_WHITE, red: SIDE_RED};
-  const data = map[cat];
-  const key = 'plan' + planKey[0].toUpperCase() + planKey.slice(1);
-  if (window[key] === data[idx]) {
-    window[key] = null;
-  } else {
-    window[key] = data[idx];
+function renderCards(cat,dataArr){
+  var c=CAT_MAP[cat];
+  if(!dataArr)dataArr=c.data;
+  var html='';
+  for(var i=0;i<dataArr.length;i++){
+    var d=dataArr[i];
+    var realIdx=c.data.indexOf(d);
+    var sel=(window[c.planKey]===d);
+    html+='<div class="menu-card'+(sel?' selected':'')+'" onclick="selectDish(\''+cat+'\','+realIdx+')">'
+      +'<div class="card-check">&#10003;</div>'
+      +'<div class="card-color" style="background:'+c.color+'"></div>'
+      +'<div class="card-name">'+d.name+'</div>'
+      +'<div class="card-kcal">'+d.kcal+'kcal</div>'
+      +'<div class="card-meta">'+d.ing[0]+'など</div>'
+      +'<span class="detail-btn" onclick="showDetail(event,\''+cat+'\','+realIdx+')">詳細を見る &#9660;</span>'
+      +'</div>';
   }
-  const color = {main:'#c0392b', green:'#27ae60', yellow:'#e67e22', white:'#95a5a6', red:'#e74c3c'}[cat];
-  renderCards(cat, data, color, planKey);
+  document.getElementById('grid-'+cat).innerHTML=html;
 }
 
-function showDetail(e, cat, idx) {
+function filterCards(cat,val){
+  var c=CAT_MAP[cat];
+  var filtered=val?c.data.filter(function(d){return d.name.indexOf(val)>=0||d.ing.join('').indexOf(val)>=0;}):c.data;
+  renderCards(cat,filtered);
+}
+
+function selectDish(cat,idx){
+  var c=CAT_MAP[cat];
+  var d=c.data[idx];
+  window[c.planKey]=(window[c.planKey]===d)?null:d;
+  renderCards(cat,c.data);
+}
+
+function showDetail(e,cat,idx){
   e.stopPropagation();
-  const map = {main: MAIN, green: SIDE_GREEN, yellow: SIDE_YELLOW, white: SIDE_WHITE, red: SIDE_RED};
-  const d = map[cat][idx];
-  const color = {main:'#c0392b', green:'#27ae60', yellow:'#e67e22', white:'#95a5a6', red:'#e74c3c'}[cat];
-  const label = {main:'主菜', green:'緑の副菜', yellow:'黄色の副菜', white:'白系の副菜', red:'赤系の副菜'}[cat];
-  document.getElementById('drawer-content').innerHTML = `
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color}"></span>
-      <span style="font-size:11px;color:#888">${label}</span>
-    </div>
-    <div class="drawer-title">${d.name}</div>
-    <div class="drawer-sub">${d.kcal}kcal / 1人前</div>
-    <div class="drawer-section">材料（1人分）</div>
-    <div class="drawer-body">${d.ing.replace(/・/g,'<br>')}</div>
-    <div class="drawer-section">作り方</div>
-    <div class="drawer-steps">${d.steps.map((s,i)=>`<div class="drawer-step"><div class="step-num">${i+1}</div><div>${s}</div></div>`).join('')}</div>
-  `;
+  var c=CAT_MAP[cat];
+  var d=c.data[idx];
+  var ingHtml='';
+  for(var i=0;i<d.ing.length;i++)ingHtml+='<div>'+d.ing[i]+'</div>';
+  var stepsHtml='';
+  for(var j=0;j<d.steps.length;j++){
+    stepsHtml+='<div class="drawer-step"><div class="step-num">'+(j+1)+'</div><div class="step-text">'+d.steps[j]+'</div></div>';
+  }
+  document.getElementById('drawer-content').innerHTML=
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
+    +'<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.color+'"></span>'
+    +'<span style="font-size:11px;color:#888">'+c.label+'</span></div>'
+    +'<div class="drawer-title">'+d.name+'</div>'
+    +'<div class="drawer-sub">'+d.kcal+'kcal / 1人前</div>'
+    +'<div class="drawer-section">材料（1人分）</div>'
+    +'<div class="drawer-ing">'+ingHtml+'</div>'
+    +'<div class="drawer-section">作り方</div>'
+    +stepsHtml;
   document.getElementById('drawer').classList.add('open');
   document.getElementById('overlay').classList.add('show');
 }
 
-function closeDrawer() {
+function closeDrawer(){
   document.getElementById('drawer').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
 }
 
-function renderPlan() {
-  const dishes = [
-    {key:'planMain', label:'主菜', color:'#c0392b', labelClass:'plan-main-label'},
-    {key:'planGreen', label:'緑の副菜', color:'#27ae60', labelClass:'plan-green-label'},
-    {key:'planYellow', label:'黄色の副菜', color:'#e67e22', labelClass:'plan-yellow-label'},
-    {key:'planWhite', label:'白系の副菜', color:'#95a5a6', labelClass:'plan-white-label'},
-    {key:'planRed', label:'赤系の副菜', color:'#e74c3c', labelClass:'plan-red-label'},
+function renderPlan(){
+  var cats=[
+    {key:'planMain',label:'主菜',color:'#c0392b'},
+    {key:'planGreen',label:'緑の副菜',color:'#27ae60'},
+    {key:'planYellow',label:'黄色の副菜',color:'#e67e22'},
+    {key:'planWhite',label:'白系の副菜',color:'#95a5a6'},
+    {key:'planRed',label:'赤系の副菜',color:'#e74c3c'}
   ];
-  let totalKcal = 0;
-  let hasAny = false;
-  dishes.forEach(d => { if(window[d.key]) { totalKcal += window[d.key].kcal; hasAny = true; } });
-
-  let html = `<div class="total-kcal-box">
-    <div><div class="total-label">合計カロリー（主菜＋副菜）</div><div class="total-val">${hasAny ? totalKcal + ' kcal' : '-- kcal'}</div></div>
-    <div style="font-size:11px;color:#a8c5a8;text-align:right">目標<br>500〜700kcal</div>
-  </div>`;
-
-  dishes.forEach(d => {
-    const dish = window[d.key];
-    html += `<div class="plan-section">
-      <div class="plan-label ${d.labelClass}"><span class="badge-color" style="background:${d.color}"></span>${d.label}</div>`;
-    if (dish) {
-      html += `<div class="plan-dish">
-        <div>
-          <div class="plan-dish-name">${dish.name}</div>
-          <div class="plan-dish-meta">${dish.ing.split('・').slice(0,2).join('・')}など</div>
-        </div>
-        <div class="plan-dish-kcal">${dish.kcal}kcal</div>
-      </div>`;
-    } else {
-      html += `<div class="empty-plan">未選択 — ${d.label}タブから選んでください</div>`;
+  var total=0;
+  for(var i=0;i<cats.length;i++){if(window[cats[i].key])total+=window[cats[i].key].kcal;}
+  var html='<div class="total-box">'
+    +'<div><div class="total-label">合計カロリー（主菜＋副菜）</div>'
+    +'<div class="total-val">'+(total?total+' kcal':'-- kcal')+'</div></div>'
+    +'<div style="font-size:11px;color:#a8c5a8;text-align:right">目標<br>500〜700kcal</div>'
+    +'</div>';
+  for(var j=0;j<cats.length;j++){
+    var c=cats[j];
+    var d=window[c.key];
+    html+='<div class="plan-section">'
+      +'<div class="plan-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+c.color+'"></span>'+c.label+'</div>';
+    if(d){
+      html+='<div class="plan-dish">'
+        +'<div><div class="plan-dish-name">'+d.name+'</div>'
+        +'<div class="plan-dish-meta">'+d.ing.slice(0,2).join('・')+'など</div></div>'
+        +'<div class="plan-dish-kcal">'+d.kcal+'kcal</div></div>';
+    }else{
+      html+='<div class="empty-plan">未選択 — '+c.label+'タブから選んでください</div>';
     }
-    html += `</div>`;
-  });
-
-  if (hasAny) {
-    html += `<button class="btn-clear" onclick="clearPlan()">プランをリセット</button>`;
+    html+='</div>';
   }
-  document.getElementById('plan-content').innerHTML = html;
+  if(total)html+='<button class="btn-clear" onclick="clearPlan()">プランをリセット</button>';
+  document.getElementById('plan-content').innerHTML=html;
 }
 
-function clearPlan() {
-  planMain = planGreen = planYellow = planWhite = planRed = null;
-  window.planMain = window.planGreen = window.planYellow = window.planWhite = window.planRed = null;
+function clearPlan(){
+  window.planMain=window.planGreen=window.planYellow=window.planWhite=window.planRed=null;
   renderPlan();
 }
 
-// 初期化
-window.planMain = null; window.planGreen = null; window.planYellow = null; window.planWhite = null; window.planRed = null;
-renderCards('main', MAIN, '#c0392b', 'main');
-renderCards('green', SIDE_GREEN, '#27ae60', 'green');
-renderCards('yellow', SIDE_YELLOW, '#e67e22', 'yellow');
-renderCards('white', SIDE_WHITE, '#95a5a6', 'white');
-renderCards('red', SIDE_RED, '#e74c3c', 'red');
+renderCards('main');renderCards('green');renderCards('yellow');renderCards('white');renderCards('red');
 renderPlan();
 </script>
 </body>
