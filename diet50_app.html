@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>50代からの食べ痩せダイエット</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;600&display=swap');
+
+:root {
+  --rose: #C4626A;
+  --rose-l: #FAF0F0;
+  --rose-m: #E89499;
+  --rose-d: #9B3D45;
+  --sage: #6B8F71;
+  --sage-l: #EDF4EE;
+  --sage-m: #8FB395;
+  --amber: #C4924A;
+  --amber-l: #FBF3E8;
+  --amber-m: #DFB277;
+  --plum: #7B5EA7;
+  --plum-l: #F3F0F9;
+  --navy: #3A4A5C;
+  --text: #2D2523;
+  --sub: #6B5F5D;
+  --border: #E8DFDC;
+  --bg: #FDF9F8;
+  --card: #FFFFFF;
+  --radius: 14px;
+  --shadow: 0 2px 16px rgba(196,98,106,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, var(--rose-d) 0%, var(--rose) 60%, var(--amber) 100%);
+  color: white;
+  padding: 18px 20px 14px;
+  position: sticky; top: 0; z-index: 200;
+}
+.header-inner { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+.header-icon { font-size: 28px; }
+.header-title { font-family: 'Shippori Mincho', serif; font-size: 20px; font-weight: 600; }
+.header-sub { font-size: 11px; opacity: 0.85; margin-top: 2px; letter-spacing: 0.05em; }
+.header-badge {
+  margin-left: auto;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ===== NAV ===== */
+.nav {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  display: flex;
+  gap: 0;
+  position: sticky; top: 70px; z-index: 100;
+}
+.nav-btn {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+  background: none; border: none;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px; color: var(--sub);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-btn.active { color: var(--rose); border-bottom-color: var(--rose); font-weight: 500; }
+.nav-btn:hover:not(.active) { background: var(--rose-l); }
+
+/* ===== MAIN ===== */
+.main { max-width: 720px; margin: 0 auto; padding: 16px; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ===== CALENDAR ===== */
+.cal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.cal-title { font-family: 'Shippori Mincho', serif; font-size: 18px; font-weight: 600; }
+.cal-nav-btn {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border); border-radius: 50%;
+  background: var(--card); cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.cal-nav-btn:hover { background: var(--rose-l); border-color: var(--rose-m); }
+
+.cal-weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 2px; margin-bottom: 4px;
+}
+.cal-weekday {
+  text-align: center; font-size: 11px; font-weight: 500;
+  color: var(--sub); padding: 4px 0;
+}
+.cal-weekday:first-child { color: var(--rose); }
+.cal-weekday:last-child { color: #5B8ACB; }
+
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-cell {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 4px;
+  min-height: 80px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.cal-cell:hover { border-color: var(--rose-m); box-shadow: var(--shadow); }
+.cal-cell.today { border-color: var(--rose); background: var(--rose-l); }
+.cal-cell.has-data { background: #FFFAF8; }
+.cal-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+.cal-cell.empty:hover { box-shadow: none; }
+.cal-date {
+  font-size: 12px; font-weight: 500; margin-bottom: 3px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cal-date.sun { color: var(--rose); }
+.cal-date.sat { color: #5B8ACB; }
+.cal-weight-badge {
+  font-size: 9px; background: var(--rose); color: white;
+  border-radius: 8px; padding: 1px 5px;
+}
+.cal-meals { display: flex; flex-direction: column; gap: 2px; }
+.cal-meal-dot {
+  font-size: 9px; line-height: 1.3;
+  background: var(--rose-l); color: var(--rose-d);
+  border-radius: 4px; padding: 1px 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cal-meal-dot.lunch { background: var(--sage-l); color: var(--sage); }
+.cal-meal-dot.dinner { background: var(--amber-l); color: var(--amber); }
+.cal-kcal {
+  font-size: 9px; color: var(--sub); margin-top: 2px; text-align: right;
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(45,37,35,0.5); z-index: 500;
+  align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--card); border-radius: 20px;
+  width: 100%; max-width: 480px; max-height: 90vh;
+  overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+}
+.modal-header {
+  background: linear-gradient(135deg, var(--rose-d), var(--rose));
+  color: white; padding: 18px 20px; border-radius: 20px 20px 0 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-family: 'Shippori Mincho', serif; font-size: 16px; }
+.modal-close {
+  background: rgba(255,255,255,0.2); border: none; color: white;
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-body { padding: 20px; }
+
+.weight-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--rose-l); border-radius: 12px; padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.weight-row label { font-size: 13px; font-weight: 500; flex: 1; }
+.weight-input {
+  width: 80px; padding: 8px; border: 1.5px solid var(--rose-m);
+  border-radius: 8px; font-size: 14px; text-align: center;
+  font-family: 'Noto Sans JP', sans-serif; background: white;
+}
+.weight-unit { font-size: 13px; color: var(--sub); }
+
+.meal-section { margin-bottom: 16px; }
+.meal-section-title {
+  font-size: 13px; font-weight: 600; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.meal-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 500;
+}
+.meal-badge.am { background: var(--rose-l); color: var(--rose-d); }
+.meal-badge.pm { background: var(--sage-l); color: var(--sage); }
+.meal-badge.ev { background: var(--amber-l); color: var(--amber); }
+
+.meal-select {
+  width: 100%; padding: 10px 12px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 13px;
+  background: white; color: var(--text); cursor: pointer;
+  margin-bottom: 6px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B5F5D' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.meal-select:focus { outline: none; border-color: var(--rose-m); }
+
+.meal-info {
+  background: var(--bg); border-radius: 8px; padding: 8px 12px;
+  font-size: 11px; color: var(--sub); line-height: 1.6; display: none;
+}
+.meal-info.show { display: block; }
+
+.day-total {
+  background: linear-gradient(135deg, var(--rose-l), var(--amber-l));
+  border-radius: 12px; padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.day-total-label { font-size: 13px; font-weight: 500; }
+.day-total-value { font-family: 'Shippori Mincho', serif; font-size: 22px; color: var(--rose-d); font-weight: 600; }
+.day-total-sub { font-size: 11px; color: var(--sub); }
+
+.nutrient-bars { margin-bottom: 16px; }
+.nutrient-row { margin-bottom: 8px; }
+.nutrient-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--sub); margin-bottom: 3px; }
+.nutrient-bar-bg { background: var(--border); border-radius: 4px; height: 6px; overflow: hidden; }
+.nutrient-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.nutrient-bar-fill.prot { background: linear-gradient(90deg, var(--rose-m), var(--rose)); }
+.nutrient-bar-fill.calc { background: linear-gradient(90deg, #7DB5E0, #5B8ACB); }
+.nutrient-bar-fill.iso { background: linear-gradient(90deg, var(--plum), #9B7AD4); }
+.nutrient-bar-fill.fiber { background: linear-gradient(90deg, var(--sage-m), var(--sage)); }
+
+.save-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--rose-d), var(--rose));
+  color: white; border: none; border-radius: 12px;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.save-btn:hover { opacity: 0.9; }
+
+/* ===== RECIPE TAB ===== */
+.recipe-filter {
+  display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 6px 14px; border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--card); font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px; cursor: pointer; transition: all 0.2s; color: var(--sub);
+}
+.filter-btn.active { background: var(--rose); color: white; border-color: var(--rose); }
+
+.recipe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 500px) { .recipe-grid { grid-template-columns: 1fr; } }
+
+.recipe-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  cursor: pointer; transition: all 0.2s;
+}
+.recipe-card:hover { border-color: var(--rose-m); box-shadow: var(--shadow); }
+.recipe-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+.recipe-name { font-size: 13px; font-weight: 500; line-height: 1.4; flex: 1; }
+.recipe-type-badge {
+  font-size: 10px; padding: 2px 8px; border-radius: 20px; white-space: nowrap; margin-left: 6px;
+}
+.recipe-type-badge.am { background: var(--rose-l); color: var(--rose-d); }
+.recipe-type-badge.pm { background: var(--sage-l); color: var(--sage); }
+.recipe-type-badge.ev { background: var(--amber-l); color: var(--amber); }
+.recipe-type-badge.all { background: var(--plum-l); color: var(--plum); }
+
+.recipe-icons { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+.recipe-icon-tag {
+  font-size: 10px; background: var(--bg); border-radius: 4px; padding: 2px 6px; color: var(--sub);
+}
+
+.recipe-kcal {
+  font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--rose-d); font-weight: 600;
+}
+.recipe-kcal-unit { font-size: 10px; color: var(--sub); font-family: 'Noto Sans JP', sans-serif; }
+
+.recipe-detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11px; line-height: 1.7; color: var(--sub); }
+.recipe-detail.open { display: block; }
+
+/* ===== STATS TAB ===== */
+.stats-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+}
+.stats-card-title { font-size: 13px; font-weight: 500; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.stats-nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stats-num { text-align: center; }
+.stats-num-value { font-family: 'Shippori Mincho', serif; font-size: 22px; color: var(--rose-d); font-weight: 600; }
+.stats-num-label { font-size: 10px; color: var(--sub); }
+
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 100px; }
+.bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.bar-stack { display: flex; flex-direction: column-reverse; align-items: center; width: 100%; gap: 1px; }
+.bar-seg { width: 100%; border-radius: 2px; transition: height 0.4s ease; }
+.bar-label { font-size: 9px; color: var(--sub); text-align: center; }
+
+.weight-chart { display: flex; align-items: flex-end; gap: 4px; height: 80px; margin-top: 8px; }
+
+/* ===== MY RECIPE TAB ===== */
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 500; margin-bottom: 5px; display: block; color: var(--sub); }
+.form-input {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--border);
+  border-radius: 10px; font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px; background: white; color: var(--text);
+}
+.form-input:focus { outline: none; border-color: var(--rose-m); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.add-btn {
+  width: 100%; padding: 12px; background: var(--rose); color: white;
+  border: none; border-radius: 10px; font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px; cursor: pointer; transition: opacity 0.2s; margin-top: 4px;
+}
+.add-btn:hover { opacity: 0.85; }
+
+.my-recipe-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.my-recipe-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.mri-name { font-size: 13px; font-weight: 500; }
+.mri-meta { font-size: 11px; color: var(--sub); margin-top: 2px; }
+.mri-del {
+  background: none; border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px; font-size: 11px;
+  cursor: pointer; color: var(--sub);
+}
+.mri-del:hover { background: var(--rose-l); border-color: var(--rose-m); color: var(--rose-d); }
+
+/* ===== SETTINGS ===== */
+.setting-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+}
+.setting-label { font-size: 13px; font-weight: 500; margin-bottom: 8px; display: block; }
+.setting-row { display: flex; align-items: center; gap: 10px; }
+.slider { flex: 1; accent-color: var(--rose); }
+.slider-val { font-family: 'Shippori Mincho', serif; font-size: 18px; color: var(--rose-d); min-width: 60px; text-align: right; }
+.goal-preset { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.preset-btn {
+  padding: 5px 12px; border-radius: 20px; font-size: 11px;
+  border: 1.5px solid var(--border); background: var(--bg);
+  cursor: pointer; transition: all 0.2s; color: var(--sub);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.preset-btn:hover { border-color: var(--rose-m); color: var(--rose-d); }
+
+.export-btn {
+  width: 100%; padding: 12px; border: 1.5px solid var(--rose-m);
+  background: var(--rose-l); color: var(--rose-d); border-radius: 10px;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 13px;
+  cursor: pointer; margin-bottom: 8px; transition: all 0.2s;
+}
+.export-btn:hover { background: var(--rose-m); color: white; }
+.import-label {
+  display: block; width: 100%; padding: 12px; border: 1.5px dashed var(--border);
+  background: var(--bg); color: var(--sub); border-radius: 10px;
+  font-size: 13px; cursor: pointer; text-align: center; transition: all 0.2s;
+}
+.import-label:hover { border-color: var(--rose-m); background: var(--rose-l); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--navy); color: white; padding: 10px 20px; border-radius: 24px;
+  font-size: 13px; transition: transform 0.3s ease; z-index: 9999; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== NUTRIENT HIGHLIGHT BADGES ===== */
+.nutrient-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.n-tag {
+  font-size: 10px; padding: 2px 7px; border-radius: 10px;
+}
+.n-tag.prot { background: var(--rose-l); color: var(--rose-d); }
+.n-tag.calc { background: #E8F2FA; color: #3A6FA0; }
+.n-tag.iso { background: var(--plum-l); color: var(--plum); }
+.n-tag.fiber { background: var(--sage-l); color: var(--sage); }
+.n-tag.chol { background: var(--amber-l); color: var(--amber); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-icon">🌸</div>
+    <div>
+      <div class="header-title">50代からの食べ痩せダイエット</div>
+      <div class="header-sub">食べて・整えて・やせる — 更年期に寄り添う献立管理</div>
+    </div>
+    <div class="header-badge" id="header-kcal">-- kcal/日</div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" data-tab="calendar" onclick="switchTab('calendar')">📅 カレンダー</button>
+  <button class="nav-btn" data-tab="recipe" onclick="switchTab('recipe')">🍽 レシピ</button>
+  <button class="nav-btn" data-tab="stats" onclick="switchTab('stats')">📊 記録</button>
+  <button class="nav-btn" data-tab="myrecipe" onclick="switchTab('myrecipe')">✏️ マイレシピ</button>
+  <button class="nav-btn" data-tab="settings" onclick="switchTab('settings')">⚙️ 設定</button>
+</nav>
+
+<div class="main">
+
+  <!-- CALENDAR -->
+  <div class="panel active" id="panel-calendar">
+    <div class="cal-header">
+      <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="cal-title" id="cal-title"></div>
+      <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-weekdays">
+      <div class="cal-weekday">日</div><div class="cal-weekday">月</div>
+      <div class="cal-weekday">火</div><div class="cal-weekday">水</div>
+      <div class="cal-weekday">木</div><div class="cal-weekday">金</div>
+      <div class="cal-weekday">土</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- RECIPE -->
+  <div class="panel" id="panel-recipe">
+    <div class="recipe-filter" id="recipe-filter">
+      <button class="filter-btn active" onclick="filterRecipes('all', this)">すべて</button>
+      <button class="filter-btn" onclick="filterRecipes('am', this)">🌅 朝食</button>
+      <button class="filter-btn" onclick="filterRecipes('pm', this)">☀️ 昼食</button>
+      <button class="filter-btn" onclick="filterRecipes('ev', this)">🌙 夕食</button>
+      <button class="filter-btn" onclick="filterRecipes('iso', this)">🫘 イソフラボン</button>
+      <button class="filter-btn" onclick="filterRecipes('calc', this)">🦴 カルシウム</button>
+      <button class="filter-btn" onclick="filterRecipes('chol', this)">❤️ コレステロール対策</button>
+    </div>
+    <div class="recipe-grid" id="recipe-grid"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="panel" id="panel-stats">
+    <div class="stats-card">
+      <div class="stats-card-title">📊 今月の平均カロリー</div>
+      <div class="stats-nums">
+        <div class="stats-num">
+          <div class="stats-num-value" id="avg-kcal">--</div>
+          <div class="stats-num-label">平均 kcal/日</div>
+        </div>
+        <div class="stats-num">
+          <div class="stats-num-value" id="max-kcal">--</div>
+          <div class="stats-num-label">最高 kcal</div>
+        </div>
+        <div class="stats-num">
+          <div class="stats-num-value" id="record-days">--</div>
+          <div class="stats-num-label">記録日数</div>
+        </div>
+      </div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-card-title">🍱 今週のカロリー内訳（朝/昼/夕）</div>
+      <div class="bar-chart" id="week-bar"></div>
+      <div style="display:flex;gap:12px;margin-top:6px;font-size:10px;color:var(--sub);">
+        <span><span style="display:inline-block;width:10px;height:10px;background:var(--rose-m);border-radius:2px;margin-right:3px;"></span>朝</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:var(--sage-m);border-radius:2px;margin-right:3px;"></span>昼</span>
+        <span><span style="display:inline-block;width:10px;height:10px;background:var(--amber-m);border-radius:2px;margin-right:3px;"></span>夕</span>
+      </div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-card-title">⚖️ 体重推移（今週）</div>
+      <div class="weight-chart" id="weight-chart"></div>
+    </div>
+    <div class="stats-card">
+      <div class="stats-card-title">🌸 50代のための栄養チェック（今月平均）</div>
+      <div class="nutrient-bars" id="nutrient-stats">
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🥩 たんぱく質</span><span id="stat-prot">--g / 目標60g</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill prot" id="bar-prot" style="width:0%"></div></div>
+        </div>
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🦴 カルシウム</span><span id="stat-calc">--mg / 目標650mg</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill calc" id="bar-calc" style="width:0%"></div></div>
+        </div>
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🫘 イソフラボン</span><span id="stat-iso">--mg / 目標50mg</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill iso" id="bar-iso" style="width:0%"></div></div>
+        </div>
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🥦 食物繊維</span><span id="stat-fiber">--g / 目標18g</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill fiber" id="bar-fiber" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY RECIPE -->
+  <div class="panel" id="panel-myrecipe">
+    <div class="stats-card">
+      <div class="stats-card-title">✏️ オリジナルレシピを追加</div>
+      <div class="form-group">
+        <label class="form-label">レシピ名 *</label>
+        <input class="form-input" id="mr-name" type="text" placeholder="例：豆腐と野菜の味噌汁定食">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">カロリー (kcal) *</label>
+          <input class="form-input" id="mr-kcal" type="number" placeholder="例：420">
+        </div>
+        <div class="form-group">
+          <label class="form-label">食事タイミング</label>
+          <select class="form-input" id="mr-type">
+            <option value="am">朝食</option>
+            <option value="pm">昼食</option>
+            <option value="ev" selected>夕食</option>
+            <option value="all">いつでも</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">たんぱく質 (g)</label>
+          <input class="form-input" id="mr-prot" type="number" placeholder="例：20">
+        </div>
+        <div class="form-group">
+          <label class="form-label">カルシウム (mg)</label>
+          <input class="form-input" id="mr-calc" type="number" placeholder="例：200">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">食材・メモ</label>
+        <input class="form-input" id="mr-items" type="text" placeholder="例：豆腐・わかめ・きのこ・ごはん">
+      </div>
+      <div class="form-group" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <label style="font-size:12px;font-weight:500;width:100%;color:var(--sub);">栄養タグ（該当するもの）</label>
+        <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer;">
+          <input type="checkbox" id="mr-tag-iso"> 🫘 イソフラボン
+        </label>
+        <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer;">
+          <input type="checkbox" id="mr-tag-calc"> 🦴 カルシウム豊富
+        </label>
+        <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer;">
+          <input type="checkbox" id="mr-tag-chol"> ❤️ コレステロール対策
+        </label>
+        <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer;">
+          <input type="checkbox" id="mr-tag-fiber"> 🥦 食物繊維豊富
+        </label>
+      </div>
+      <button class="add-btn" onclick="addMyRecipe()">➕ マイレシピを追加</button>
+    </div>
+    <div class="my-recipe-list" id="my-recipe-list">
+      <div style="text-align:center;color:var(--sub);font-size:13px;padding:16px;">まだマイレシピはありません</div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="panel" id="panel-settings">
+    <div class="setting-card">
+      <label class="setting-label">🎯 1日のカロリー目標</label>
+      <div class="setting-row">
+        <input type="range" class="slider" id="goal-slider" min="1000" max="2000" step="50" value="1500" oninput="updateGoal()">
+        <div class="slider-val"><span id="goal-val">1500</span> kcal</div>
+      </div>
+      <div class="goal-preset">
+        <button class="preset-btn" onclick="setGoal(1200)">1,200kcal<br><span style="font-size:9px;">しっかり減量</span></button>
+        <button class="preset-btn" onclick="setGoal(1400)">1,400kcal<br><span style="font-size:9px;">標準減量</span></button>
+        <button class="preset-btn" onclick="setGoal(1500)">1,500kcal<br><span style="font-size:9px;">ゆっくり減量</span></button>
+        <button class="preset-btn" onclick="setGoal(1700)">1,700kcal<br><span style="font-size:9px;">維持・ゆる管理</span></button>
+      </div>
+    </div>
+    <div class="setting-card">
+      <label class="setting-label">💾 データの保存・読み込み</label>
+      <button class="export-btn" onclick="exportData()">📤 エクスポート（JSONダウンロード）</button>
+      <label class="import-label">
+        📥 インポート（JSONを選択）
+        <input type="file" accept=".json" style="display:none" onchange="importData(event)">
+      </label>
+    </div>
+    <div class="setting-card" style="background:var(--rose-l);">
+      <div class="stats-card-title" style="margin-bottom:8px;">🌸 50代女性の栄養目安</div>
+      <div style="font-size:12px;color:var(--sub);line-height:1.9;">
+        🥩 たんぱく質：50〜60g/日（筋肉・肌・髪を守る）<br>
+        🦴 カルシウム：650mg/日（骨密度低下を防ぐ）<br>
+        🫘 イソフラボン：50mg/日（更年期症状の緩和）<br>
+        🥦 食物繊維：18g/日（腸活・血糖コントロール）<br>
+        ❤️ EPA/DHA：1,000mg/日（コレステロール・血流改善）<br>
+        ☀️ ビタミンD：15μg/日（カルシウム吸収サポート）
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-date-title">4月1日（月）</div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="weight-row">
+        <label>⚖️ 体重</label>
+        <input class="weight-input" id="modal-weight" type="number" step="0.1" placeholder="--">
+        <span class="weight-unit">kg</span>
+      </div>
+
+      <div class="day-total">
+        <div>
+          <div class="day-total-label">🍽 合計カロリー</div>
+          <div class="day-total-sub" id="modal-goal-sub">目標：1500 kcal</div>
+        </div>
+        <div class="day-total-value"><span id="modal-total">0</span> kcal</div>
+      </div>
+
+      <div class="nutrient-bars">
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🥩 たんぱく質</span><span id="m-prot-val">0g</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill prot" id="m-bar-prot" style="width:0%"></div></div>
+        </div>
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🦴 カルシウム</span><span id="m-calc-val">0mg</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill calc" id="m-bar-calc" style="width:0%"></div></div>
+        </div>
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🫘 イソフラボン</span><span id="m-iso-val">0mg</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill iso" id="m-bar-iso" style="width:0%"></div></div>
+        </div>
+        <div class="nutrient-row">
+          <div class="nutrient-label"><span>🥦 食物繊維</span><span id="m-fiber-val">0g</span></div>
+          <div class="nutrient-bar-bg"><div class="nutrient-bar-fill fiber" id="m-bar-fiber" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="meal-section">
+        <div class="meal-section-title"><span class="meal-badge am">🌅 朝食</span></div>
+        <select class="meal-select" id="sel-am" onchange="updateModal()"></select>
+        <div class="meal-info" id="info-am"></div>
+      </div>
+      <div class="meal-section">
+        <div class="meal-section-title"><span class="meal-badge pm">☀️ 昼食</span></div>
+        <select class="meal-select" id="sel-pm" onchange="updateModal()"></select>
+        <div class="meal-info" id="info-pm"></div>
+      </div>
+      <div class="meal-section">
+        <div class="meal-section-title"><span class="meal-badge ev">🌙 夕食</span></div>
+        <select class="meal-select" id="sel-ev" onchange="updateModal()"></select>
+        <div class="meal-info" id="info-ev"></div>
+      </div>
+
+      <button class="save-btn" onclick="saveDay()">💾 この日を保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA =====
+
+const RECIPES = [
+  // ===== 朝食 40品目 =====
+  { id:'a01', name:'納豆ごはん＋味噌汁＋小松菜おひたし', type:'am', kcal:380, prot:22, calc:180, iso:50, fiber:7, chol:false,
+    tags:['iso','calc','fiber'], detail:'納豆1パックにきざみねぎ。味噌汁は豆腐＋わかめ。小松菜はレンジ蒸しでポン酢。イソフラボン・カルシウム・食物繊維を一気に補給できる朝食の定番。' },
+  { id:'a02', name:'豆乳オートミール（フルーツトッピング）', type:'am', kcal:360, prot:15, calc:220, iso:30, fiber:6, chol:false,
+    tags:['calc','fiber','iso'], detail:'豆乳200mlでオートミール40gを煮る。バナナ½・ブルーベリーをトッピング。β‑グルカンで血糖値の上昇を緩やかに。' },
+  { id:'a03', name:'和定食（鮭＋ごはん＋ほうれん草味噌汁）', type:'am', kcal:430, prot:28, calc:120, iso:15, fiber:4, chol:false,
+    tags:['prot','chol'], detail:'塩鮭1切れをトースターで焼く。ごはん150g。ほうれん草の味噌汁でビタミンKを補給。EPA・DHAも豊富。' },
+  { id:'a04', name:'豆腐スクランブルエッグ＋全粒粉トースト', type:'am', kcal:400, prot:25, calc:200, iso:40, fiber:5, chol:false,
+    tags:['prot','iso','calc'], detail:'木綿豆腐½丁と卵2個をフライパンで炒めるだけ。全粒粉パン1枚＋無糖ヨーグルト100gをサイドに。' },
+  { id:'a05', name:'雑穀ごはん＋きなこヨーグルト＋ゆで卵', type:'am', kcal:390, prot:24, calc:250, iso:35, fiber:5, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'雑穀ごはん150g。ギリシャヨーグルト100gにきなこ大さじ1をかけて。ゆで卵1個でたんぱく質を追加。' },
+  { id:'a06', name:'鯖缶と野菜の和定食', type:'am', kcal:440, prot:30, calc:200, iso:20, fiber:4, chol:true,
+    tags:['prot','calc','chol'], detail:'鯖水煮缶½＋大根おろし。ごはん150g、ほうれん草おひたし。EPA・DHAでコレステロール対策と血流改善に効果的。' },
+  { id:'a07', name:'バナナ豆乳スムージー＋全粒粉トースト', type:'am', kcal:370, prot:14, calc:230, iso:25, fiber:5, chol:false,
+    tags:['calc','iso','fiber'], detail:'バナナ1本＋豆乳200ml＋きなこ大さじ1をミキサーで。トースト1枚にアボカド少量。忙しい朝でも栄養満点。' },
+  { id:'a08', name:'温泉卵のせ豆腐丼', type:'am', kcal:380, prot:26, calc:180, iso:45, fiber:3, chol:false,
+    tags:['prot','iso','calc'], detail:'絹豆腐½丁にめんつゆ・おろし生姜・温泉卵を乗せてごはんに。ごはん150g。短時間で高たんぱくな朝食。' },
+  { id:'a09', name:'チアシードヨーグルトパフェ＋ライ麦トースト', type:'am', kcal:360, prot:16, calc:240, iso:10, fiber:8, chol:false,
+    tags:['calc','fiber'], detail:'ヨーグルト150g＋チアシード大さじ1＋ベリー系フルーツ。ライ麦トースト1枚。食物繊維が豊富で腸活にも◎。' },
+  { id:'a10', name:'高野豆腐の卵とじ定食', type:'am', kcal:410, prot:28, calc:280, iso:40, fiber:4, chol:false,
+    tags:['prot','calc','iso'], detail:'高野豆腐1枚を出汁で煮て卵でとじる。ごはん150g＋きゅうりの浅漬け。高野豆腐はカルシウム・たんぱく質の宝庫。' },
+  { id:'a11', name:'鮭フレークおにぎり＋豆腐味噌汁', type:'am', kcal:370, prot:22, calc:160, iso:30, fiber:3, chol:false,
+    tags:['prot','iso','calc'], detail:'玄米おにぎり2個に鮭フレークをたっぷり。味噌汁は絹豆腐＋わかめ。前日夜に握っておくと朝が楽。' },
+  { id:'a12', name:'アボカドエッグトースト＋豆乳', type:'am', kcal:420, prot:18, calc:200, iso:20, fiber:6, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'全粒粉パン1枚にマッシュアボカド＋目玉焼き。豆乳コップ1杯で良質脂質とたんぱく質を同時補給。' },
+  { id:'a13', name:'きなこバナナパンケーキ（小麦ふすま）', type:'am', kcal:380, prot:20, calc:210, iso:28, fiber:7, chol:false,
+    tags:['iso','fiber','calc'], detail:'小麦ふすま粉＋きなこ＋卵＋豆乳で生地を作る。バナナをトッピング。血糖値が上がりにくい低GIの朝食。' },
+  { id:'a14', name:'玄米茶漬け（梅＋鮭）', type:'am', kcal:340, prot:18, calc:100, iso:10, fiber:3, chol:false,
+    tags:['prot','fiber'], detail:'玄米ごはん150gに梅干し・鮭フレーク・刻みのり。お湯または出汁をかけて。消化も良く胃腸への負担が少ない。' },
+  { id:'a15', name:'豆腐とひじきの炒り煮定食', type:'am', kcal:420, prot:24, calc:320, iso:45, fiber:6, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'木綿豆腐½丁＋乾燥ひじき5g＋にんじん・油揚げ。醤油・みりんで炒り煮。ごはん150g。カルシウムが特に豊富。' },
+  { id:'a16', name:'ギリシャヨーグルト＋ナッツ＋雑穀トースト', type:'am', kcal:390, prot:20, calc:260, iso:8, fiber:5, chol:false,
+    tags:['prot','calc','fiber'], detail:'ギリシャヨーグルト150gに素焼きミックスナッツ20g＋はちみつ少量。雑穀パン1枚。たんぱく質・カルシウム・良質脂質を補給。' },
+  { id:'a17', name:'イワシ缶のトマト煮定食', type:'am', kcal:450, prot:30, calc:250, iso:10, fiber:4, chol:true,
+    tags:['prot','calc','chol'], detail:'イワシ水煮缶1缶＋カットトマト缶¼をレンジ加熱。ごはん150g＋ほうれん草の味噌汁。EPA・DHA＆カルシウムの最強朝食。' },
+  { id:'a18', name:'蒸し大豆と根菜の味噌汁定食', type:'am', kcal:400, prot:22, calc:200, iso:40, fiber:7, chol:false,
+    tags:['iso','calc','fiber'], detail:'蒸し大豆50g＋ごぼう・大根・にんじん入りの具だくさん味噌汁。ごはん150g＋ゆで卵1個。' },
+  { id:'a19', name:'そば粉クレープ（ほうれん草＋卵）', type:'am', kcal:370, prot:22, calc:180, iso:10, fiber:5, chol:false,
+    tags:['prot','calc','fiber'], detail:'そば粉50g＋卵1個＋豆乳で生地。ほうれん草炒め＋温泉卵を包む。グルテンフリーで食物繊維もしっかり。' },
+  { id:'a20', name:'しらすと大葉の卵かけごはん', type:'am', kcal:370, prot:24, calc:200, iso:10, fiber:2, chol:false,
+    tags:['prot','calc'], detail:'ごはん150gに生卵・しらす大さじ2・大葉・醤油少々。しらすのカルシウムとビタミンDで骨密度ケア。' },
+  { id:'a21', name:'豆乳コーンスープ＋全粒粉トースト＋ゆで卵', type:'am', kcal:420, prot:20, calc:230, iso:22, fiber:5, chol:false,
+    tags:['prot','calc','iso'], detail:'市販コーンスープを豆乳で溶いて。全粒粉トースト1枚＋ゆで卵1個。温かくて食べやすい朝食。' },
+  { id:'a22', name:'わかめごはん＋鯖の塩焼き定食', type:'am', kcal:450, prot:30, calc:220, iso:10, fiber:3, chol:true,
+    tags:['prot','calc','chol'], detail:'わかめを混ぜ込んだごはん150g。鯖の塩焼き½切れ。大根おろし添え。EPA・DHA＋カルシウムのダブル補給。' },
+  { id:'a23', name:'おからパウダー入りパンケーキ', type:'am', kcal:380, prot:20, calc:180, iso:35, fiber:8, chol:false,
+    tags:['prot','iso','fiber'], detail:'おからパウダー大さじ3＋薄力粉＋卵＋豆乳。低糖質で満腹感が続く。ヨーグルト＋ベリーを添えて。' },
+  { id:'a24', name:'豆腐グラノーラボウル', type:'am', kcal:390, prot:18, calc:250, iso:35, fiber:6, chol:false,
+    tags:['iso','calc','fiber'], detail:'絹豆腐150gにグラノーラ30g・フルーツ・きなこをトッピング。豆腐のなめらかさとグラノーラの食感が合う朝食。' },
+  { id:'a25', name:'卵と小松菜の和定食', type:'am', kcal:410, prot:26, calc:240, iso:15, fiber:4, chol:false,
+    tags:['prot','calc','fiber'], detail:'小松菜と卵の炒め物。ごはん150g＋わかめ＆豆腐の味噌汁。小松菜はカルシウムが牛乳並みに豊富。' },
+  { id:'a26', name:'サーモンアボカドライ麦トースト', type:'am', kcal:430, prot:26, calc:180, iso:8, fiber:6, chol:true,
+    tags:['prot','chol','fiber'], detail:'ライ麦トースト1枚にスモークサーモン＋マッシュアボカド＋レモン。EPA・DHA＋食物繊維の洋風朝食。' },
+  { id:'a27', name:'豚汁定食（玄米ごはん）', type:'am', kcal:450, prot:24, calc:160, iso:25, fiber:6, chol:false,
+    tags:['prot','iso','fiber'], detail:'豚薄切り60g＋大根・にんじん・ごぼう・豆腐入りの豚汁。玄米ごはん150g。朝から体があたたまる。' },
+  { id:'a28', name:'さつまいも豆乳ポタージュ＋全粒粉パン', type:'am', kcal:380, prot:14, calc:210, iso:20, fiber:7, chol:false,
+    tags:['calc','iso','fiber'], detail:'さつまいも100g＋豆乳200mlをミキサーで。全粒粉パン1枚。食物繊維が豊富でやさしい甘さ。' },
+  { id:'a29', name:'枝豆入り卵焼き定食', type:'am', kcal:400, prot:24, calc:180, iso:18, fiber:4, chol:false,
+    tags:['prot','iso','calc'], detail:'卵2個＋枝豆50g＋だし汁で甘めの卵焼き。ごはん150g＋わかめ味噌汁。枝豆のイソフラボンをプラス。' },
+  { id:'a30', name:'全粒粉ベーグル＋クリームチーズ＋スモークサーモン', type:'am', kcal:440, prot:26, calc:230, iso:5, fiber:5, chol:true,
+    tags:['prot','calc','chol'], detail:'全粒粉ベーグル1個にクリームチーズ＋スモークサーモン＋ケッパー。カルシウムとEPA・DHAをおしゃれに補給。' },
+  { id:'a31', name:'モロヘイヤと豆腐の和えもの定食', type:'am', kcal:370, prot:20, calc:260, iso:40, fiber:5, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'茹でモロヘイヤ＋絹豆腐½丁をめんつゆ和え。ごはん150g＋わかめスープ。モロヘイヤのカルシウムは特に豊富。' },
+  { id:'a32', name:'ツナと野菜の炊き込みおかゆ', type:'am', kcal:340, prot:18, calc:130, iso:10, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'ツナ缶½＋にんじん・大根入りのおかゆ。しょうが・醤油で味付け。消化が良く胃腸をいたわる朝食。' },
+  { id:'a33', name:'豆乳抹茶オートミール', type:'am', kcal:360, prot:15, calc:230, iso:25, fiber:6, chol:false,
+    tags:['calc','iso','fiber'], detail:'豆乳200ml＋オートミール40g＋抹茶小さじ1。あずき缶少量を乗せて。抹茶のカテキンで代謝アップ。' },
+  { id:'a34', name:'ひじきと卵の炒り卵定食', type:'am', kcal:420, prot:24, calc:300, iso:20, fiber:5, chol:false,
+    tags:['prot','calc','fiber'], detail:'乾燥ひじき5g（戻す）＋卵2個＋にんじん・枝豆で炒り卵。ごはん150g＋豆腐味噌汁。カルシウム補給に最適。' },
+  { id:'a35', name:'アーモンドミルクシリアル＋ゆで卵＋バナナ', type:'am', kcal:380, prot:20, calc:240, iso:8, fiber:5, chol:false,
+    tags:['prot','calc','fiber'], detail:'無糖シリアル40g＋アーモンドミルク200ml。ゆで卵1個＋バナナ1本を添えて。カルシウムとたんぱく質を確保。' },
+  { id:'a36', name:'春雨スープ＋鮭おにぎり＋きゅうりの浅漬け', type:'am', kcal:380, prot:22, calc:140, iso:10, fiber:3, chol:false,
+    tags:['prot','chol'], detail:'わかめ＋春雨のスープ。鮭フレークおにぎり（玄米）1個。前日に仕込んでおくとラク。' },
+  { id:'a37', name:'豆腐チャンプルー定食', type:'am', kcal:440, prot:28, calc:200, iso:45, fiber:4, chol:false,
+    tags:['prot','iso','calc'], detail:'木綿豆腐½丁＋豚薄切り50g＋もやし・ニラを炒める。卵1個を加えてふわっと仕上げ。ごはん150g。' },
+  { id:'a38', name:'ブロッコリーとチーズの蒸し野菜定食', type:'am', kcal:400, prot:22, calc:280, iso:15, fiber:6, chol:false,
+    tags:['prot','calc','fiber'], detail:'ブロッコリー100g＋カッテージチーズ50g。ごはん150g＋豆腐の味噌汁。カルシウムとビタミンCで美肌ケアも。' },
+  { id:'a39', name:'黒豆ごはん＋鶏そぼろ定食', type:'am', kcal:420, prot:26, calc:160, iso:30, fiber:5, chol:false,
+    tags:['prot','iso','fiber'], detail:'黒豆入り炊き込みごはん150g。鶏ひきそぼろ60g。小松菜のおひたし。黒豆のイソフラボン・アントシアニンで美容ケア。' },
+  { id:'a40', name:'豆乳鍋の残り雑炊', type:'am', kcal:360, prot:20, calc:200, iso:30, fiber:4, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'前夜の鍋の残りに豆乳を足してごはん100gを投入。野菜・豆腐も一緒に摂れる栄養満点の朝食リメイク。' },
+
+  // ===== 昼食 40品目 =====
+  { id:'p01', name:'鶏むね肉と根菜のうどん', type:'pm', kcal:450, prot:28, calc:150, iso:15, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'鶏むねスライスを出汁煮。ごぼう・にんじん・ねぎをたっぷり。冷凍うどん1玉。低脂質＆高たんぱく。' },
+  { id:'p02', name:'豆腐ハンバーグ定食（ごはん・サラダ付き）', type:'pm', kcal:480, prot:26, calc:200, iso:45, fiber:6, chol:false,
+    tags:['prot','iso','calc','fiber'], detail:'木綿豆腐½丁＋鶏ひき肉100g。大根おろしポン酢ソース。ごはん150g、グリーンサラダ。' },
+  { id:'p03', name:'サバ缶トマトパスタ（全粒粉）', type:'pm', kcal:460, prot:30, calc:170, iso:10, fiber:7, chol:true,
+    tags:['prot','chol','fiber'], detail:'全粒粉パスタ70g。サバ水煮缶1缶＋カットトマト缶½。にんにく・バジル。EPA・DHAで血中コレステロール改善。' },
+  { id:'p04', name:'鮭と小松菜の炊き込みごはん', type:'pm', kcal:450, prot:24, calc:200, iso:15, fiber:4, chol:false,
+    tags:['prot','calc'], detail:'鮭フレーク＋小松菜＋油揚げで炊き込みご飯。カルシウムが豊富な組み合わせ。わかめの味噌汁と合わせて。' },
+  { id:'p05', name:'大豆ミートのドライカレー（雑穀ごはん）', type:'pm', kcal:470, prot:25, calc:120, iso:30, fiber:8, chol:false,
+    tags:['iso','fiber','prot'], detail:'大豆ミート100g＋玉ねぎ・にんにく・カレー粉。雑穀ごはん150g。高食物繊維＆イソフラボンで更年期対策。' },
+  { id:'p06', name:'きのこたっぷり蕎麦', type:'pm', kcal:420, prot:18, calc:110, iso:10, fiber:7, chol:false,
+    tags:['fiber','chol'], detail:'そば1玉＋舞茸・えのき・なめこ。刻みのり・ねぎ。β‑グルカンで血糖値・コレステロールの上昇を抑制。' },
+  { id:'p07', name:'ひじき入り玄米おにぎり弁当', type:'pm', kcal:430, prot:20, calc:230, iso:20, fiber:6, chol:false,
+    tags:['calc','fiber'], detail:'玄米ごはん200gでひじきの煮物入りおにぎり2個。副菜は卵焼き＋きゅうりの浅漬け。' },
+  { id:'p08', name:'豚しゃぶと豆腐のサラダ丼', type:'pm', kcal:460, prot:30, calc:190, iso:40, fiber:5, chol:false,
+    tags:['prot','iso','calc'], detail:'豚しゃぶスライス100g＋絹豆腐½丁。レタス・トマトの上に乗せてごまだれ。ごはん150g。' },
+  { id:'p09', name:'切干大根の煮物定食', type:'pm', kcal:440, prot:22, calc:200, iso:25, fiber:9, chol:false,
+    tags:['calc','fiber','iso'], detail:'切干大根20g＋油揚げ・にんじんの煮物。ごはん150g＋豆腐の味噌汁。食物繊維とカルシウムが豊富。' },
+  { id:'p10', name:'鶏ひき肉とわかめの中華春雨スープ麺', type:'pm', kcal:410, prot:26, calc:180, iso:10, fiber:4, chol:false,
+    tags:['prot','calc'], detail:'鶏ひき100g＋わかめ・春雨・ごま油。中華スープで。カルシウム豊富なわかめをたっぷり使用。' },
+  { id:'p11', name:'鶏むね肉のバンバンジー丼', type:'pm', kcal:460, prot:32, calc:140, iso:20, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'鶏むね200gをレンジで蒸してほぐし、ごまだれをかける。きゅうり・トマトのせ。ごはん150g。高たんぱく・低脂質。' },
+  { id:'p12', name:'鯖缶と大根のさっぱり和え定食', type:'pm', kcal:440, prot:28, calc:200, iso:15, fiber:4, chol:true,
+    tags:['prot','calc','chol'], detail:'鯖水煮缶1缶＋大根おろし・ポン酢・大葉。ごはん150g＋小松菜の味噌汁。EPA・DHA補給の和風ランチ。' },
+  { id:'p13', name:'豆腐と野菜のあんかけ丼', type:'pm', kcal:430, prot:22, calc:200, iso:40, fiber:6, chol:false,
+    tags:['prot','iso','calc','fiber'], detail:'絹豆腐½丁＋白菜・にんじん・きのこのあんかけ。ごはん150g。とろみで満足感アップ、胃腸にもやさしい。' },
+  { id:'p14', name:'枝豆と雑穀の混ぜごはん弁当', type:'pm', kcal:420, prot:20, calc:150, iso:22, fiber:6, chol:false,
+    tags:['iso','fiber','prot'], detail:'雑穀ごはん200g＋枝豆60g＋ちりめんじゃこ。卵焼き＋ほうれん草のおひたし。コンパクトで栄養バランスが良い。' },
+  { id:'p15', name:'鮭とほうれん草のクリームパスタ（豆乳）', type:'pm', kcal:480, prot:28, calc:220, iso:18, fiber:5, chol:false,
+    tags:['prot','calc','iso'], detail:'全粒粉パスタ70g。鮭フレーク＋ほうれん草を豆乳クリームソースで。カルシウムとビタミンKを同時に補給。' },
+  { id:'p16', name:'ツナと豆腐のそぼろ丼', type:'pm', kcal:430, prot:28, calc:180, iso:40, fiber:4, chol:false,
+    tags:['prot','iso','calc'], detail:'ツナ缶½＋木綿豆腐½丁を炒り煮にしてそぼろに。卵そぼろも加えてごはん150gに乗せる。' },
+  { id:'p17', name:'イワシ缶のトマトソーススパゲティ', type:'pm', kcal:460, prot:30, calc:250, iso:8, fiber:6, chol:true,
+    tags:['prot','calc','chol'], detail:'イワシ水煮缶1缶＋カットトマト缶½＋にんにく。全粒粉スパゲティ70g。EPA・DHAとカルシウムの洋風補給。' },
+  { id:'p18', name:'蒸し鶏とわかめのサラダうどん', type:'pm', kcal:430, prot:28, calc:200, iso:10, fiber:4, chol:false,
+    tags:['prot','calc'], detail:'冷凍うどん1玉に蒸し鶏100g＋わかめ・きゅうり・トマト。ごまだれでさっぱり。夏場にも◎。' },
+  { id:'p19', name:'大豆と根菜の炊き込みごはん定食', type:'pm', kcal:450, prot:22, calc:180, iso:35, fiber:7, chol:false,
+    tags:['iso','fiber','calc'], detail:'大豆缶60g＋ごぼう・にんじん・こんにゃくの炊き込みごはん。焼き鮭½切れ＋ほうれん草のおひたし。' },
+  { id:'p20', name:'もずく酢そうめん＋鶏むね丼', type:'pm', kcal:410, prot:26, calc:160, iso:15, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'そうめん1束にもずく酢・きゅうり・みょうが。鶏むねそぼろ丼（ごはん100g）と合わせて。' },
+  { id:'p21', name:'高野豆腐と野菜の煮物弁当', type:'pm', kcal:430, prot:26, calc:270, iso:38, fiber:5, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'高野豆腐2枚＋いんげん・にんじんの煮物。玄米ごはん150g。カルシウムがひじきとトップを争うほど豊富。' },
+  { id:'p22', name:'豚肉とキャベツの味噌炒め定食', type:'pm', kcal:470, prot:28, calc:150, iso:18, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'豚薄切り100g＋キャベツたっぷり。生姜・にんにく・味噌で炒める。ごはん150g＋豆腐の味噌汁。' },
+  { id:'p23', name:'かぼちゃと豆腐のそぼろあんかけ丼', type:'pm', kcal:460, prot:24, calc:190, iso:42, fiber:6, chol:false,
+    tags:['prot','iso','fiber','calc'], detail:'かぼちゃ80g＋絹豆腐½丁＋鶏ひきそぼろをあんかけにしてごはん150gに。β‑カロテンも補給。' },
+  { id:'p24', name:'サバみそ缶の和定食', type:'pm', kcal:460, prot:28, calc:200, iso:15, fiber:4, chol:true,
+    tags:['prot','calc','chol'], detail:'サバみそ煮缶1缶をそのまま盛り付け。ごはん150g＋ひじきの煮物小鉢＋わかめの味噌汁。手抜きで栄養満点。' },
+  { id:'p25', name:'鶏そぼろと小松菜の炒め丼', type:'pm', kcal:450, prot:30, calc:210, iso:15, fiber:4, chol:false,
+    tags:['prot','calc','fiber'], detail:'鶏ひき100g＋小松菜150gをにんにく炒め。しょうゆ・みりんで味付け。ごはん150g。カルシウム抜群。' },
+  { id:'p26', name:'豆入りミネストローネ＋全粒粉パン', type:'pm', kcal:420, prot:20, calc:160, iso:18, fiber:8, chol:false,
+    tags:['prot','iso','fiber'], detail:'ひよこ豆・白インゲン豆＋トマト・玉ねぎ・セロリのスープ。全粒粉パン2枚。食物繊維たっぷりの洋風昼食。' },
+  { id:'p27', name:'ブロッコリーと卵のサラダ定食', type:'pm', kcal:430, prot:26, calc:200, iso:20, fiber:6, chol:false,
+    tags:['prot','calc','fiber'], detail:'ブロッコリー100g＋ゆで卵2個＋しらす大さじ1のサラダ。ごはん150g。ビタミンKとカルシウムで骨密度ケア。' },
+  { id:'p28', name:'なめこおろし蕎麦＋鶏の唐揚げ（低脂質）', type:'pm', kcal:460, prot:28, calc:130, iso:10, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'なめこ＋大根おろしのかけそば1玉。鶏むねの唐揚げ（片栗粉薄め）2個。なめこのβ‑グルカンで整腸。' },
+  { id:'p29', name:'豚ヒレ肉と野菜の蒸し定食', type:'pm', kcal:450, prot:34, calc:140, iso:18, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'豚ヒレ肉120gをレンジ蒸し。キャベツ・ブロッコリー・もやし添え。ポン酢でさっぱり。ごはん150g。' },
+  { id:'p30', name:'わかめと豆腐の冷や汁定食', type:'pm', kcal:400, prot:24, calc:260, iso:40, fiber:4, chol:false,
+    tags:['prot','calc','iso'], detail:'だし汁＋みそ＋豆腐＋わかめ・きゅうりの冷や汁をごはん150gにかける。夏の定番。カルシウム・イソフラボン補給。' },
+  { id:'p31', name:'鮭フレークとひじきの混ぜごはん弁当', type:'pm', kcal:450, prot:24, calc:250, iso:20, fiber:5, chol:false,
+    tags:['prot','calc','fiber'], detail:'玄米ごはん200gに鮭フレーク・戻したひじき・白ごまを混ぜる。卵焼き＋ゆでいんげん。カルシウム補給に最適。' },
+  { id:'p32', name:'えびとブロッコリーの中華炒め定食', type:'pm', kcal:440, prot:30, calc:180, iso:10, fiber:5, chol:false,
+    tags:['prot','calc','fiber'], detail:'えび100g＋ブロッコリー100gをオイスターソース炒め。ごはん150g＋わかめスープ。えびのたんぱく質と低脂質。' },
+  { id:'p33', name:'豆腐と長芋のとろとろ丼', type:'pm', kcal:410, prot:20, calc:200, iso:40, fiber:4, chol:false,
+    tags:['prot','iso','calc'], detail:'絹豆腐½丁＋すりおろし長芋をごはん150gにかける。めかぶ＋卵黄をトッピング。消化が良く胃腸にやさしい。' },
+  { id:'p34', name:'チキンと大豆のトマト煮込み', type:'pm', kcal:470, prot:34, calc:150, iso:30, fiber:7, chol:false,
+    tags:['prot','iso','fiber'], detail:'鶏むね150g＋大豆缶60g＋トマト・玉ねぎで煮込む。雑穀ごはん150g。たんぱく質とイソフラボンを同時に。' },
+  { id:'p35', name:'ひよこ豆カレー（雑穀ごはん）', type:'pm', kcal:490, prot:22, calc:140, iso:15, fiber:9, chol:false,
+    tags:['prot','fiber'], detail:'ひよこ豆缶80g＋玉ねぎ・にんじん・カレー粉。雑穀ごはん150g。食物繊維と植物性たんぱく質が豊富。' },
+  { id:'p36', name:'めかぶと豆腐の冷製麺', type:'pm', kcal:380, prot:20, calc:190, iso:38, fiber:5, chol:false,
+    tags:['prot','iso','calc','fiber'], detail:'そうめん1束＋めかぶ＋絹豆腐。つゆに生姜・みょうがをたっぷり。暑い日でも食べやすい低カロリーランチ。' },
+  { id:'p37', name:'牛肉とごぼうのしぐれ煮定食', type:'pm', kcal:470, prot:26, calc:130, iso:15, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'牛薄切り80g＋ごぼう＋にんじんを甘辛煮。ごはん150g＋豆腐の味噌汁。ごぼうの食物繊維で腸活。' },
+  { id:'p38', name:'鶏ねぎ塩スープご飯', type:'pm', kcal:420, prot:28, calc:120, iso:10, fiber:3, chol:false,
+    tags:['prot'], detail:'鶏むね150g＋ねぎ・生姜の塩スープ。ごはん120gをスープに入れる。胃腸に優しく高たんぱく。' },
+  { id:'p39', name:'アジフライ（低脂質）定食', type:'pm', kcal:460, prot:28, calc:200, iso:15, fiber:4, chol:true,
+    tags:['prot','calc','chol'], detail:'アジ2尾に薄く衣をつけてトースターで焼きフライ風に。ごはん150g＋キャベツの千切り＋豆腐の味噌汁。' },
+  { id:'p40', name:'おからと野菜のスープ定食', type:'pm', kcal:420, prot:22, calc:180, iso:40, fiber:10, chol:false,
+    tags:['prot','iso','fiber','calc'], detail:'おからパウダー大さじ2＋玉ねぎ・にんじん・キャベツ・豆乳スープ。全粒粉パン1枚。食物繊維が特に豊富。' },
+
+  // ===== 夕食 40品目 =====
+  { id:'e01', name:'鮭ちゃんちゃん焼き＋雑穀ごはん', type:'ev', kcal:490, prot:32, calc:200, iso:10, fiber:5, chol:true,
+    tags:['prot','calc','chol'], detail:'鮭1切れ＋キャベツ・きのこをみそバターで蒸し焼き。雑穀ごはん150g。EPAで血流改善、コレステロール対策に。' },
+  { id:'e02', name:'豆腐と野菜の蒸し鍋（ポン酢）', type:'ev', kcal:380, prot:24, calc:250, iso:50, fiber:7, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'木綿豆腐½丁＋白菜・きのこ・春菊・えのき。出汁蒸し＋ポン酢で食べる。低カロリーで満足感大。' },
+  { id:'e03', name:'鶏むね肉の梅しそ蒸し定食', type:'ev', kcal:430, prot:35, calc:130, iso:15, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'鶏むね200gをレンジ蒸し。梅干し・大葉・おろしにんにく。ごはん120g、玉ねぎ味噌汁。高たんぱく・低脂質。' },
+  { id:'e04', name:'イワシの塩焼き定食', type:'ev', kcal:450, prot:30, calc:220, iso:10, fiber:4, chol:true,
+    tags:['prot','calc','chol'], detail:'イワシ2尾を塩焼き。大根おろし添え。ひじきの煮物、ごはん120g、わかめ味噌汁。EPA・DHAとカルシウムの二重補給。' },
+  { id:'e05', name:'高野豆腐と根菜の煮物定食', type:'ev', kcal:420, prot:26, calc:280, iso:40, fiber:6, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'高野豆腐2枚＋ごぼう・にんじん・こんにゃく。醤油・みりん・出汁でじっくり煮る。ごはん120g。' },
+  { id:'e06', name:'豚肉と大豆の生姜炒め', type:'ev', kcal:470, prot:32, calc:150, iso:35, fiber:5, chol:false,
+    tags:['prot','iso','fiber'], detail:'豚薄切り100g＋蒸し大豆80g＋ピーマン・もやし。生姜・醤油・酒で炒める。ごはん120g＋わかめスープ。' },
+  { id:'e07', name:'鯖の味噌煮定食', type:'ev', kcal:460, prot:30, calc:200, iso:15, fiber:5, chol:true,
+    tags:['prot','calc','chol'], detail:'鯖1切れ＋生姜を甘めの味噌で煮る。ごはん120g、ほうれん草おひたし、豆腐の味噌汁。' },
+  { id:'e08', name:'チキンと豆腐の和風グラタン', type:'ev', kcal:480, prot:34, calc:300, iso:40, fiber:4, chol:false,
+    tags:['prot','calc','iso'], detail:'鶏むね100g＋木綿豆腐½丁を豆乳ホワイトソースで和える。チーズ少量でグラタンに。ごはんなしでも満足感◎。' },
+  { id:'e09', name:'野菜たっぷりけんちん汁定食', type:'ev', kcal:400, prot:22, calc:220, iso:35, fiber:8, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'大根・ごぼう・こんにゃく・豆腐の具だくさんけんちん汁。ごはん120g＋焼き鮭½切れ。根菜の食物繊維が腸活に。' },
+  { id:'e10', name:'鶏ひき肉とほうれん草の卵とじ丼', type:'ev', kcal:450, prot:32, calc:180, iso:10, fiber:5, chol:false,
+    tags:['prot','calc','fiber'], detail:'鶏ひき100g＋ほうれん草＋卵2個を出汁で煮てとじる。ごはん150g。ビタミンKとカルシウムの組み合わせで骨ケア。' },
+  { id:'e11', name:'鮭と豆腐の味噌バター鍋', type:'ev', kcal:440, prot:34, calc:260, iso:40, fiber:5, chol:true,
+    tags:['prot','calc','iso','chol'], detail:'鮭1切れ＋絹豆腐½丁＋白菜・きのこ。味噌＋バター少量で仕上げ。ごはん120g。EPA・DHAとカルシウムのW補給。' },
+  { id:'e12', name:'豚バラと大根の角煮風定食', type:'ev', kcal:490, prot:28, calc:130, iso:15, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'豚バラ80g（脂身少な目）＋大根をしょうゆ・みりん・生姜で煮込む。ごはん120g＋ほうれん草のおひたし。' },
+  { id:'e13', name:'アジの南蛮漬け定食', type:'ev', kcal:440, prot:28, calc:220, iso:15, fiber:4, chol:true,
+    tags:['prot','calc','chol'], detail:'アジ2尾を薄く揚げて酢・砂糖・しょうゆ・玉ねぎ・にんじんに漬ける。ごはん120g＋わかめ汁。' },
+  { id:'e14', name:'厚揚げと小松菜の炒め煮定食', type:'ev', kcal:450, prot:28, calc:300, iso:35, fiber:5, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'厚揚げ1枚（200g）＋小松菜150gを醤油・みりん・出汁で炒め煮。ごはん120g。カルシウムが特に豊富な組み合わせ。' },
+  { id:'e15', name:'鶏むね肉とブロッコリーの中華蒸し', type:'ev', kcal:430, prot:36, calc:160, iso:10, fiber:6, chol:false,
+    tags:['prot','calc','fiber'], detail:'鶏むね200g＋ブロッコリー100gをレンジ蒸し。ポン酢＋ごま油のタレで。ごはん120g。高たんぱく・低脂質の定番。' },
+  { id:'e16', name:'豆腐と海鮮のチゲ鍋', type:'ev', kcal:430, prot:32, calc:240, iso:40, fiber:5, chol:false,
+    tags:['prot','calc','iso','chol'], detail:'木綿豆腐½丁＋えび・あさり・白菜・きのこ。コチュジャン・みそのスープ。ごはん100g。海鮮のカルシウムも豊富。' },
+  { id:'e17', name:'ヒレカツ（低脂質）定食', type:'ev', kcal:480, prot:34, calc:130, iso:15, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'豚ヒレ100gに薄く衣をつけてトースター焼きカツ。キャベツ千切り＋ごはん120g＋豆腐の味噌汁。' },
+  { id:'e18', name:'しらすと豆腐の冷やっこ定食', type:'ev', kcal:380, prot:24, calc:280, iso:40, fiber:3, chol:false,
+    tags:['prot','calc','iso'], detail:'絹豆腐½丁にしらす大さじ2＋おろし生姜・醤油。ごはん150g＋わかめと玉ねぎの味噌汁。カルシウムの二重補給。' },
+  { id:'e19', name:'鶏肉とかぼちゃの煮物定食', type:'ev', kcal:450, prot:28, calc:140, iso:10, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'鶏もも（皮なし）100g＋かぼちゃ80gを醤油・みりん・出汁で煮る。ごはん120g＋ほうれん草の味噌汁。' },
+  { id:'e20', name:'豆腐のステーキ（おろしポン酢）定食', type:'ev', kcal:400, prot:22, calc:220, iso:45, fiber:3, chol:false,
+    tags:['prot','iso','calc'], detail:'木綿豆腐½丁を厚め切りにしてフライパンで両面焼き。大根おろし＋ポン酢。ごはん150g＋なめこの味噌汁。' },
+  { id:'e21', name:'鮭とわかめのちゃんこ鍋', type:'ev', kcal:440, prot:34, calc:250, iso:15, fiber:5, chol:true,
+    tags:['prot','calc','chol'], detail:'鮭1切れ＋豆腐½丁＋わかめ・ねぎ・豆もやしの醤油ちゃんこ。ごはん100g。EPA・DHAとカルシウムを同時補給。' },
+  { id:'e22', name:'大豆入りポトフ＋全粒粉パン', type:'ev', kcal:430, prot:24, calc:150, iso:28, fiber:8, chol:false,
+    tags:['prot','iso','fiber'], detail:'大豆缶60g＋キャベツ・にんじん・玉ねぎ・ブロッコリーのポトフ。全粒粉パン1枚。体が温まる洋風夕食。' },
+  { id:'e23', name:'牛赤身肉と野菜の炒め物定食', type:'ev', kcal:480, prot:32, calc:120, iso:10, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'牛もも薄切り100g＋ピーマン・パプリカ・きのこ。醤油・みりん・にんにくで炒める。ごはん120g。鉄分も補給。' },
+  { id:'e24', name:'さんまの塩焼き定食', type:'ev', kcal:470, prot:30, calc:180, iso:10, fiber:3, chol:true,
+    tags:['prot','calc','chol'], detail:'さんま1尾を塩焼き。大根おろし添え。ごはん120g＋豆腐の味噌汁＋ほうれん草のおひたし。秋冬はさんまでEPA補給。' },
+  { id:'e25', name:'油揚げと野菜の味噌炒め定食', type:'ev', kcal:430, prot:24, calc:260, iso:35, fiber:6, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'油揚げ1枚＋にんじん・ごぼう・こんにゃくを味噌炒め。ごはん120g＋豆腐の味噌汁。油揚げのカルシウムとイソフラボン。' },
+  { id:'e26', name:'鶏手羽元と大根の和風煮込み', type:'ev', kcal:460, prot:30, calc:150, iso:15, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'鶏手羽元4本＋大根・生姜を醤油・酒・みりんで1時間煮込む。コラーゲン豊富で関節ケアに。ごはん120g。' },
+  { id:'e27', name:'えびとブロッコリーの豆乳グラタン', type:'ev', kcal:470, prot:32, calc:250, iso:18, fiber:5, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'えび100g＋ブロッコリー100gを豆乳ホワイトソースで焼く。チーズ少量。ごはんなしで食べごたえ◎。' },
+  { id:'e28', name:'鮭と枝豆の玄米リゾット', type:'ev', kcal:460, prot:28, calc:180, iso:20, fiber:5, chol:true,
+    tags:['prot','chol','iso','fiber'], detail:'玄米ごはん150g＋鮭フレーク＋枝豆を豆乳スープでリゾット風に。チーズ少量。洋風で食べやすい。' },
+  { id:'e29', name:'豚ヒレ肉のしゃぶしゃぶ鍋', type:'ev', kcal:420, prot:34, calc:160, iso:15, fiber:5, chol:false,
+    tags:['prot','fiber'], detail:'豚ヒレ120g＋白菜・ねぎ・きのこのしゃぶしゃぶ。ポン酢とごまだれで。ごはん100g。最も脂質の少ない鍋料理。' },
+  { id:'e30', name:'あさりと豆腐の酒蒸し定食', type:'ev', kcal:380, prot:24, calc:280, iso:35, fiber:3, chol:false,
+    tags:['prot','calc','iso'], detail:'あさり100g＋絹豆腐½丁を酒蒸し。にんにく・バター少量。ごはん120g＋わかめ味噌汁。あさりのカルシウムと鉄分。' },
+  { id:'e31', name:'豆腐とひき肉のマーボー豆腐（減辛）', type:'ev', kcal:460, prot:32, calc:200, iso:40, fiber:3, chol:false,
+    tags:['prot','iso','calc'], detail:'鶏ひき80g＋絹豆腐½丁。豆板醤は少なめ、豆乳を少し加えてまろやかに。ごはん120g。辛さ控えめで胃にやさしい。' },
+  { id:'e32', name:'鶏むね肉のソテー（レモンバター）定食', type:'ev', kcal:450, prot:36, calc:130, iso:10, fiber:4, chol:false,
+    tags:['prot','fiber'], detail:'鶏むね200gをバター少量でソテー。レモン汁＋醤油のソース。ごはん120g＋ブロッコリーのサラダ。' },
+  { id:'e33', name:'煮魚（カレイの煮付け）定食', type:'ev', kcal:420, prot:28, calc:200, iso:15, fiber:4, chol:false,
+    tags:['prot','calc'], detail:'カレイ1切れを醤油・みりん・砂糖・生姜で煮付け。ごはん120g＋ほうれん草のおひたし＋豆腐の味噌汁。' },
+  { id:'e34', name:'豚肉とキムチの炒め定食', type:'ev', kcal:470, prot:30, calc:160, iso:20, fiber:4, chol:false,
+    tags:['prot','iso','fiber'], detail:'豚薄切り100g＋白菜キムチ50g＋豆腐を炒める。ごはん120g＋わかめスープ。発酵食品のW効果で腸活に。' },
+  { id:'e35', name:'蒸し野菜盛り合わせ＋鶏むね肉（バーニャカウダ風）', type:'ev', kcal:430, prot:32, calc:150, iso:10, fiber:7, chol:false,
+    tags:['prot','fiber'], detail:'ブロッコリー・かぼちゃ・にんじん・じゃがいもを蒸して。鶏むね100gとアンチョビ・にんにく・オリーブオイルのソースで。' },
+  { id:'e36', name:'さばと野菜の韓国風スープご飯', type:'ev', kcal:450, prot:28, calc:200, iso:15, fiber:5, chol:true,
+    tags:['prot','calc','chol'], detail:'サバ水煮缶½＋大根・ねぎ・にんにく・ごま油の韓国風スープ。ごはん100gを入れてクッパ風に。' },
+  { id:'e37', name:'かつおの刺身定食', type:'ev', kcal:420, prot:34, calc:130, iso:10, fiber:3, chol:true,
+    tags:['prot','chol'], detail:'かつおの刺身150g（血合いあり）。ごはん120g＋なめこおろし汁＋ほうれん草のおひたし。鉄分とDHAが豊富。' },
+  { id:'e38', name:'豆腐とわかめのすき焼き風煮', type:'ev', kcal:410, prot:26, calc:280, iso:45, fiber:4, chol:false,
+    tags:['prot','calc','iso','fiber'], detail:'豆腐½丁＋わかめ＋しらたき＋牛薄切り少量をすき焼きのたれで。ごはん120g。カルシウムとイソフラボンを一緒に。' },
+  { id:'e39', name:'鶏胸肉とひよこ豆のスパイス炒め', type:'ev', kcal:460, prot:34, calc:140, iso:15, fiber:7, chol:false,
+    tags:['prot','fiber'], detail:'鶏むね150g＋ひよこ豆50g＋パプリカをクミン・コリアンダーで炒める。雑穀ごはん120g。食物繊維たっぷり。' },
+  { id:'e40', name:'海鮮と豆腐の和風アクアパッツァ', type:'ev', kcal:430, prot:34, calc:250, iso:35, fiber:4, chol:true,
+    tags:['prot','calc','iso','chol'], detail:'えび・あさり・タラ＋木綿豆腐½丁をあっさりトマト・出汁スープで。全粒粉パン1枚。EPA・DHAとカルシウムの洋風補給。' },
+
+  // ===== サイドメニュー =====
+  { id:'x01', name:'具だくさん豚汁（サイドメニュー）', type:'all', kcal:180, prot:10, calc:80, iso:20, fiber:4, chol:false,
+    tags:['iso','fiber'], detail:'豚薄切り50g＋大根・にんじん・こんにゃく・ごぼう・豆腐。具をたっぷりにすることでそれだけで栄養満点のおかずに。' },
+  { id:'x02', name:'モロヘイヤとめかぶのネバネバ小鉢', type:'all', kcal:60, prot:4, calc:150, iso:5, fiber:4, chol:false,
+    tags:['calc','fiber'], detail:'茹でモロヘイヤ＋めかぶをポン酢であえる。カルシウムと食物繊維が豊富。整腸・骨密度ケアにぴったり。' },
+  { id:'x03', name:'蒸し大豆と海藻サラダ', type:'all', kcal:120, prot:8, calc:180, iso:30, fiber:5, chol:false,
+    tags:['iso','calc','fiber'], detail:'蒸し大豆50g＋わかめ＋きゅうり。ごまドレッシングで。イソフラボンとカルシウムを手軽に補える副菜。' },
+];
+
+// ===== STATE =====
+let dayData = {};
+let customRecipes = [];
+let settings = { calorieGoal: 1500 };
+let currentModal = null;
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth();
+
+// ===== LOCALSTORAGE =====
+function saveData() {
+  localStorage.setItem('diet50_days', JSON.stringify(dayData));
+  localStorage.setItem('diet50_custom', JSON.stringify(customRecipes));
+  localStorage.setItem('diet50_settings', JSON.stringify(settings));
+}
+function loadData() {
+  try { dayData = JSON.parse(localStorage.getItem('diet50_days') || '{}'); } catch(e) { dayData = {}; }
+  try { customRecipes = JSON.parse(localStorage.getItem('diet50_custom') || '[]'); } catch(e) { customRecipes = []; }
+  try { settings = JSON.parse(localStorage.getItem('diet50_settings') || '{}'); settings.calorieGoal = settings.calorieGoal || 1500; } catch(e) { settings = { calorieGoal: 1500 }; }
+}
+
+function getDayKey(y, m, d) { return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+
+// ===== TAB =====
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+  if (name === 'stats') renderStats();
+}
+
+// ===== CALENDAR =====
+function changeMonth(d) {
+  currentMonth += d;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const year = currentYear, month = currentMonth;
+  document.getElementById('cal-title').textContent = `${year}年${month+1}月`;
+  const grid = document.getElementById('cal-grid');
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const today = new Date();
+  let html = '';
+  for (let i = 0; i < firstDay; i++) html += '<div class="cal-cell empty"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = getDayKey(year, month, d);
+    const data = dayData[key];
+    const dow = new Date(year, month, d).getDay();
+    const isToday = today.getFullYear()===year && today.getMonth()===month && today.getDate()===d;
+    const hasData = !!data;
+    let cls = 'cal-cell';
+    if (isToday) cls += ' today';
+    if (hasData) cls += ' has-data';
+    let inner = `<div class="cal-date ${dow===0?'sun':dow===6?'sat':''}">
+      <span>${d}</span>
+      ${data?.weight ? `<span class="cal-weight-badge">${data.weight}kg</span>` : ''}
+    </div>`;
+    if (data) {
+      inner += '<div class="cal-meals">';
+      const allR = getAllRecipes();
+      if (data.am) { const r = allR.find(x=>x.id===data.am); if(r) inner += `<div class="cal-meal-dot">${r.name.split('＋')[0].slice(0,8)}</div>`; }
+      if (data.pm) { const r = allR.find(x=>x.id===data.pm); if(r) inner += `<div class="cal-meal-dot lunch">${r.name.split('＋')[0].slice(0,8)}</div>`; }
+      if (data.ev) { const r = allR.find(x=>x.id===data.ev); if(r) inner += `<div class="cal-meal-dot dinner">${r.name.split('＋')[0].slice(0,8)}</div>`; }
+      inner += '</div>';
+      const total = getDayTotal(data);
+      if (total > 0) inner += `<div class="cal-kcal">${total}kcal</div>`;
+    }
+    html += `<div class="${cls}" onclick="openModal(${year},${month},${d})">${inner}</div>`;
+  }
+  grid.innerHTML = html;
+  updateHeaderKcal();
+}
+
+function getDayTotal(data) {
+  const allR = getAllRecipes();
+  let total = 0;
+  ['am','pm','ev'].forEach(t => { if(data[t]) { const r = allR.find(x=>x.id===data[t]); if(r) total += r.kcal; } });
+  return total;
+}
+
+function updateHeaderKcal() {
+  const todayKey = getDayKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+  const data = dayData[todayKey];
+  if (data) {
+    const total = getDayTotal(data);
+    document.getElementById('header-kcal').textContent = `${total} kcal/日`;
+  } else {
+    document.getElementById('header-kcal').textContent = '-- kcal/日';
+  }
+}
+
+// ===== MODAL =====
+function getAllRecipes() { return [...RECIPES, ...customRecipes]; }
+
+function openModal(y, m, d) {
+  currentModal = { y, m, d };
+  const key = getDayKey(y, m, d);
+  const data = dayData[key] || {};
+  const dow = ['日','月','火','水','木','金','土'][new Date(y,m,d).getDay()];
+  document.getElementById('modal-date-title').textContent = `${m+1}月${d}日（${dow}）`;
+  document.getElementById('modal-goal-sub').textContent = `目標：${settings.calorieGoal} kcal`;
+  document.getElementById('modal-weight').value = data.weight || '';
+  populateSelects(data);
+  document.getElementById('modal-overlay').classList.add('open');
+  updateModal();
+}
+function closeModal(e) { if (e.target === document.getElementById('modal-overlay')) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+function populateSelects(data) {
+  const allR = getAllRecipes();
+  const slots = { am: ['am','all'], pm: ['pm','all'], ev: ['ev','all'] };
+  ['am','pm','ev'].forEach(slot => {
+    const sel = document.getElementById('sel-' + slot);
+    sel.innerHTML = '<option value="">（選択してください）</option>';
+    const valid = allR.filter(r => slots[slot].includes(r.type));
+    valid.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id; opt.textContent = `${r.name}（${r.kcal}kcal）`;
+      sel.appendChild(opt);
+    });
+    if (data && data[slot]) sel.value = data[slot];
+    else sel.value = '';
+  });
+}
+
+function updateModal() {
+  const allR = getAllRecipes();
+  let totalKcal = 0, totalProt = 0, totalCalc = 0, totalIso = 0, totalFiber = 0;
+  ['am','pm','ev'].forEach(slot => {
+    const val = document.getElementById('sel-' + slot).value;
+    const info = document.getElementById('info-' + slot);
+    if (val) {
+      const r = allR.find(x => x.id === val);
+      if (r) {
+        totalKcal += r.kcal; totalProt += r.prot;
+        totalCalc += r.calc; totalIso += r.iso; totalFiber += r.fiber;
+        let tagHtml = '';
+        if (r.tags.includes('iso')) tagHtml += '<span class="n-tag iso">🫘 イソフラボン</span>';
+        if (r.tags.includes('calc')) tagHtml += '<span class="n-tag calc">🦴 カルシウム</span>';
+        if (r.tags.includes('prot')) tagHtml += '<span class="n-tag prot">🥩 高たんぱく</span>';
+        if (r.tags.includes('fiber')) tagHtml += '<span class="n-tag fiber">🥦 食物繊維</span>';
+        if (r.tags.includes('chol')) tagHtml += '<span class="n-tag" style="background:var(--amber-l);color:var(--amber);">❤️ コレステロール対策</span>';
+        info.innerHTML = `<div class="nutrient-tags">${tagHtml}</div>${r.detail}`;
+        info.classList.add('show');
+      }
+    } else { info.classList.remove('show'); }
+  });
+  document.getElementById('modal-total').textContent = totalKcal;
+  document.getElementById('m-prot-val').textContent = totalProt + 'g';
+  document.getElementById('m-calc-val').textContent = totalCalc + 'mg';
+  document.getElementById('m-iso-val').textContent = totalIso + 'mg';
+  document.getElementById('m-fiber-val').textContent = totalFiber + 'g';
+  document.getElementById('m-bar-prot').style.width = Math.min(100, totalProt/60*100) + '%';
+  document.getElementById('m-bar-calc').style.width = Math.min(100, totalCalc/650*100) + '%';
+  document.getElementById('m-bar-iso').style.width = Math.min(100, totalIso/50*100) + '%';
+  document.getElementById('m-bar-fiber').style.width = Math.min(100, totalFiber/18*100) + '%';
+}
+
+function saveDay() {
+  if (!currentModal) return;
+  const key = getDayKey(currentModal.y, currentModal.m, currentModal.d);
+  dayData[key] = {
+    am: document.getElementById('sel-am').value || null,
+    pm: document.getElementById('sel-pm').value || null,
+    ev: document.getElementById('sel-ev').value || null,
+    weight: parseFloat(document.getElementById('modal-weight').value) || null,
+  };
+  saveData(); renderCalendar(); closeModalDirect();
+  showToast('💾 保存しました！');
+}
+
+// ===== RECIPE TAB =====
+function filterRecipes(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRecipes(filter);
+}
+
+function renderRecipes(filter = 'all') {
+  const allR = getAllRecipes();
+  let list = allR;
+  if (filter === 'am') list = allR.filter(r => r.type === 'am');
+  else if (filter === 'pm') list = allR.filter(r => r.type === 'pm');
+  else if (filter === 'ev') list = allR.filter(r => r.type === 'ev');
+  else if (filter === 'iso') list = allR.filter(r => r.tags && r.tags.includes('iso'));
+  else if (filter === 'calc') list = allR.filter(r => r.tags && r.tags.includes('calc'));
+  else if (filter === 'chol') list = allR.filter(r => r.tags && (r.tags.includes('chol') || r.chol));
+  const typeLabel = { am:'朝食', pm:'昼食', ev:'夕食', all:'いつでも' };
+  const grid = document.getElementById('recipe-grid');
+  grid.innerHTML = list.map(r => {
+    let tagHtml = '';
+    if (r.tags && r.tags.includes('iso')) tagHtml += '<span class="recipe-icon-tag">🫘イソフラボン</span>';
+    if (r.tags && r.tags.includes('calc')) tagHtml += '<span class="recipe-icon-tag">🦴カルシウム</span>';
+    if (r.tags && r.tags.includes('prot')) tagHtml += '<span class="recipe-icon-tag">🥩高たんぱく</span>';
+    if (r.tags && r.tags.includes('fiber')) tagHtml += '<span class="recipe-icon-tag">🥦食物繊維</span>';
+    if (r.tags && r.tags.includes('chol')) tagHtml += '<span class="recipe-icon-tag">❤️コレステロール対策</span>';
+    return `<div class="recipe-card" onclick="toggleRecipeDetail('${r.id}')">
+      <div class="recipe-card-top">
+        <div class="recipe-name">${r.name}</div>
+        <span class="recipe-type-badge ${r.type}">${typeLabel[r.type]}</span>
+      </div>
+      <div class="recipe-icons">${tagHtml}</div>
+      <div><span class="recipe-kcal">${r.kcal}</span><span class="recipe-kcal-unit"> kcal</span></div>
+      <div class="recipe-detail" id="rd-${r.id}">${r.detail || ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRecipeDetail(id) {
+  const el = document.getElementById('rd-' + id);
+  if (el) el.classList.toggle('open');
+}
+
+// ===== STATS =====
+function renderStats() {
+  const allR = getAllRecipes();
+  const year = currentYear, month = currentMonth;
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  let totalKcal = 0, totalProt = 0, totalCalc = 0, totalIso = 0, totalFiber = 0;
+  let recordDays = 0, maxKcal = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = getDayKey(year, month, d);
+    const data = dayData[key];
+    if (!data) continue;
+    const total = getDayTotal(data);
+    if (total === 0) continue;
+    recordDays++;
+    totalKcal += total;
+    if (total > maxKcal) maxKcal = total;
+    ['am','pm','ev'].forEach(t => {
+      if (data[t]) {
+        const r = allR.find(x => x.id === data[t]);
+        if (r) { totalProt += r.prot; totalCalc += r.calc; totalIso += r.iso; totalFiber += r.fiber; }
+      }
+    });
+  }
+  const avgKcal = recordDays > 0 ? Math.round(totalKcal / recordDays) : 0;
+  document.getElementById('avg-kcal').textContent = avgKcal || '--';
+  document.getElementById('max-kcal').textContent = maxKcal || '--';
+  document.getElementById('record-days').textContent = recordDays;
+
+  // Nutrient bars
+  const avgProt = recordDays > 0 ? Math.round(totalProt/recordDays) : 0;
+  const avgCalc = recordDays > 0 ? Math.round(totalCalc/recordDays) : 0;
+  const avgIso = recordDays > 0 ? Math.round(totalIso/recordDays) : 0;
+  const avgFiber = recordDays > 0 ? Math.round(totalFiber/recordDays) : 0;
+  document.getElementById('stat-prot').textContent = `${avgProt}g / 目標60g`;
+  document.getElementById('stat-calc').textContent = `${avgCalc}mg / 目標650mg`;
+  document.getElementById('stat-iso').textContent = `${avgIso}mg / 目標50mg`;
+  document.getElementById('stat-fiber').textContent = `${avgFiber}g / 目標18g`;
+  document.getElementById('bar-prot').style.width = Math.min(100, avgProt/60*100) + '%';
+  document.getElementById('bar-calc').style.width = Math.min(100, avgCalc/650*100) + '%';
+  document.getElementById('bar-iso').style.width = Math.min(100, avgIso/50*100) + '%';
+  document.getElementById('bar-fiber').style.width = Math.min(100, avgFiber/18*100) + '%';
+
+  // Week bar chart
+  const today = new Date();
+  const weekDays = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    weekDays.push({ y: d.getFullYear(), m: d.getMonth(), d: d.getDate(), dow: ['日','月','火','水','木','金','土'][d.getDay()] });
+  }
+  const maxBar = 2000;
+  const barChart = document.getElementById('week-bar');
+  barChart.innerHTML = weekDays.map(({ y, m, d, dow }) => {
+    const key = getDayKey(y, m, d);
+    const data = dayData[key];
+    let amK = 0, pmK = 0, evK = 0;
+    if (data) {
+      ['am','pm','ev'].forEach(t => {
+        if (data[t]) { const r = allR.find(x=>x.id===data[t]); if(r) { if(t==='am') amK+=r.kcal; if(t==='pm') pmK+=r.kcal; if(t==='ev') evK+=r.kcal; } }
+      });
+    }
+    const total = amK + pmK + evK;
+    const scale = 100 / maxBar;
+    return `<div class="bar-group" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="display:flex;flex-direction:column-reverse;align-items:center;width:80%;gap:1px;height:100px;">
+        <div style="width:100%;height:${evK*scale}px;background:var(--amber-m);border-radius:2px;"></div>
+        <div style="width:100%;height:${pmK*scale}px;background:var(--sage-m);border-radius:2px;"></div>
+        <div style="width:100%;height:${amK*scale}px;background:var(--rose-m);border-radius:2px;"></div>
+      </div>
+      <div style="font-size:9px;color:var(--sub);">${dow}</div>
+      <div style="font-size:9px;color:var(--sub);">${total>0?total:'--'}</div>
+    </div>`;
+  }).join('');
+
+  // Weight chart
+  const weights = weekDays.map(({y,m,d}) => { const k = getDayKey(y,m,d); return dayData[k]?.weight || null; });
+  const valid = weights.filter(w => w !== null);
+  const minW = valid.length > 0 ? Math.min(...valid) - 0.5 : 50;
+  const maxW = valid.length > 0 ? Math.max(...valid) + 0.5 : 80;
+  const wRange = maxW - minW || 1;
+  document.getElementById('weight-chart').innerHTML = weekDays.map(({y,m,d,dow}, i) => {
+    const w = weights[i];
+    const h = w ? Math.round(((w - minW) / wRange) * 70) : 0;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="display:flex;flex-direction:column-reverse;height:80px;width:80%;align-items:center;">
+        ${w ? `<div style="width:70%;height:${h+6}px;background:linear-gradient(180deg,var(--rose),var(--rose-m));border-radius:3px;"></div>` : ''}
+      </div>
+      <div style="font-size:9px;color:var(--sub);">${dow}</div>
+      <div style="font-size:9px;color:var(--sub);">${w?w+'kg':'--'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== MY RECIPE =====
+function addMyRecipe() {
+  const name = document.getElementById('mr-name').value.trim();
+  const kcal = parseInt(document.getElementById('mr-kcal').value) || 0;
+  if (!name || !kcal) { showToast('⚠️ レシピ名とカロリーは必須です'); return; }
+  const tags = [];
+  if (document.getElementById('mr-tag-iso').checked) tags.push('iso');
+  if (document.getElementById('mr-tag-calc').checked) tags.push('calc');
+  if (document.getElementById('mr-tag-chol').checked) tags.push('chol');
+  if (document.getElementById('mr-tag-fiber').checked) tags.push('fiber');
+  customRecipes.push({
+    id: 'c' + Date.now(),
+    name,
+    type: document.getElementById('mr-type').value,
+    kcal,
+    prot: parseInt(document.getElementById('mr-prot').value) || 0,
+    calc: parseInt(document.getElementById('mr-calc').value) || 0,
+    iso: 0, fiber: 0, chol: tags.includes('chol'),
+    tags,
+    detail: document.getElementById('mr-items').value,
+  });
+  ['mr-name','mr-kcal','mr-prot','mr-calc','mr-items'].forEach(id => document.getElementById(id).value = '');
+  ['mr-tag-iso','mr-tag-calc','mr-tag-chol','mr-tag-fiber'].forEach(id => document.getElementById(id).checked = false);
+  saveData(); renderMyRecipes(); renderRecipes(); showToast('✅ マイレシピを追加しました');
+}
+function renderMyRecipes() {
+  const list = document.getElementById('my-recipe-list');
+  if (customRecipes.length === 0) { list.innerHTML = '<div style="text-align:center;color:var(--sub);font-size:13px;padding:16px;">まだマイレシピはありません</div>'; return; }
+  const typeLabel = { am:'朝食', pm:'昼食', ev:'夕食', all:'いつでも' };
+  list.innerHTML = customRecipes.map((r, i) => `
+    <div class="my-recipe-item">
+      <div>
+        <div class="mri-name">${r.name}</div>
+        <div class="mri-meta">${r.kcal}kcal・${typeLabel[r.type]}</div>
+      </div>
+      <button class="mri-del" onclick="deleteMyRecipe(${i})">削除</button>
+    </div>`).join('');
+}
+function deleteMyRecipe(i) {
+  if (!confirm('削除しますか？')) return;
+  customRecipes.splice(i, 1);
+  saveData(); renderMyRecipes(); renderRecipes();
+}
+
+// ===== SETTINGS =====
+function updateGoal() {
+  const val = document.getElementById('goal-slider').value;
+  document.getElementById('goal-val').textContent = val;
+  settings.calorieGoal = parseInt(val);
+  saveData();
+}
+function setGoal(val) {
+  document.getElementById('goal-slider').value = val;
+  updateGoal();
+  showToast(`目標を${val}kcalに設定しました`);
+}
+
+function exportData() {
+  const payload = { version: 2, exportedAt: new Date().toISOString(), days: dayData, settings, customRecipes };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `diet50_${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('📤 エクスポートしました');
+}
+function importData(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const payload = JSON.parse(e.target.result);
+      if (!payload.days) { showToast('⚠️ ファイル形式が正しくありません'); return; }
+      if (!confirm('現在のデータを上書きして読み込みます。よろしいですか？')) return;
+      dayData = payload.days || {};
+      settings = payload.settings || { calorieGoal: 1500 };
+      customRecipes = payload.customRecipes || [];
+      saveData(); renderCalendar(); renderRecipes(); renderMyRecipes();
+      document.getElementById('goal-slider').value = settings.calorieGoal;
+      updateGoal();
+      showToast('📥 インポートしました');
+    } catch { showToast('⚠️ 読み込みに失敗しました'); }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== INIT =====
+function init() {
+  loadData();
+  renderCalendar();
+  renderRecipes();
+  renderMyRecipes();
+  document.getElementById('goal-slider').value = settings.calorieGoal;
+  document.getElementById('goal-val').textContent = settings.calorieGoal;
+}
+init();
+</script>
+</body>
+</html>
