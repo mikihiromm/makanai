@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>50代からの健康体操カレンダー</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;600;700&display=swap');
+
+:root {
+  --rose: #C4626A;
+  --rose-l: #FAF0F0;
+  --rose-m: #E89499;
+  --rose-d: #9B3D45;
+  --sage: #6B8F71;
+  --sage-l: #EDF4EE;
+  --sage-m: #8FB395;
+  --amber: #C4924A;
+  --amber-l: #FBF3E8;
+  --amber-m: #DFB277;
+  --cream: #FDF9F8;
+  --text: #2D2523;
+  --sub: #6B5F5D;
+  --border: #E8DFDC;
+  --card: #FFFFFF;
+  --radius: 14px;
+  --shadow: 0 2px 16px rgba(196,98,106,0.10);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,var(--rose-d) 0%,var(--rose) 60%,var(--amber) 100%);color:white;padding:16px 20px 12px;position:sticky;top:0;z-index:200;}
+.header-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px;}
+.header-icon{font-size:26px;}
+.header-title{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;line-height:1.2;}
+.header-sub{font-size:10px;opacity:.85;margin-top:2px;}
+.header-streak{margin-left:auto;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+
+/* NAV */
+.nav{background:var(--card);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;position:sticky;top:66px;z-index:100;}
+.nav-btn{flex:0 0 auto;padding:11px 15px;background:none;border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;}
+.nav-btn.active{color:var(--rose);border-bottom-color:var(--rose);font-weight:500;}
+.nav-btn:hover:not(.active){background:var(--rose-l);}
+
+/* MAIN */
+.main{max-width:720px;margin:0 auto;padding:14px;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* GOAL CARD */
+.goal-card{background:linear-gradient(135deg,var(--rose-l),var(--amber-l));border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.goal-info{flex:1;}
+.goal-label{font-size:11px;color:var(--sub);margin-bottom:2px;}
+.goal-nums{display:flex;align-items:baseline;gap:8px;}
+.goal-current{font-family:'Shippori Mincho',serif;font-size:26px;color:var(--rose-d);font-weight:700;}
+.goal-arrow{font-size:14px;color:var(--sub);}
+.goal-target{font-family:'Shippori Mincho',serif;font-size:18px;color:var(--sage);font-weight:600;}
+.goal-unit{font-size:11px;color:var(--sub);}
+.goal-diff{font-size:11px;margin-top:2px;}
+.goal-diff.good{color:var(--sage);}
+.goal-diff.bad{color:var(--rose);}
+.goal-edit-btn{background:var(--rose);color:white;border:none;border-radius:10px;padding:8px 14px;font-size:12px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;white-space:nowrap;}
+
+/* BADGE ROW */
+.badge-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;}
+.badge{flex:0 0 auto;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px 12px;text-align:center;min-width:70px;transition:all .3s;}
+.badge.earned{background:linear-gradient(135deg,var(--amber-l),#FFF8E7);border-color:var(--amber-m);}
+.badge-icon{font-size:20px;margin-bottom:2px;filter:grayscale(1);transition:filter .3s;}
+.badge.earned .badge-icon{filter:none;}
+.badge-label{font-size:9px;color:var(--sub);white-space:nowrap;}
+.badge-day{font-size:10px;font-weight:600;color:var(--amber);display:none;}
+.badge.earned .badge-day{display:block;}
+
+/* CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-title{font-family:'Shippori Mincho',serif;font-size:17px;font-weight:600;}
+.cal-nav{width:34px;height:34px;border:1px solid var(--border);border-radius:50%;background:var(--card);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.cal-nav:hover{background:var(--rose-l);border-color:var(--rose-m);}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
+.cal-wd{text-align:center;font-size:10px;font-weight:500;color:var(--sub);padding:3px 0;}
+.cal-wd:first-child{color:var(--rose);}
+.cal-wd:last-child{color:#5B8ACB;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-cell{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:5px 3px;min-height:72px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.cal-cell:hover{border-color:var(--rose-m);box-shadow:var(--shadow);}
+.cal-cell.today{border-color:var(--rose);background:var(--rose-l);}
+.cal-cell.done{background:#F0F9F1;border-color:var(--sage-m);}
+.cal-cell.empty{background:transparent;border-color:transparent;cursor:default;}
+.cal-cell.empty:hover{box-shadow:none;}
+.cal-date-num{font-size:11px;font-weight:500;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center;}
+.cal-date-num.sun{color:var(--rose);}
+.cal-date-num.sat{color:#5B8ACB;}
+.cal-weight-tag{font-size:9px;background:var(--rose);color:white;border-radius:6px;padding:1px 4px;}
+.cal-exercise-icon{font-size:18px;text-align:center;margin:2px 0;}
+.cal-exercise-name{font-size:8px;color:var(--sub);text-align:center;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.cal-check{position:absolute;bottom:3px;right:3px;font-size:12px;}
+.cal-future{opacity:.45;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(45,37,35,.55);z-index:500;align-items:center;justify-content:center;padding:14px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:20px;width:100%;max-width:460px;max-height:92vh;overflow-y:auto;box-shadow:0 10px 50px rgba(0,0,0,.2);}
+.modal-header{background:linear-gradient(135deg,var(--rose-d),var(--rose));color:white;padding:16px 18px;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Shippori Mincho',serif;font-size:16px;}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:18px;}
+
+/* EXERCISE CARD IN MODAL */
+.ex-illust{background:var(--sage-l);border-radius:14px;padding:16px;margin-bottom:14px;text-align:center;}
+.ex-illust svg{max-width:200px;width:100%;}
+.ex-name{font-family:'Shippori Mincho',serif;font-size:18px;font-weight:600;margin-bottom:4px;}
+.ex-cat{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;margin-bottom:10px;}
+.ex-cat.stretch{background:var(--rose-l);color:var(--rose-d);}
+.ex-cat.muscle{background:var(--amber-l);color:var(--amber);}
+.ex-cat.balance{background:var(--sage-l);color:var(--sage);}
+.ex-cat.breath{background:#EEF2FF;color:#5B6EBD;}
+.ex-steps{background:var(--cream);border-radius:10px;padding:12px 14px;font-size:12px;line-height:2;color:var(--sub);}
+.ex-steps li{margin-bottom:2px;}
+.ex-point{background:var(--rose-l);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--rose-d);margin-top:10px;}
+
+.weight-row{display:flex;align-items:center;gap:10px;background:var(--rose-l);border-radius:12px;padding:12px 14px;margin:14px 0;}
+.weight-row label{font-size:13px;font-weight:500;flex:1;}
+.weight-input{width:80px;padding:8px;border:1.5px solid var(--rose-m);border-radius:8px;font-size:15px;text-align:center;font-family:'Noto Sans JP',sans-serif;background:white;}
+.weight-unit{font-size:13px;color:var(--sub);}
+
+.done-toggle{width:100%;padding:14px;border:none;border-radius:12px;font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .3s;margin-top:4px;}
+.done-toggle.undone{background:var(--sage);color:white;}
+.done-toggle.done-btn{background:var(--sage-l);color:var(--sage);border:2px solid var(--sage-m);}
+.save-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--rose-d),var(--rose));color:white;border:none;border-radius:12px;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:10px;}
+
+/* EXERCISE LIST TAB */
+.ex-list-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:480px){.ex-list-grid{grid-template-columns:1fr;}}
+.ex-list-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .2s;display:flex;gap:12px;align-items:center;}
+.ex-list-card:hover{border-color:var(--rose-m);box-shadow:var(--shadow);}
+.ex-list-icon{width:54px;height:54px;flex:0 0 54px;background:var(--sage-l);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.ex-list-icon svg{width:44px;height:44px;}
+.ex-list-info{flex:1;min-width:0;}
+.ex-list-day{font-size:10px;color:var(--sub);margin-bottom:2px;}
+.ex-list-name{font-size:13px;font-weight:500;line-height:1.3;margin-bottom:3px;}
+.ex-list-cat-badge{display:inline-block;font-size:9px;padding:1px 7px;border-radius:10px;}
+
+/* PROGRESS TAB */
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;}
+.prog-title{font-size:13px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;gap:5px;}
+.prog-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.prog-num{text-align:center;}
+.prog-num-val{font-family:'Shippori Mincho',serif;font-size:22px;color:var(--rose-d);font-weight:700;}
+.prog-num-label{font-size:10px;color:var(--sub);}
+.weight-graph{display:flex;align-items:flex-end;gap:3px;height:80px;margin-top:8px;}
+.wg-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.wg-bar{width:100%;border-radius:3px;background:linear-gradient(180deg,var(--rose-m),var(--rose-l));min-height:4px;transition:height .4s;}
+.wg-label{font-size:8px;color:var(--sub);}
+.wg-val{font-size:8px;color:var(--rose-d);}
+.ex-heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px;}
+.hm-cell{aspect-ratio:1;border-radius:4px;background:var(--border);transition:background .3s;}
+.hm-cell.done{background:var(--sage-m);}
+.hm-cell.today{outline:2px solid var(--rose);}
+
+/* SETTINGS TAB */
+.setting-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;}
+.setting-label{font-size:13px;font-weight:500;margin-bottom:8px;display:block;}
+.setting-row{display:flex;align-items:center;gap:10px;}
+.form-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans JP',sans-serif;font-size:13px;background:white;color:var(--text);}
+.form-input:focus{outline:none;border-color:var(--rose-m);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-group{margin-bottom:12px;}
+.form-group label{font-size:11px;color:var(--sub);display:block;margin-bottom:4px;}
+.s-save-btn{width:100%;padding:12px;background:var(--rose);color:white;border:none;border-radius:10px;font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;}
+.export-btn{width:100%;padding:11px;border:1.5px solid var(--rose-m);background:var(--rose-l);color:var(--rose-d);border-radius:10px;font-family:'Noto Sans JP',sans-serif;font-size:12px;cursor:pointer;margin-bottom:8px;}
+.import-label{display:block;width:100%;padding:11px;border:1.5px dashed var(--border);background:var(--cream);color:var(--sub);border-radius:10px;font-size:12px;cursor:pointer;text-align:center;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:#2D2523;color:white;padding:10px 20px;border-radius:24px;font-size:13px;transition:transform .3s ease;z-index:9999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* GOAL MODAL */
+.goal-modal{display:none;position:fixed;inset:0;background:rgba(45,37,35,.55);z-index:600;align-items:center;justify-content:center;padding:20px;}
+.goal-modal.open{display:flex;}
+.goal-modal-box{background:var(--card);border-radius:20px;width:100%;max-width:360px;padding:24px;box-shadow:0 10px 50px rgba(0,0,0,.2);}
+.gm-title{font-family:'Shippori Mincho',serif;font-size:18px;margin-bottom:16px;text-align:center;}
+.gm-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.gm-row label{font-size:13px;flex:1;}
+.gm-input{width:90px;padding:8px;border:1.5px solid var(--border);border-radius:8px;font-size:15px;text-align:center;font-family:'Noto Sans JP',sans-serif;}
+.gm-input:focus{outline:none;border-color:var(--rose-m);}
+.gm-save{width:100%;padding:12px;background:linear-gradient(135deg,var(--rose-d),var(--rose));color:white;border:none;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:4px;}
+
+/* ======= CSS ANIMATION ILLUSTRATIONS ======= */
+.ani-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  background: var(--sage-l);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.ani-wrap.lying {
+  background: linear-gradient(180deg, var(--sage-l) 60%, #D4C4B0 60%);
+}
+
+/* --- 人体パーツ共通 --- */
+.ani-head {
+  position: absolute;
+  width: 34px; height: 34px;
+  background: #FDDBB4;
+  border-radius: 50%;
+  border: 2px solid #E8A87C;
+  left: 50%; transform: translateX(-50%);
+  top: 20px;
+  z-index: 3;
+}
+.ani-head::before { /* 髪 */
+  content: '';
+  position: absolute;
+  width: 34px; height: 16px;
+  background: #6B4226;
+  border-radius: 17px 17px 0 0;
+  top: -2px; left: -1px;
+}
+.ani-head::after { /* 顔 */
+  content: '😊';
+  font-size: 14px;
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translateX(-50%);
+  line-height: 1;
+}
+
+/* 各ポーズの頭 */
+.head-side::after, .head-side2::after, .head-side3::after { content: '😌'; }
+.head-down { top: 48px; transform: translateX(-50%) rotate(25deg); }
+.head-down::after { content: '😌'; }
+.head-lean { transform: translateX(-50%) rotate(15deg); }
+.head-twist { transform: translateX(-50%) rotate(-15deg); }
+.head-cat::after { content: '😤'; }
+.head-crunch { top: 38px; transform: translateX(-50%) rotate(-20deg); }
+.head-crunch::after { content: '💪'; }
+.head-calm::after { content: '🙏'; }
+.head-side  { top: 75px; left: 25px; transform: none; }
+.head-side2 { top: 75px; left: 18px; transform: none; }
+.head-side3 { top: 75px; left: 15px; transform: none; }
+
+/* 体 */
+.ani-body {
+  position: absolute;
+  background: #C4626A;
+  border-radius: 8px;
+  z-index: 2;
+}
+.seated {
+  width: 40px; height: 48px;
+  left: 50%; transform: translateX(-50%);
+  top: 52px;
+}
+.standing {
+  width: 36px; height: 60px;
+  left: 50%; transform: translateX(-50%);
+  top: 52px;
+}
+/* 椅子 */
+.seated::after {
+  content: '';
+  position: absolute;
+  width: 60px; height: 6px;
+  background: #B5895A;
+  border-radius: 3px;
+  bottom: 0; left: -10px;
+}
+
+/* アニメーション付き体 */
+.neck-tilt { animation: neckTilt 2s ease-in-out infinite; }
+@keyframes neckTilt {
+  0%,100% { transform: translateX(-50%) rotate(0deg); }
+  33% { transform: translateX(-50%) rotate(20deg); }
+  66% { transform: translateX(-50%) rotate(-20deg); }
+}
+.chest-open { animation: chestPulse 2s ease-in-out infinite; }
+@keyframes chestPulse {
+  0%,100% { width: 40px; }
+  50% { width: 48px; }
+}
+.bend-forward { animation: bendFwd 2.5s ease-in-out infinite; transform-origin: top center; }
+@keyframes bendFwd {
+  0%,100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(35deg); }
+}
+.squat-body {
+  width: 40px; height: 36px;
+  left: 50%; transform: translateX(-50%);
+  top: 64px;
+  animation: squat 2s ease-in-out infinite;
+}
+.squat-head { animation: squatHead 2s ease-in-out infinite; }
+@keyframes squat {
+  0%,100% { top: 55px; height: 48px; }
+  50% { top: 72px; height: 32px; }
+}
+@keyframes squatHead {
+  0%,100% { top: 20px; }
+  50% { top: 38px; }
+}
+.side-lean { animation: sideLean 2.5s ease-in-out infinite; transform-origin: bottom center; }
+@keyframes sideLean {
+  0%,100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(15deg); }
+}
+.twist { animation: bodyTwist 2s ease-in-out infinite; transform-origin: bottom center; }
+@keyframes bodyTwist {
+  0%,100% { transform: translateX(-50%) rotate(0deg); }
+  40% { transform: translateX(-50%) rotate(-18deg); }
+  80% { transform: translateX(-50%) rotate(18deg); }
+}
+.belly-breathe { animation: bellyBreath 3s ease-in-out infinite; }
+@keyframes bellyBreath {
+  0%,100% { width: 40px; }
+  50% { width: 50px; }
+}
+.lean-wall { transform: translateX(-20%) rotate(10deg) !important; left: 55%; }
+.floor-sit {
+  width: 50px; height: 16px;
+  left: 30%; top: 90px;
+  border-radius: 8px;
+  animation: hipWalk 1.2s ease-in-out infinite;
+}
+.floor-sit2 {
+  width: 50px; height: 16px;
+  left: 30%; top: 90px;
+  border-radius: 8px;
+}
+@keyframes hipWalk {
+  0%,100% { left: 30%; }
+  50% { left: 38%; }
+}
+.leg-wide { width: 56px !important; }
+.cat-pose { animation: catPose 2.5s ease-in-out infinite; border-radius: 16px; }
+@keyframes catPose {
+  0%,100% { border-radius: 8px; transform: translateX(-50%); }
+  50% { border-radius: 20px 20px 4px 4px; transform: translateX(-50%) scaleY(0.85); }
+}
+.lying-body {
+  width: 80px; height: 20px;
+  left: 28px; top: 88px;
+  border-radius: 10px;
+}
+.lying-crunch {
+  width: 70px; height: 18px;
+  left: 25px; top: 90px;
+  border-radius: 10px;
+  animation: crunchBody 2s ease-in-out infinite;
+  transform-origin: left center;
+}
+@keyframes crunchBody {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(-20deg); }
+}
+.lying-spread {
+  width: 80px; height: 18px;
+  left: 22px; top: 90px;
+  border-radius: 10px;
+  animation: breatheRelax 4s ease-in-out infinite;
+}
+@keyframes breatheRelax {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* 腕 */
+.ani-arm {
+  position: absolute;
+  background: #FDDBB4;
+  border-radius: 6px;
+  z-index: 1;
+  width: 10px; height: 36px;
+}
+.arm-back {
+  top: 62px; width: 10px; height: 30px;
+  animation: armBack 2s ease-in-out infinite;
+  transform-origin: top center;
+}
+.arm-back.left  { left: 52px; }
+.arm-back.right { right: 52px; }
+@keyframes armBack {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(30deg); }
+}
+.arm-down { left: 50%; top: 95px; height: 40px; animation: armDrop 2.5s ease-in-out infinite; }
+@keyframes armDrop { 0%,100%{transform:rotate(-10deg);} 50%{transform:rotate(10deg);} }
+.arm-up-both {
+  width: 60px; height: 10px;
+  left: 50%; transform: translateX(-50%);
+  top: 52px; background: #FDDBB4; border-radius: 5px;
+  animation: armsUp 2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+@keyframes armsUp {
+  0%,100% { transform: translateX(-50%) rotate(90deg) scaleY(0.6); top: 58px; }
+  50% { transform: translateX(-50%) rotate(90deg) scaleY(1); top: 24px; }
+}
+.arm-front {
+  width: 50px; height: 10px;
+  left: 50%; transform: translateX(-50%);
+  top: 72px; border-radius: 5px;
+  background: #FDDBB4;
+}
+.arm-side-up {
+  width: 8px; height: 50px;
+  right: 42px; top: 30px;
+  animation: sideArmUp 2.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes sideArmUp {
+  0%,100% { transform: rotate(30deg); }
+  50% { transform: rotate(-10deg); }
+}
+.arm-twist {
+  width: 50px; height: 10px;
+  left: 30px; top: 72px;
+  border-radius: 5px; background: #FDDBB4;
+  animation: armTwistAnim 2s ease-in-out infinite;
+  transform-origin: center center;
+}
+@keyframes armTwistAnim {
+  0%,100% { transform: rotate(0deg); }
+  40% { transform: rotate(-30deg); }
+  80% { transform: rotate(30deg); }
+}
+.arm-clasp {
+  width: 50px; height: 12px;
+  left: 50%; transform: translateX(-50%);
+  top: 76px; border-radius: 6px; background: #FDDBB4;
+  animation: chestExpandAnim 2s ease-in-out infinite;
+}
+@keyframes chestExpandAnim {
+  0%,100% { width: 50px; }
+  50% { width: 30px; }
+}
+.arm-wide {
+  width: 70px; height: 10px;
+  left: 50%; transform: translateX(-50%);
+  top: 72px; border-radius: 5px; background: #FDDBB4;
+  animation: armWide 2s ease-in-out infinite;
+  transform-origin: center center;
+}
+@keyframes armWide {
+  0%,100% { transform: translateX(-50%) rotate(0deg); }
+  40% { transform: translateX(-50%) rotate(-25deg); }
+  80% { transform: translateX(-50%) rotate(25deg); }
+}
+.arm-hug {
+  width: 50px; height: 10px;
+  left: 55px; top: 88px; border-radius: 5px; background: #FDDBB4;
+  animation: hugAnim 2s ease-in-out infinite;
+}
+@keyframes hugAnim {
+  0%,100% { width: 40px; }
+  50% { width: 55px; }
+}
+.arm-forward {
+  width: 50px; height: 10px;
+  left: 50%; transform: translateX(-50%);
+  top: 76px; border-radius: 5px; background: #FDDBB4;
+}
+.arm-back-clasp {
+  width: 50px; height: 10px;
+  left: 50%; transform: translateX(-50%);
+  top: 82px; border-radius: 5px; background: #FDDBB4;
+  animation: scapulaAnim 2s ease-in-out infinite;
+}
+@keyframes scapulaAnim {
+  0%,100% { width: 50px; }
+  50% { width: 30px; }
+}
+.arm-swing {
+  width: 10px; height: 30px;
+  left: 55px; top: 62px;
+  animation: swingArm 0.8s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+@keyframes swingArm {
+  0% { transform: rotate(-30deg); }
+  100% { transform: rotate(30deg); }
+}
+.arm-balance {
+  width: 70px; height: 10px;
+  left: 50%; transform: translateX(-50%);
+  top: 70px; border-radius: 5px; background: #FDDBB4;
+  animation: balanceWobble 1.5s ease-in-out infinite;
+}
+@keyframes balanceWobble {
+  0%,100% { transform: translateX(-50%) rotate(-5deg); }
+  50% { transform: translateX(-50%) rotate(5deg); }
+}
+.arm-raise-palm {
+  width: 10px; height: 50px;
+  left: 50%; top: 28px;
+  border-radius: 5px; background: #FDDBB4;
+  animation: raisePalm 2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes raisePalm {
+  0%,100% { height: 40px; top: 38px; }
+  50% { height: 55px; top: 18px; }
+}
+.arm-spread {
+  width: 10px; height: 30px;
+  top: 88px; border-radius: 5px; background: #FDDBB4;
+  animation: spreadRelax 4s ease-in-out infinite;
+}
+.arm-spread.left  { left: 15px; transform: rotate(60deg); transform-origin: top center; }
+.arm-spread.right { right: 15px; transform: rotate(-60deg); transform-origin: top center; }
+@keyframes spreadRelax { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+.arm-pray {
+  width: 14px; height: 40px;
+  left: 50%; transform: translateX(-50%);
+  top: 65px; background: #FDDBB4; border-radius: 7px;
+  animation: prayAnim 3s ease-in-out infinite;
+}
+@keyframes prayAnim {
+  0%,100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.05); opacity: 0.85; }
+}
+
+/* 脚 */
+.ani-leg {
+  position: absolute;
+  background: #FDDBB4;
+  border-radius: 6px;
+  z-index: 1;
+}
+.standing-leg {
+  width: 12px; height: 40px;
+  top: 108px; bottom: 0;
+}
+.standing-leg.left  { left: 68px; }
+.standing-leg.right { right: 68px; }
+.leg-lifted {
+  width: 12px; height: 30px;
+  left: 60px; top: 108px;
+  animation: liftLeg 1.8s ease-in-out infinite;
+  transform-origin: top center;
+}
+@keyframes liftLeg {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(-50deg); }
+}
+.leg-raise {
+  width: 12px; height: 36px;
+  left: 90px; top: 90px;
+  animation: raiseUp 2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes raiseUp {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(-50deg); }
+}
+.knee-hug {
+  width: 28px; height: 28px;
+  left: 80px; top: 80px;
+  border-radius: 50%; background: #FDDBB4;
+  animation: hugKnee 2s ease-in-out infinite;
+}
+@keyframes hugKnee {
+  0%,100% { left: 80px; top: 80px; }
+  50% { left: 72px; top: 72px; }
+}
+.leg-extend {
+  width: 50px; height: 12px;
+  left: 85px; top: 100px;
+  animation: extendLeg 2s ease-in-out infinite;
+  transform-origin: left center;
+}
+@keyframes extendLeg {
+  0%,100% { width: 30px; transform: rotate(20deg); }
+  50% { width: 52px; transform: rotate(0deg); }
+}
+.leg-back {
+  width: 12px; height: 40px;
+  right: 45px; top: 100px;
+  animation: legBack 2s ease-in-out infinite;
+  transform-origin: top center;
+}
+@keyframes legBack {
+  0%,100% { transform: rotate(10deg); }
+  50% { transform: rotate(25deg); }
+}
+.knee-up {
+  width: 12px; height: 32px;
+  left: 78px; top: 100px;
+  animation: marchAnim 0.8s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+@keyframes marchAnim {
+  0% { transform: rotate(0deg); top: 100px; height: 32px; }
+  100% { transform: rotate(-60deg); top: 85px; height: 28px; }
+}
+.thigh-in {
+  width: 12px; height: 32px;
+  top: 104px;
+  animation: thighOpen 2.5s ease-in-out infinite;
+  transform-origin: top center;
+}
+.thigh-in.left  { left: 60px; }
+.thigh-in.right { right: 60px; }
+@keyframes thighOpen {
+  0%,100% { transform: rotate(0deg); }
+  50% { transform: rotate(25deg); }
+}
+.hip-rotate {
+  width: 34px; height: 34px;
+  left: 85px; top: 72px;
+  border-radius: 50%; background: #FDDBB4;
+  animation: hipRot 2s ease-in-out infinite;
+  transform-origin: top left;
+}
+@keyframes hipRot {
+  0%,100% { transform: rotate(0deg); }
+  33% { transform: rotate(-40deg); }
+  66% { transform: rotate(40deg); }
+}
+.leg-float {
+  width: 40px; height: 12px;
+  left: 50%; transform: translateX(-50%);
+  top: 116px; border-radius: 6px;
+  animation: floatLeg 1.5s ease-in-out infinite;
+}
+@keyframes floatLeg {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-8px); }
+}
+.leg-bent-both {
+  width: 44px; height: 14px;
+  left: 50%; transform: translateX(-50%);
+  top: 104px; border-radius: 6px;
+}
+.leg-open {
+  width: 50px; height: 14px;
+  top: 102px; border-radius: 7px;
+  animation: openLegs 2.5s ease-in-out infinite;
+  transform-origin: center top;
+}
+.leg-open.left  { left: 16px; transform: rotate(25deg); }
+.leg-open.right { right: 16px; transform: rotate(-25deg); }
+.leg-spread {
+  width: 12px; height: 40px;
+  top: 102px; border-radius: 6px;
+  animation: spreadRelax 4s ease-in-out infinite;
+}
+.leg-spread.left  { left: 40px; transform: rotate(20deg); transform-origin: top center; }
+.leg-spread.right { right: 40px; transform: rotate(-20deg); transform-origin: top center; }
+
+/* 肩 */
+.ani-shoulder {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: #FDDBB4;
+  border-radius: 50%; top: 56px; z-index: 4;
+}
+.shoulder-roll.left  { left: 42px; animation: rollLeft 1.5s linear infinite; }
+.shoulder-roll.right { right: 42px; animation: rollRight 1.5s linear infinite; }
+@keyframes rollLeft  { 0%{transform:translateY(0);} 25%{transform:translateY(-8px);} 75%{transform:translateY(6px);} 100%{transform:translateY(0);} }
+@keyframes rollRight { 0%{transform:translateY(0);} 25%{transform:translateY(-6px);} 75%{transform:translateY(8px);} 100%{transform:translateY(0);} }
+.shoulder-up { width: 14px; height: 14px; background: #FDDBB4; border-radius: 50%; position: absolute; left: 44px; top: 58px; animation: shoulderUp 2s ease-in-out infinite; z-index: 4; }
+@keyframes shoulderUp { 0%,100%{top:58px;} 50%{top:46px;} }
+
+/* かかと */
+.ani-heel {
+  position: absolute;
+  width: 50px; height: 10px;
+  background: #B5895A;
+  border-radius: 5px;
+  left: 50%; transform: translateX(-50%);
+  bottom: 16px; z-index: 2;
+  animation: heelRaise 1.5s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+@keyframes heelRaise {
+  0%,100% { transform: translateX(-50%) scaleY(0.5) translateY(4px); }
+  50% { transform: translateX(-50%) scaleY(1) translateY(-6px); }
+}
+
+/* 足首 */
+.ani-foot {
+  position: absolute;
+  width: 18px; height: 12px;
+  background: #B5895A; border-radius: 6px;
+  left: 55px; top: 124px;
+  animation: footRotate 1.5s linear infinite;
+  transform-origin: right center;
+}
+@keyframes footRotate {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(-30deg); }
+  50%  { transform: rotate(0deg); }
+  75%  { transform: rotate(30deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* お腹 */
+.ani-belly {
+  position: absolute;
+  width: 30px; height: 20px;
+  background: #E89499; border-radius: 50%;
+  left: 50%; transform: translateX(-50%);
+  top: 84px; z-index: 3;
+  animation: bellyExpand 3s ease-in-out infinite;
+}
+@keyframes bellyExpand {
+  0%,100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.3); }
+}
+
+/* お尻 */
+.ani-hip {
+  position: absolute;
+  width: 44px; height: 18px;
+  background: #C4626A; border-radius: 9px;
+  left: 30%; top: 86px; z-index: 2;
+  animation: hipWalkAnim 1.2s ease-in-out infinite;
+}
+@keyframes hipWalkAnim {
+  0%,100% { left: 28%; transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+/* 肩甲骨ハイライト */
+.ani-shoulder-blade {
+  position: absolute;
+  width: 28px; height: 22px;
+  border: 2px dashed #C4924A;
+  border-radius: 50%;
+  left: 50%; transform: translateX(-50%);
+  top: 58px; z-index: 4;
+  animation: bladePulse 2s ease-in-out infinite;
+}
+@keyframes bladePulse { 0%,100%{opacity:0.4;width:28px;} 50%{opacity:1;width:20px;} }
+
+/* 手首丸 */
+.ani-wrist-circle {
+  position: absolute;
+  width: 20px; height: 20px;
+  border: 3px solid #6B8F71;
+  border-radius: 50%;
+  left: 78px; top: 78px; z-index: 4;
+  animation: wristSpin 1s linear infinite;
+}
+@keyframes wristSpin { to { transform: rotate(360deg); } }
+
+/* 壁 */
+.ani-wall {
+  position: absolute;
+  width: 10px; height: 150px;
+  background: #D4C4B0;
+  left: 14px; top: 16px;
+  border-radius: 3px;
+}
+
+/* 椅子ヒント */
+.ani-chair-hint {
+  position: absolute;
+  width: 60px; height: 6px;
+  background: #B5895A; border-radius: 3px;
+  left: 50%; transform: translateX(-50%);
+  top: 100px; z-index: 1;
+  opacity: 0.5;
+}
+
+/* ラベルと矢印 */
+.ani-label {
+  position: absolute;
+  bottom: 8px; left: 0; right: 0;
+  text-align: center;
+  font-size: 10px; color: var(--sage);
+  font-weight: 600; line-height: 1.3;
+  padding: 0 4px;
+  background: rgba(237,244,238,0.85);
+  border-radius: 0 0 14px 14px;
+  padding: 4px 4px 2px;
+}
+.ani-arrow {
+  position: absolute;
+  font-size: 18px; color: var(--rose);
+  font-weight: 700; z-index: 10;
+}
+.arrow-lr, .arrow-lr2 { right: 8px; top: 40px; animation: arrowLR 1.5s ease-in-out infinite; }
+@keyframes arrowLR { 0%,100%{transform:scaleX(1);} 50%{transform:scaleX(1.4);} }
+.arrow-circle, .arrow-circle2, .arrow-circle3 { right: 8px; top: 36px; animation: spin 2s linear infinite; display: block; font-size: 20px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.arrow-circle-sm { left: 50px; top: 110px; font-size: 14px; animation: spin 1.5s linear infinite; }
+.arrow-out, .arrow-in { right: 8px; top: 68px; animation: arrowPulse 1.5s ease-in-out infinite; }
+.arrow-out-r, .arrow-back { right: 8px; top: 80px; animation: arrowPulse 1.5s ease-in-out infinite; }
+@keyframes arrowPulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.arrow-down, .arrow-down2 { right: 8px; top: 60px; animation: arrowBounce 1s ease-in-out infinite; }
+.arrow-up, .arrow-up2 { right: 8px; top: 40px; animation: arrowBounceUp 1s ease-in-out infinite; }
+.arrow-up-sm, .arrow-up-sm2, .arrow-up-sm3 { right: 10px; top: 55px; font-size: 16px; animation: arrowBounceUp 1s ease-in-out infinite; }
+@keyframes arrowBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+@keyframes arrowBounceUp { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
+.arrow-ud { right: 8px; top: 50px; animation: arrowUD 1s ease-in-out infinite; }
+@keyframes arrowUD { 0%,100%{transform:scaleY(1);} 50%{transform:scaleY(1.5);} }
+.arrow-side { right: 8px; top: 50px; animation: arrowPulse 1.5s ease-in-out infinite; }
+.arrow-twist, .arrow-twist2 { right: 8px; top: 40px; animation: spinSlow 2s ease-in-out infinite; font-size: 20px; }
+@keyframes spinSlow { 0%,100%{transform:rotate(0);} 50%{transform:rotate(180deg);} }
+.arrow-wide { right: 8px; top: 80px; animation: arrowPulse 1.5s ease-in-out infinite; }
+.arrow-walk { right: 8px; top: 70px; animation: walkAnim 0.8s steps(2) infinite; }
+@keyframes walkAnim { 0%{opacity:1;} 50%{opacity:0.3;} }
+.arrow-curve { right: 8px; top: 60px; animation: curveAnim 2s ease-in-out infinite; font-size: 20px; }
+@keyframes curveAnim { 0%,100%{transform:scaleX(1);} 50%{transform:scaleX(-1);} }
+.arrow-up-leg { left: 110px; top: 60px; animation: arrowBounceUp 0.8s ease-in-out infinite; }
+
+/* 呼吸テキスト */
+.ani-breath-txt {
+  position: absolute;
+  right: 10px; top: 36px;
+  font-size: 12px; color: #5B6EBD; font-weight: 600;
+}
+.breath-anim { animation: breatheTxt 3s ease-in-out infinite; }
+@keyframes breatheTxt { 0%,100%{opacity:0;transform:translateY(0);} 30%{opacity:1;} 80%{opacity:0;transform:translateY(-14px);} }
+
+/* ZZZ */
+.ani-zzz {
+  position: absolute;
+  right: 8px; top: 32px;
+  font-size: 13px; color: #5B6EBD; font-weight: 700;
+  animation: zzzAnim 3s ease-in-out infinite;
+  letter-spacing: 2px;
+}
+@keyframes zzzAnim { 0%,100%{opacity:0.2;} 50%{opacity:1;} }
+
+/* バランス星 */
+.balance-star, .ani-flower {
+  position: absolute;
+  right: 10px; top: 28px;
+  font-size: 18px;
+}
+.balance-star { animation: starPop 1.5s ease-in-out infinite; }
+@keyframes starPop { 0%,100%{transform:scale(1);} 50%{transform:scale(1.3) rotate(20deg);} }
+.ani-flower { animation: flowerSway 3s ease-in-out infinite; }
+@keyframes flowerSway { 0%,100%{transform:rotate(-10deg);} 50%{transform:rotate(10deg);} }
+
+/* 一覧カード内の小さい表示 */
+.ex-list-icon .ani-wrap {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  transform: scale(0.9);
+  overflow: hidden;
+}
+.ex-list-icon .ani-label,
+.ex-list-icon .ani-arrow,
+.ex-list-icon .ani-zzz,
+.ex-list-icon .balance-star,
+.ex-list-icon .ani-flower,
+.ex-list-icon .ani-breath-txt { display: none; }
+.ex-list-icon .ani-head { width: 18px; height: 18px; top: 4px; }
+.ex-list-icon .ani-head::before { width: 18px; height: 8px; }
+.ex-list-icon .ani-head::after { font-size: 7px; top: 7px; }
+.ex-list-icon .ani-body.seated { width: 20px; height: 22px; top: 20px; }
+.ex-list-icon .ani-body.standing { width: 18px; height: 28px; top: 18px; }
+.ex-list-icon .ani-body.lying-body { width: 36px; height: 9px; left: 4px; top: 26px; }
+
+/* ===== MULTI-PATTERN STYLES ===== */
+.ex-block { margin-bottom: 4px; }
+.ex-pattern-num {
+  display: inline-block;
+  background: var(--rose);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 3px 12px;
+  margin-bottom: 8px;
+}
+.ex-divider {
+  border: none;
+  border-top: 2px dashed var(--border);
+  margin: 16px 0;
+}
+.cal-ex-icons-row {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 2px 0;
+}
+.cal-ex-icon-sm {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* パターンボタン */
+.pattern-btn {
+  flex: 1;
+  padding: 8px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--cream);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 12px;
+  color: var(--sub);
+  cursor: pointer;
+  transition: all .2s;
+  font-weight: 500;
+}
+.pattern-btn:hover { border-color: var(--rose-m); color: var(--rose); }
+.pattern-btn-active {
+  background: var(--rose) !important;
+  color: white !important;
+  border-color: var(--rose) !important;
+}
+
+.cal-count-badge {
+  display: inline-block;
+  background: var(--rose);
+  color: white;
+  font-size: 8px;
+  border-radius: 8px;
+  padding: 1px 4px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-icon">🌸</div>
+    <div>
+      <div class="header-title">50代からの健康体操カレンダー</div>
+      <div class="header-sub">毎日1つ・続けて健康に</div>
+    </div>
+    <div class="header-streak" id="streak-badge">🔥 0日連続</div>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" data-tab="calendar" onclick="switchTab('calendar')">📅 カレンダー</button>
+  <button class="nav-btn" data-tab="exlist" onclick="switchTab('exlist')">🤸 体操一覧</button>
+  <button class="nav-btn" data-tab="progress" onclick="switchTab('progress')">📊 記録</button>
+  <button class="nav-btn" data-tab="settings" onclick="switchTab('settings')">⚙️ 設定</button>
+</nav>
+
+<div class="main">
+
+  <!-- CALENDAR TAB -->
+  <div class="panel active" id="panel-calendar">
+    <div class="goal-card">
+      <div class="goal-info">
+        <div class="goal-label">⚖️ 体重の記録</div>
+        <div class="goal-nums">
+          <span class="goal-current" id="g-current">--</span>
+          <span class="goal-unit">kg</span>
+          <span class="goal-arrow">→</span>
+          <span class="goal-target" id="g-target">--</span>
+          <span class="goal-unit">kg</span>
+        </div>
+        <div class="goal-diff" id="g-diff">目標体重を設定してください</div>
+      </div>
+      <button class="goal-edit-btn" onclick="openGoalModal()">設定</button>
+    </div>
+
+    <div class="badge-row" id="badge-row"></div>
+
+    <div class="cal-header">
+      <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+      <div class="cal-title" id="cal-title"></div>
+      <button class="cal-nav" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-weekdays">
+      <div class="cal-wd">日</div><div class="cal-wd">月</div><div class="cal-wd">火</div>
+      <div class="cal-wd">水</div><div class="cal-wd">木</div><div class="cal-wd">金</div><div class="cal-wd">土</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+  <!-- EXERCISE LIST TAB -->
+  <div class="panel" id="panel-exlist">
+    <div class="ex-list-grid" id="ex-list-grid"></div>
+  </div>
+
+  <!-- PROGRESS TAB -->
+  <div class="panel" id="panel-progress">
+    <div class="prog-card">
+      <div class="prog-title">🏆 今月の達成状況</div>
+      <div class="prog-nums">
+        <div class="prog-num"><div class="prog-num-val" id="pr-done">0</div><div class="prog-num-label">達成日数</div></div>
+        <div class="prog-num"><div class="prog-num-val" id="pr-streak">0</div><div class="prog-num-label">連続記録</div></div>
+        <div class="prog-num"><div class="prog-num-val" id="pr-rate">0%</div><div class="prog-num-label">達成率</div></div>
+      </div>
+      <div class="ex-heatmap" id="ex-heatmap"></div>
+    </div>
+    <div class="prog-card">
+      <div class="prog-title">⚖️ 体重推移（今月）</div>
+      <div class="weight-graph" id="weight-graph"></div>
+    </div>
+    <div class="prog-card" style="background:var(--rose-l);">
+      <div class="prog-title">🌸 継続のコツ</div>
+      <div style="font-size:12px;color:var(--sub);line-height:2;">
+        ✅ 毎日同じ時間に行うと習慣化しやすい<br>
+        ✅ できない日は「半分だけ」でもOK<br>
+        ✅ 体重は朝起きてすぐ・トイレ後に測定<br>
+        ✅ 7日続けたら自分にご褒美を🎁<br>
+        ✅ 筋肉痛は翌日休んでOK（痛みが引いたら再開）
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div class="panel" id="panel-settings">
+    <div class="setting-card">
+      <label class="setting-label">👤 プロフィール設定</label>
+      <div class="form-row">
+        <div class="form-group">
+          <label>現在の体重 (kg)</label>
+          <input class="form-input" id="s-current" type="number" step="0.1" placeholder="例：58.5">
+        </div>
+        <div class="form-group">
+          <label>目標体重 (kg)</label>
+          <input class="form-input" id="s-target" type="number" step="0.1" placeholder="例：53.0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>身長 (cm)</label>
+          <input class="form-input" id="s-height" type="number" placeholder="例：158">
+        </div>
+        <div class="form-group">
+          <label>スタート日</label>
+          <input class="form-input" id="s-startdate" type="date">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:4px;">
+        <label>1日の体操パターン数</label>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <button class="pattern-btn" id="pb1" onclick="setPattern(1)">1パターン</button>
+          <button class="pattern-btn" id="pb2" onclick="setPattern(2)">2パターン</button>
+          <button class="pattern-btn" id="pb3" onclick="setPattern(3)">3パターン</button>
+        </div>
+        <div style="font-size:10px;color:var(--sub);margin-top:5px;">※ 他の日と同じ体操が出ることもあります</div>
+      </div>
+      <button class="s-save-btn" onclick="saveSettings()">💾 設定を保存</button>
+    </div>
+    <div class="setting-card">
+      <label class="setting-label">💾 データ管理</label>
+      <button class="export-btn" onclick="exportData()">📤 エクスポート（JSON）</button>
+      <label class="import-label">📥 インポート（JSONを選択）<input type="file" accept=".json" style="display:none" onchange="importData(event)"></label>
+    </div>
+    <div class="setting-card" style="background:var(--sage-l);">
+      <div class="prog-title" style="margin-bottom:6px;">🌿 体操の効果について</div>
+      <div style="font-size:11px;color:var(--sub);line-height:1.9;">
+        50代は筋肉量が年間約1%ずつ減少します。<br>
+        椅子・床でできる軽い体操でも、<br>
+        続けることで<b>基礎代謝アップ・骨密度維持・関節痛予防</b>に効果があります。<br>
+        無理せず、毎日少しずつが一番大切です🌸
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DAY MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-date-title">4月1日（月）</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- 複数体操パターン表示エリア -->
+      <div id="modal-exercises-wrap"></div>
+      <div class="weight-row">
+        <label>⚖️ 今日の体重</label>
+        <input class="weight-input" id="modal-weight" type="number" step="0.1" placeholder="--">
+        <span class="weight-unit">kg</span>
+      </div>
+      <button class="done-toggle" id="done-toggle-btn" onclick="toggleDone()">✅ 体操できた！チェックする</button>
+      <button class="save-btn" onclick="saveDay()">💾 保存する</button>
+    </div>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="goal-modal" id="goal-modal">
+  <div class="goal-modal-box">
+    <div class="gm-title">🎯 目標体重の設定</div>
+    <div class="gm-row">
+      <label>現在の体重</label>
+      <input class="gm-input" id="gm-current" type="number" step="0.1" placeholder="58.5">
+      <span style="font-size:12px;color:var(--sub);">kg</span>
+    </div>
+    <div class="gm-row">
+      <label>目標体重</label>
+      <input class="gm-input" id="gm-target" type="number" step="0.1" placeholder="53.0">
+      <span style="font-size:12px;color:var(--sub);">kg</span>
+    </div>
+    <button class="gm-save" onclick="saveGoal()">設定する</button>
+    <button onclick="document.getElementById('goal-modal').classList.remove('open')" style="width:100%;padding:10px;background:none;border:none;color:var(--sub);font-size:13px;cursor:pointer;margin-top:6px;">キャンセル</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ======= CSS ANIMATION ILLUSTRATIONS =======
+// 各体操のアニメーションHTML文字列を返す関数配列
+const ILLUST = [
+  // 1 首回し
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head neck-tilt"></div>
+    <div class="ani-label">首をゆっくり左右に</div>
+    <div class="ani-arrow arrow-lr">↔</div>
+  </div>`,
+  // 2 肩回し
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-shoulder shoulder-roll left"></div>
+    <div class="ani-shoulder shoulder-roll right"></div>
+    <div class="ani-label">肩をぐるぐる回す</div>
+    <div class="ani-arrow arrow-circle">↺</div>
+  </div>`,
+  // 3 胸張り
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated chest-open"></div>
+    <div class="ani-head"></div>
+    <div class="ani-arm arm-back left"></div>
+    <div class="ani-arm arm-back right"></div>
+    <div class="ani-label">腕を後ろに引いて胸を張る</div>
+    <div class="ani-arrow arrow-out">←→</div>
+  </div>`,
+  // 4 上体前屈
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated bend-forward"></div>
+    <div class="ani-head head-down"></div>
+    <div class="ani-arm arm-down"></div>
+    <div class="ani-label">上体をゆっくり前に倒す</div>
+    <div class="ani-arrow arrow-down">↓</div>
+  </div>`,
+  // 5 足首回し
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-leg leg-lifted left"></div>
+    <div class="ani-foot foot-rotate"></div>
+    <div class="ani-label">足首をくるくる回す</div>
+    <div class="ani-arrow arrow-circle-sm">↺</div>
+  </div>`,
+  // 6 かかと上げ下げ
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body standing"></div>
+    <div class="ani-head"></div>
+    <div class="ani-leg standing-leg left"></div>
+    <div class="ani-leg standing-leg right"></div>
+    <div class="ani-heel heel-raise"></div>
+    <div class="ani-label">かかとをゆっくり上げ下げ</div>
+    <div class="ani-arrow arrow-ud">↕</div>
+  </div>`,
+  // 7 膝抱え
+  ()=>`<div class="ani-wrap lying">
+    <div class="ani-body lying-body"></div>
+    <div class="ani-head head-side"></div>
+    <div class="ani-leg knee-hug"></div>
+    <div class="ani-arm arm-hug"></div>
+    <div class="ani-label">膝を抱えて腰をほぐす</div>
+  </div>`,
+  // 8 脚上げ
+  ()=>`<div class="ani-wrap lying">
+    <div class="ani-body lying-body"></div>
+    <div class="ani-head head-side"></div>
+    <div class="ani-leg leg-raise"></div>
+    <div class="ani-label">片足をゆっくり持ち上げる</div>
+    <div class="ani-arrow arrow-up-sm">↑</div>
+  </div>`,
+  // 9 腹式呼吸
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated belly-breathe"></div>
+    <div class="ani-head"></div>
+    <div class="ani-belly belly-expand"></div>
+    <div class="ani-label">お腹を膨らませて深呼吸</div>
+    <div class="ani-breath-txt breath-anim">ふ〜っ</div>
+  </div>`,
+  // 10 背伸び
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body standing"></div>
+    <div class="ani-head"></div>
+    <div class="ani-arm arm-up-both stretch-up"></div>
+    <div class="ani-label">両腕を高く上げて伸びる</div>
+    <div class="ani-arrow arrow-up">↑</div>
+  </div>`,
+  // 11 椅子スクワット
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body squat-body"></div>
+    <div class="ani-head squat-head"></div>
+    <div class="ani-arm arm-front"></div>
+    <div class="ani-chair-hint"></div>
+    <div class="ani-label">座るように腰を落とす</div>
+    <div class="ani-arrow arrow-ud">↕</div>
+  </div>`,
+  // 12 体側のばし
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated side-lean"></div>
+    <div class="ani-head head-lean"></div>
+    <div class="ani-arm arm-side-up"></div>
+    <div class="ani-label">腕を上げて体を横に倒す</div>
+    <div class="ani-arrow arrow-side">→</div>
+  </div>`,
+  // 13 ふくらはぎストレッチ
+  ()=>`<div class="ani-wrap">
+    <div class="ani-wall"></div>
+    <div class="ani-body standing lean-wall"></div>
+    <div class="ani-head"></div>
+    <div class="ani-leg leg-back"></div>
+    <div class="ani-label">壁に手をついて足を後ろへ</div>
+    <div class="ani-arrow arrow-back">←</div>
+  </div>`,
+  // 14 膝伸ばし
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-leg leg-extend"></div>
+    <div class="ani-label">片足をまっすぐ伸ばす</div>
+    <div class="ani-arrow arrow-out-r">→</div>
+  </div>`,
+  // 15 腰ひねり
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated twist"></div>
+    <div class="ani-head head-twist"></div>
+    <div class="ani-arm arm-twist"></div>
+    <div class="ani-label">上体をゆっくりひねる</div>
+    <div class="ani-arrow arrow-twist">↻</div>
+  </div>`,
+  // 16 胸ひらき
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-arm arm-clasp chest-expand"></div>
+    <div class="ani-label">手を組んで胸を開閉</div>
+    <div class="ani-arrow arrow-lr2">↔</div>
+  </div>`,
+  // 17 ウエストひねり
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body standing twist"></div>
+    <div class="ani-head head-twist"></div>
+    <div class="ani-arm arm-wide"></div>
+    <div class="ani-label">立ったままウエストをひねる</div>
+    <div class="ani-arrow arrow-twist2">↻</div>
+  </div>`,
+  // 18 お尻歩き
+  ()=>`<div class="ani-wrap lying">
+    <div class="ani-body floor-sit"></div>
+    <div class="ani-head head-side2"></div>
+    <div class="ani-hip hip-walk"></div>
+    <div class="ani-label">お尻を左右交互に前へ</div>
+    <div class="ani-arrow arrow-walk">→→</div>
+  </div>`,
+  // 19 肩甲骨ほぐし
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-arm arm-back-clasp scapula"></div>
+    <div class="ani-shoulder-blade"></div>
+    <div class="ani-label">肩甲骨を寄せてほぐす</div>
+    <div class="ani-arrow arrow-in">→←</div>
+  </div>`,
+  // 20 もも上げ
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body standing"></div>
+    <div class="ani-head"></div>
+    <div class="ani-leg knee-up march"></div>
+    <div class="ani-arm arm-swing"></div>
+    <div class="ani-label">ひざを高く上げて歩く</div>
+    <div class="ani-arrow arrow-up-leg">↑</div>
+  </div>`,
+  // 21 耳肩タッチ
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head ear-touch"></div>
+    <div class="ani-shoulder shoulder-up"></div>
+    <div class="ani-label">肩を耳に近づける</div>
+    <div class="ani-arrow arrow-up-sm2">↑</div>
+  </div>`,
+  // 22 太もも内側
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated leg-wide"></div>
+    <div class="ani-head"></div>
+    <div class="ani-leg thigh-in left"></div>
+    <div class="ani-leg thigh-in right"></div>
+    <div class="ani-label">足を開いて上体を前傾</div>
+    <div class="ani-arrow arrow-wide">↙↘</div>
+  </div>`,
+  // 23 猫のポーズ
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated cat-pose"></div>
+    <div class="ani-head head-cat"></div>
+    <div class="ani-label">背中を丸めて伸ばす</div>
+    <div class="ani-arrow arrow-curve">〜</div>
+  </div>`,
+  // 24 手首ほぐし
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-arm arm-forward wrist-rotate"></div>
+    <div class="ani-wrist-circle"></div>
+    <div class="ani-label">手首をくるくる回す</div>
+    <div class="ani-arrow arrow-circle2">↺</div>
+  </div>`,
+  // 25 ゆったり腹筋
+  ()=>`<div class="ani-wrap lying">
+    <div class="ani-body lying-crunch"></div>
+    <div class="ani-head head-crunch"></div>
+    <div class="ani-leg leg-bent-both"></div>
+    <div class="ani-label">頭と肩を少し持ち上げる</div>
+    <div class="ani-arrow arrow-up-sm3">↑</div>
+  </div>`,
+  // 26 開脚ストレッチ
+  ()=>`<div class="ani-wrap lying">
+    <div class="ani-body floor-sit2"></div>
+    <div class="ani-head head-side2"></div>
+    <div class="ani-leg leg-open left"></div>
+    <div class="ani-leg leg-open right"></div>
+    <div class="ani-label">足を開いてゆっくり前傾</div>
+    <div class="ani-arrow arrow-down2">↓</div>
+  </div>`,
+  // 27 バランス体操
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-arm arm-balance"></div>
+    <div class="ani-leg leg-float balance-float"></div>
+    <div class="ani-label">足を浮かせてバランス</div>
+    <div class="ani-star balance-star">⭐</div>
+  </div>`,
+  // 28 股関節ほぐし
+  ()=>`<div class="ani-wrap lying">
+    <div class="ani-body lying-body"></div>
+    <div class="ani-head head-side"></div>
+    <div class="ani-leg hip-rotate"></div>
+    <div class="ani-label">膝を倒して股関節をほぐす</div>
+    <div class="ani-arrow arrow-circle3">↺</div>
+  </div>`,
+  // 29 手のひらを天井へ
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head"></div>
+    <div class="ani-arm arm-raise-palm palm-up"></div>
+    <div class="ani-label">手のひらを上に向けて上げる</div>
+    <div class="ani-arrow arrow-up2">↑</div>
+  </div>`,
+  // 30 大の字リラックス
+  ()=>`<div class="ani-wrap lying">
+    <div class="ani-body lying-spread"></div>
+    <div class="ani-head head-side3"></div>
+    <div class="ani-arm arm-spread left"></div>
+    <div class="ani-arm arm-spread right"></div>
+    <div class="ani-leg leg-spread left"></div>
+    <div class="ani-leg leg-spread right"></div>
+    <div class="ani-label">全身の力を抜いてリラックス</div>
+    <div class="ani-zzz">z z Z</div>
+  </div>`,
+  // 31 感謝の合掌
+  ()=>`<div class="ani-wrap">
+    <div class="ani-body seated"></div>
+    <div class="ani-head head-calm"></div>
+    <div class="ani-arm arm-pray pray-anim"></div>
+    <div class="ani-label">手を合わせて深呼吸</div>
+    <div class="ani-flower">🌸</div>
+  </div>`,
+];
+
+// ======= EXERCISE DATA =======
+const EXERCISES = [
+  {day:1, name:'首ゆっくり回し', cat:'stretch', icon:'🔄',
+    steps:['椅子に深く座り、背筋を伸ばします','ゆっくり右に首を倒し、5秒キープ','正面に戻し、左にも同じく5秒キープ','前に倒し、後ろは避けてOK。左右3回ずつ'],
+    point:'💡 肩の力を完全に抜いて。痛みを感じたら無理しないで'},
+  {day:2, name:'肩ぐるぐる体操', cat:'stretch', icon:'🌀',
+    steps:['椅子に座り、両腕を軽く曲げます','肩を前→上→後→下と大きくゆっくり回す','10回前回し、10回後ろ回し'],
+    point:'💡 呼吸に合わせて。上のときに息を吸い、下で吐く'},
+  {day:3, name:'胸張り・背中引き', cat:'stretch', icon:'🦋',
+    steps:['椅子に座り両腕を後ろに回す','肩甲骨を寄せるように腕を引き、胸を張る','10秒キープ×3回'],
+    point:'💡 猫背の矯正に効果的。デスクワークの合間にも◎'},
+  {day:4, name:'上体前屈ストレッチ', cat:'stretch', icon:'🌿',
+    steps:['椅子に浅く座り、足を肩幅に開く','ゆっくり上体を前に倒し、腕を足首へ向けて伸ばす','10秒キープ。背中が伸びるのを感じて×3回'],
+    point:'💡 腰痛がある方は無理せず、できる範囲だけでOK'},
+  {day:5, name:'足首くるくる体操', cat:'stretch', icon:'🦶',
+    steps:['椅子に座り、片足を少し浮かせる','つま先で大きな円を描くように10回回す','逆方向にも10回。反対の足も同様に'],
+    point:'💡 むくみ・冷え性の改善に。仕事中でも気軽にできます'},
+  {day:6, name:'かかと上げ下げ', cat:'muscle', icon:'⬆️',
+    steps:['椅子の背やテーブルを軽く持って立つ','ゆっくりつま先立ちになり3秒キープ','ゆっくりかかとを下ろす×20回'],
+    point:'💡 ふくらはぎは第二の心臓。血流改善・下半身強化に'},
+  {day:7, name:'膝抱え（腰ほぐし）', cat:'stretch', icon:'🤗',
+    steps:['床またはベッドで仰向けに寝る','片膝を両手で抱えて、胸に引き寄せる','20秒キープ。反対の足も同様に×3セット'],
+    point:'💡 腰のコリをやさしくほぐします。力を抜いてリラックスして'},
+  {day:8, name:'仰向け脚上げ', cat:'muscle', icon:'🦵',
+    steps:['仰向けに寝て、腰を床につけた状態をキープ','片足をゆっくり30cmほど上げて5秒キープ','ゆっくり下ろす。左右10回ずつ'],
+    point:'💡 おなか・腰周りを引き締める。腰が浮く場合は高さを下げて'},
+  {day:9, name:'腹式呼吸（リラックス）', cat:'breath', icon:'💨',
+    steps:['椅子または床に楽な姿勢で座る','鼻から4秒かけてゆっくり吸い、お腹が膨らむのを感じる','口から8秒かけてゆっくり吐き出す×10回'],
+    point:'💡 自律神経を整え、更年期の不調にも効果的です'},
+  {day:10, name:'朝のびのび背伸び', cat:'stretch', icon:'🌅',
+    steps:['立った状態で、両腕をゆっくり頭の上へ伸ばす','手のひらを天井に向けてさらに伸ばし5秒キープ','息を吐きながらゆっくり下ろす×10回'],
+    point:'💡 起床後や仕事の合間に。血行促進と気分のリセットに◎'},
+  {day:11, name:'椅子スクワット', cat:'muscle', icon:'💪',
+    steps:['椅子の前に立ち、腕を前に伸ばす','椅子に座るようにゆっくりお尻を下ろす（座る直前で止める）','ゆっくり立ち上がる×10回'],
+    point:'💡 膝がつま先より前に出ないよう注意。背筋はまっすぐ'},
+  {day:12, name:'体側のばし', cat:'stretch', icon:'🌊',
+    steps:['椅子に座り、右腕をゆっくり頭の上へ','左手は椅子の縁をつかんで固定し、右へ体を傾ける','10秒キープ。左右3回ずつ'],
+    point:'💡 脇腹から肩にかけて、気持ちよく伸ばして'},
+  {day:13, name:'ふくらはぎストレッチ', cat:'stretch', icon:'🧘',
+    steps:['壁に手をついて立つ','片足を後ろに引き、かかとを床につけたまま前の膝を曲げる','20秒キープ。左右交互に3回'],
+    point:'💡 足のむくみ・疲れに効果的。ゆっくり呼吸しながら'},
+  {day:14, name:'膝伸ばし体操', cat:'muscle', icon:'🦿',
+    steps:['椅子に浅く座り、両手を太ももの上に置く','片足をゆっくりまっすぐ伸ばし5秒キープ','ゆっくり下ろす。左右10回ずつ'],
+    point:'💡 膝まわりの筋肉を鍛えて関節を守ります'},
+  {day:15, name:'腰ひねり体操', cat:'stretch', icon:'🔀',
+    steps:['椅子に深く座り、背筋を伸ばす','右手を左膝の外側に置き、ゆっくり左へ体をひねる','10秒キープ。左右3回ずつ'],
+    point:'💡 腰・脊柱をやさしくほぐす。無理のない範囲で'},
+  {day:16, name:'手を組んで胸ひらき', cat:'stretch', icon:'🙏',
+    steps:['両手を胸の前で組む','組んだ手をそのまま前に押し出し、背中を丸める','次に手を頭の後ろで組み直し、胸を開いて背中を寄せる×5回'],
+    point:'💡 猫背改善・肩こり解消。呼吸に合わせてゆっくりと'},
+  {day:17, name:'ウエストひねり（立ち）', cat:'muscle', icon:'💃',
+    steps:['肩幅に足を開いて立ち、両腕を横に広げる','腰から上だけをゆっくり左右にひねる','左右交互に20回'],
+    point:'💡 ウエストを引き締め、内臓機能のアップにも◎'},
+  {day:18, name:'お尻歩き', cat:'muscle', icon:'🐢',
+    steps:['床に座り、脚をまっすぐ前に伸ばす','右のお尻→左のお尻と交互に前に進む','10歩前進、10歩後退を3回'],
+    point:'💡 骨盤まわりを鍛えます。背筋はまっすぐをキープして'},
+  {day:19, name:'肩甲骨ほぐし', cat:'stretch', icon:'🕊️',
+    steps:['椅子に座り、両手を後ろで組む','肩甲骨を引き寄せながら腕を後ろ下へ引く','10秒キープ×5回'],
+    point:'💡 肩甲骨周りの筋肉をほぐすと基礎代謝もアップします'},
+  {day:20, name:'その場もも上げ', cat:'muscle', icon:'🚶',
+    steps:['椅子の背かテーブルを軽く持って立つ','片足の膝をお腹の高さまでゆっくり上げる','左右交互に20回。腕も振ると効果アップ'],
+    point:'💡 下半身の血流改善・股関節の柔軟性アップ'},
+  {day:21, name:'肩こり解消・耳肩タッチ', cat:'stretch', icon:'👂',
+    steps:['椅子に座り、肩の力を抜く','右肩をゆっくり右耳に近づけ5秒キープ','反対も同様。左右10回ずつ'],
+    point:'💡 首・肩のこりをスッキリ解消。痛みがある方は無理しないで'},
+  {day:22, name:'太もも内側ストレッチ', cat:'stretch', icon:'🦋',
+    steps:['椅子の端に浅く座り、足を肩幅より広く開く','両手を太ももの内側に置き、上体をゆっくり前傾させる','10秒キープ×3回'],
+    point:'💡 内ももを伸ばして骨盤の歪みを整えます'},
+  {day:23, name:'猫のポーズ（背中丸め）', cat:'stretch', icon:'🐱',
+    steps:['椅子に座り、両手を膝の上に置く','息を吐きながら背中を丸め、あごを引く','息を吸いながら胸を張って背中を反らす×10回'],
+    point:'💡 背骨全体をほぐすヨガの基本。腰痛予防にも効果的'},
+  {day:24, name:'手首クルクル体操', cat:'stretch', icon:'💮',
+    steps:['腕を前に伸ばし、手首を大きくゆっくり回す','外回り10回、内回り10回','続けて握ったり開いたりグーパー20回'],
+    point:'💡 手・指の血行改善。スマホやPC疲れに◎'},
+  {day:25, name:'ゆったり腹筋', cat:'muscle', icon:'🌟',
+    steps:['仰向けに寝て、膝を90度に曲げる','頭と肩をゆっくり少しだけ上げて3秒キープ','ゆっくり下ろす×10回。背中全体が上がらなくてOK'],
+    point:'💡 腰に負担をかけない安全な腹筋です。首ではなくお腹を使って'},
+  {day:26, name:'開脚ストレッチ（床）', cat:'stretch', icon:'🌸',
+    steps:['床に座り、脚をできる範囲で開く','正面に手を置き、ゆっくり前傾する','20秒キープ×3回。痛みのない範囲で'],
+    point:'💡 股関節・内もも・腰のケアに。無理に開かなくてOK'},
+  {day:27, name:'バランスチェア体操', cat:'balance', icon:'⭐',
+    steps:['椅子に浅く座り、両腕を横に広げる','両足を床から少し浮かせて10秒バランスをキープ','ゆっくり下ろして休憩。×5回'],
+    point:'💡 体幹を鍛えます。転倒防止にも効果的'},
+  {day:28, name:'股関節ほぐし（仰向け）', cat:'stretch', icon:'🌙',
+    steps:['仰向けに寝て、片膝を立てる','立てた膝をゆっくり外側に倒し10秒キープ','内側に倒しても10秒。左右3回ずつ'],
+    point:'💡 股関節の可動域を広げて冷えやむくみを改善'},
+  {day:29, name:'手のひらを天井へ', cat:'stretch', icon:'✨',
+    steps:['椅子に座り、両腕を体の横で上げていく','手のひらを天井に向けながらゆっくり上へ','最高点で5秒キープ。息を吐きながら下ろす×10回'],
+    point:'💡 肩・腕・体側を一度に伸ばします。姿勢改善にも◎'},
+  {day:30, name:'全身リラックス（大の字）', cat:'breath', icon:'💤',
+    steps:['床またはベッドで仰向けになり大の字に広がる','目を閉じて全身の力を抜く','腹式呼吸を10回繰り返し、体をゆったりほぐす'],
+    point:'💡 30日頑張った体へのご褒美ストレッチ。心身ともにリセット'},
+  {day:31, name:'感謝の合掌ポーズ', cat:'breath', icon:'🙏',
+    steps:['椅子に座り、手を胸の前で合わせる','目を閉じてゆっくり深呼吸を3回','「今日も動けた！」と自分を褒めてあげましょう'],
+    point:'🌸 31日間お疲れ様でした！続けた自分を誇りに思ってください'}
+];
+
+// ======= STATE =======
+let dayData = {};
+let settings = { currentWeight: null, targetWeight: null, height: null, startDate: null, dailyCount: 1 };
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth();
+let modalDay = null;
+
+function loadData() {
+  try { dayData = JSON.parse(localStorage.getItem('ex50_days') || '{}'); } catch(e){ dayData={}; }
+  try {
+    const saved = JSON.parse(localStorage.getItem('ex50_settings') || '{}');
+    settings = Object.assign({currentWeight:null,targetWeight:null,height:null,startDate:null,dailyCount:1}, saved);
+    settings.dailyCount = parseInt(settings.dailyCount) || 1;
+  } catch(e){ settings = {currentWeight:null,targetWeight:null,height:null,startDate:null,dailyCount:1}; }
+}
+function saveData() {
+  localStorage.setItem('ex50_days', JSON.stringify(dayData));
+  localStorage.setItem('ex50_settings', JSON.stringify(settings));
+}
+function getDayKey(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+
+// ======= TABS =======
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+  if(name==='progress') renderProgress();
+}
+
+// ======= STREAK =======
+function calcStreak() {
+  const today = new Date();
+  let streak = 0;
+  for(let i=0; i<365; i++){
+    const d = new Date(today); d.setDate(today.getDate()-i);
+    const key = getDayKey(d.getFullYear(), d.getMonth(), d.getDate());
+    if(dayData[key]?.done) streak++;
+    else if(i>0) break;
+  }
+  return streak;
+}
+
+function calcTotalDone() {
+  return Object.values(dayData).filter(d=>d.done).length;
+}
+
+function renderStreak(){
+  const s = calcStreak();
+  document.getElementById('streak-badge').textContent = `🔥 ${s}日連続`;
+}
+
+// ======= BADGES =======
+const BADGES = [
+  {days:3, icon:'🌱', label:'芽吹き', title:'3日達成！'},
+  {days:7, icon:'🌸', label:'1週間', title:'7日達成！'},
+  {days:14, icon:'🌿', label:'2週間', title:'14日達成！'},
+  {days:21, icon:'🌺', label:'3週間', title:'21日達成！'},
+  {days:30, icon:'🏆', label:'1ヶ月', title:'30日達成！'},
+  {days:31, icon:'👑', label:'完全制覇', title:'31日全達成！'},
+];
+
+function renderBadges(){
+  const total = calcTotalDone();
+  const row = document.getElementById('badge-row');
+  row.innerHTML = BADGES.map(b=>{
+    const earned = total >= b.days;
+    return `<div class="badge ${earned?'earned':''}" title="${earned?b.title:'あと'+(b.days-total)+'日'}">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-label">${b.label}</div>
+      ${earned?`<div class="badge-day">達成！</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ======= GOAL CARD =======
+function renderGoalCard(){
+  const cw = settings.currentWeight;
+  const tw = settings.targetWeight;
+  // 直近の体重記録があれば使う
+  const keys = Object.keys(dayData).sort().reverse();
+  let latest = null;
+  for(const k of keys){ if(dayData[k]?.weight){ latest=dayData[k].weight; break; } }
+  const disp = latest || cw;
+  document.getElementById('g-current').textContent = disp ? disp.toFixed(1) : '--';
+  document.getElementById('g-target').textContent = tw ? tw.toFixed(1) : '--';
+  const diff = document.getElementById('g-diff');
+  if(disp && tw){
+    const d = (disp - tw).toFixed(1);
+    if(d > 0){ diff.textContent = `あと ${d}kg で目標達成！`; diff.className='goal-diff bad'; }
+    else if(d < 0){ diff.textContent = `目標達成！ ${Math.abs(d)}kg 超過！🎉`; diff.className='goal-diff good'; }
+    else { diff.textContent = '🎉 目標体重達成おめでとうございます！'; diff.className='goal-diff good'; }
+  } else {
+    diff.textContent = '目標体重を設定してください';
+    diff.className='goal-diff';
+  }
+}
+
+// ======= CALENDAR =======
+function changeMonth(d){ currentMonth+=d; if(currentMonth>11){currentMonth=0;currentYear++;} if(currentMonth<0){currentMonth=11;currentYear--;} renderCalendar(); }
+
+// 1日分の体操リストを返す（dailyCount分）
+function getExercisesForDate(y,m,d){
+  let startDate = settings.startDate ? new Date(settings.startDate) : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const cellDate = new Date(y,m,d);
+  const diff = Math.floor((cellDate - startDate) / (1000*60*60*24));
+  if(diff < 0) return [];
+  const count = settings.dailyCount || 1;
+  const result = [];
+  for(let i=0; i<count; i++){
+    // diff*count+i をEXERCISESの長さで循環させる（被りOK）
+    const idx = (diff * count + i) % EXERCISES.length;
+    result.push(EXERCISES[idx]);
+  }
+  return result;
+}
+// 後方互換：単一返し（カレンダーのアイコン用）
+function getExerciseForDate(y,m,d){
+  const list = getExercisesForDate(y,m,d);
+  return list.length > 0 ? list[0] : null;
+}
+
+function renderCalendar(){
+  const y=currentYear, m=currentMonth;
+  document.getElementById('cal-title').textContent = `${y}年${m+1}月`;
+  const grid = document.getElementById('cal-grid');
+  const firstDay = new Date(y,m,1).getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  const today = new Date();
+  const todayStr = getDayKey(today.getFullYear(),today.getMonth(),today.getDate());
+
+  let html='';
+  for(let i=0;i<firstDay;i++) html+='<div class="cal-cell empty"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    const key = getDayKey(y,m,d);
+    const data = dayData[key]||{};
+    const dow = new Date(y,m,d).getDay();
+    const isToday = key===todayStr;
+    const isFuture = new Date(y,m,d) > today;
+    const ex = getExerciseForDate(y,m,d);
+    let cls='cal-cell';
+    if(isToday) cls+=' today';
+    if(data.done) cls+=' done';
+    if(isFuture) cls+=' cal-future';
+
+    let inner=`<div class="cal-date-num ${dow===0?'sun':dow===6?'sat':''}">
+      <span>${d}</span>
+      ${data.weight?`<span class="cal-weight-tag">${data.weight}kg</span>`:''}
+    </div>`;
+    const exList = getExercisesForDate(y,m,d);
+    if(exList.length > 0){
+      const iconsHtml = exList.map(e=>'<span class="cal-ex-icon-sm">'+e.icon+'</span>').join('');
+      inner+='<div class="cal-ex-icons-row">'+iconsHtml+'</div>';
+      const nameSuffix = exList.length>1 ? ' <span class="cal-count-badge">×'+exList.length+'</span>' : '';
+      inner+='<div class="cal-exercise-name">'+exList[0].name+nameSuffix+'</div>';
+    }
+    if(data.done) inner+=`<div class="cal-check">✅</div>`;
+    html+=`<div class="${cls}" onclick="openDayModal(${y},${m},${d})">${inner}</div>`;
+  }
+  grid.innerHTML=html;
+  renderGoalCard();
+  renderBadges();
+  renderStreak();
+}
+
+// ======= DAY MODAL =======
+function openDayModal(y,m,d){
+  modalDay={y,m,d};
+  const key=getDayKey(y,m,d);
+  const data=dayData[key]||{};
+  const dow=['日','月','火','水','木','金','土'][new Date(y,m,d).getDay()];
+  document.getElementById('modal-date-title').textContent=`${m+1}月${d}日（${dow}）`;
+
+  const exList = getExercisesForDate(y,m,d);
+  const catLabel={stretch:'🤸 ストレッチ',muscle:'💪 筋力トレーニング',balance:'⭐ バランス',breath:'🌬️ 呼吸・リラックス'};
+  const catCls={stretch:'stretch',muscle:'muscle',balance:'balance',breath:'breath'};
+  const wrap = document.getElementById('modal-exercises-wrap');
+  if(exList.length > 0){
+    wrap.innerHTML = exList.map((ex, pi)=>{
+      const illustIdx = (ex.day-1) % ILLUST.length;
+      const stepNums = ['❶','❷','❸','❹','❺'];
+      const stepsHtml = ex.steps.map((s,si)=>'<li>'+stepNums[si]+' '+s+'</li>').join('');
+      const catText = catLabel[ex.cat]||ex.cat;
+      const catC = catCls[ex.cat]||'stretch';
+      const numLabel = exList.length>1 ? '<div class="ex-pattern-num">パターン '+(pi+1)+'</div>' : '';
+      return '<div class="ex-block">'
+        + numLabel
+        + '<div class="ex-illust">' + ILLUST[illustIdx]() + '</div>'
+        + '<div class="ex-name">' + ex.name + '</div>'
+        + '<span class="ex-cat '+catC+'">' + catText + '</span>'
+        + '<div class="ex-steps"><ol style="list-style:none;padding:0;">' + stepsHtml + '</ol></div>'
+        + '<div class="ex-point">' + ex.point + '</div>'
+        + '</div>';
+    }).join('<hr class="ex-divider">');
+  } else {
+    wrap.innerHTML = '<div style="text-align:center;font-size:40px;padding:20px;">📅</div>'
+      + '<div class="ex-name">この日の体操はありません</div>'
+      + '<p style="color:var(--sub);font-size:12px;padding:8px;">スタート日を設定すると体操が表示されます</p>';
+  }
+
+  document.getElementById('modal-weight').value=data.weight||'';
+  const btn=document.getElementById('done-toggle-btn');
+  if(data.done){ btn.textContent='✅ 達成済み（タップで取り消し）'; btn.className='done-toggle done-btn'; }
+  else{ btn.textContent='✅ 体操できた！チェックする'; btn.className='done-toggle undone'; }
+
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModalBg(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+
+function toggleDone(){
+  if(!modalDay) return;
+  const key=getDayKey(modalDay.y,modalDay.m,modalDay.d);
+  if(!dayData[key]) dayData[key]={};
+  dayData[key].done = !dayData[key].done;
+  const btn=document.getElementById('done-toggle-btn');
+  if(dayData[key].done){
+    btn.textContent='✅ 達成済み（タップで取り消し）'; btn.className='done-toggle done-btn';
+    showToast('🎉 体操達成！素晴らしい！');
+  }else{
+    btn.textContent='✅ 体操できた！チェックする'; btn.className='done-toggle undone';
+  }
+  saveData(); renderBadges(); renderStreak();
+}
+
+function saveDay(){
+  if(!modalDay) return;
+  const key=getDayKey(modalDay.y,modalDay.m,modalDay.d);
+  if(!dayData[key]) dayData[key]={};
+  const w=parseFloat(document.getElementById('modal-weight').value);
+  dayData[key].weight = isNaN(w)?null:w;
+  if(w && !settings.currentWeight) settings.currentWeight=w;
+  saveData(); renderCalendar(); closeModal();
+  showToast('💾 保存しました！');
+}
+
+// ======= GOAL MODAL =======
+function openGoalModal(){
+  document.getElementById('gm-current').value=settings.currentWeight||'';
+  document.getElementById('gm-target').value=settings.targetWeight||'';
+  document.getElementById('goal-modal').classList.add('open');
+}
+function saveGoal(){
+  const c=parseFloat(document.getElementById('gm-current').value);
+  const t=parseFloat(document.getElementById('gm-target').value);
+  if(!isNaN(c)) settings.currentWeight=c;
+  if(!isNaN(t)) settings.targetWeight=t;
+  saveData(); renderGoalCard();
+  document.getElementById('goal-modal').classList.remove('open');
+  showToast('🎯 目標体重を設定しました！');
+}
+
+// ======= EXERCISE LIST =======
+function renderExList(){
+  const catLabel={stretch:'🤸 ストレッチ',muscle:'💪 筋トレ',balance:'⭐ バランス',breath:'🌬️ 呼吸'};
+  const catColors={stretch:'#FAF0F0',muscle:'#FBF3E8',balance:'#EDF4EE',breath:'#EEF2FF'};
+  const catTextColors={stretch:'#9B3D45',muscle:'#C4924A',balance:'#6B8F71',breath:'#5B6EBD'};
+  document.getElementById('ex-list-grid').innerHTML = EXERCISES.map((ex,i)=>{
+    const bgColor = catColors[ex.cat] || '#FAF0F0';
+    const txtColor = catTextColors[ex.cat] || '#9B3D45';
+    return '<div class="ex-list-card" onclick="showExDetail(' + i + ')">'
+      + '<div class="ex-list-icon">' + ILLUST[i]() + '</div>'
+      + '<div class="ex-list-info">'
+      + '<div class="ex-list-day">' + ex.day + '\u65E5\u76EE</div>'
+      + '<div class="ex-list-name">' + ex.name + '</div>'
+      + '<span class="ex-list-cat-badge" style="background:' + bgColor + ';color:' + txtColor + ';">' + catLabel[ex.cat] + '</span>'
+      + '</div></div>';
+  }).join('');
+}
+
+function showExDetail(i){
+  const ex=EXERCISES[i];
+  // モーダルを使って表示（日付なしで）
+  const catLabel={stretch:'🤸 ストレッチ',muscle:'💪 筋力トレーニング',balance:'⭐ バランス',breath:'🌬️ 呼吸・リラックス'};
+  const catCls={stretch:'stretch',muscle:'muscle',balance:'balance',breath:'breath'};
+  document.getElementById('modal-date-title').textContent = ex.day+'日目：'+ex.name;
+  const catLabel2={stretch:'🤸 ストレッチ',muscle:'💪 筋力トレーニング',balance:'⭐ バランス',breath:'🌬️ 呼吸・リラックス'};
+  const catCls2={stretch:'stretch',muscle:'muscle',balance:'balance',breath:'breath'};
+  const stepNums2=['❶','❷','❸','❹','❺'];
+  const stepsHtml2=ex.steps.map((s,j)=>'<li>'+stepNums2[j]+' '+s+'</li>').join('');
+  const wrap2=document.getElementById('modal-exercises-wrap');
+  wrap2.innerHTML='<div class="ex-block">'
+    +'<div class="ex-illust">'+ILLUST[i]()+'</div>'
+    +'<div class="ex-name">'+ex.name+'</div>'
+    +'<span class="ex-cat '+(catCls2[ex.cat]||'stretch')+'">'+(catLabel2[ex.cat]||ex.cat)+'</span>'
+    +'<div class="ex-steps"><ol style="list-style:none;padding:0;">'+stepsHtml2+'</ol></div>'
+    +'<div class="ex-point">'+ex.point+'</div>'
+    +'</div>';
+  document.getElementById('modal-weight').style.display='none';
+  document.querySelector('.weight-row').style.display='none';
+  document.getElementById('done-toggle-btn').style.display='none';
+  document.querySelector('.save-btn').style.display='none';
+  modalDay=null;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+// ======= PROGRESS =======
+function renderProgress(){
+  const y=currentYear,m=currentMonth;
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const today=new Date();
+  let done=0, weightData=[];
+
+  for(let d=1;d<=daysInMonth;d++){
+    const key=getDayKey(y,m,d);
+    const data=dayData[key]||{};
+    if(data.done) done++;
+    weightData.push({d, w:data.weight||null});
+  }
+  const pastDays=Math.min(today.getDate(), daysInMonth);
+  const rate=pastDays>0?Math.round(done/pastDays*100):0;
+
+  document.getElementById('pr-done').textContent=done;
+  document.getElementById('pr-streak').textContent=calcStreak();
+  document.getElementById('pr-rate').textContent=rate+'%';
+
+  // ヒートマップ
+  const hm=document.getElementById('ex-heatmap');
+  hm.innerHTML='';
+  for(let d=1;d<=31;d++){
+    const key=getDayKey(y,m,d);
+    const data=dayData[key]||{};
+    const isToday=getDayKey(today.getFullYear(),today.getMonth(),today.getDate())===key;
+    const div=document.createElement('div');
+    div.className='hm-cell'+(data.done?' done':'')+(isToday?' today':'');
+    div.title=d+'日';
+    if(d>daysInMonth) div.style.visibility='hidden';
+    hm.appendChild(div);
+  }
+
+  // 体重グラフ
+  const validW=weightData.filter(x=>x.w!==null).map(x=>x.w);
+  const minW=validW.length>0?Math.min(...validW)-0.5:50;
+  const maxW=validW.length>0?Math.max(...validW)+0.5:70;
+  const wRange=maxW-minW||1;
+  const tw=settings.targetWeight;
+  document.getElementById('weight-graph').innerHTML=weightData.filter((_,i)=>i<31).map(({d,w})=>{
+    const h=w?Math.round(((w-minW)/wRange)*64)+8:0;
+    const isTgt=tw&&w&&Math.abs(w-tw)<0.3;
+    const bg=isTgt?'var(--sage-m)':'linear-gradient(180deg,var(--rose-m),var(--rose-l))';
+    const valDiv=w?'<div class="wg-val">'+w+'</div>':'';
+    return '<div class="wg-bar-wrap">'
+      +valDiv
+      +'<div class="wg-bar" style="height:'+h+'px;background:'+bg+'"></div>'
+      +'<div class="wg-label">'+d+'日</div>'
+      +'</div>';
+  }).join('');
+}
+
+// ======= SETTINGS =======
+function saveSettings(){
+  settings.currentWeight=parseFloat(document.getElementById('s-current').value)||settings.currentWeight;
+  settings.targetWeight=parseFloat(document.getElementById('s-target').value)||settings.targetWeight;
+  settings.height=parseInt(document.getElementById('s-height').value)||settings.height;
+  settings.startDate=document.getElementById('s-startdate').value||settings.startDate;
+  saveData(); renderCalendar(); updatePatternBtns();
+  showToast('⚙️ 設定を保存しました');
+}
+
+function setPattern(n){
+  settings.dailyCount = parseInt(n);
+  saveData();
+  renderCalendar();
+  updatePatternBtns();
+  showToast(n+'パターンに設定しました！');
+}
+
+function updatePatternBtns(){
+  const n = settings.dailyCount || 1;
+  [1,2,3].forEach(i=>{
+    const btn = document.getElementById('pb'+i);
+    if(btn) btn.classList.toggle('pattern-btn-active', i===n);
+  });
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({version:1,days:dayData,settings},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`exercise50_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('📤 エクスポートしました');
+}
+function importData(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const p=JSON.parse(ev.target.result);
+      if(!confirm('データを上書きしますか？')) return;
+      dayData=p.days||{}; settings=Object.assign(settings,p.settings||{});
+      saveData(); renderCalendar();
+      showToast('📥 インポートしました');
+    }catch{ showToast('⚠️ 読み込みエラー'); }
+    e.target.value='';
+  };
+  r.readAsText(f);
+}
+
+// ======= TOAST =======
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ======= INIT =======
+function init(){
+  loadData();
+  // スタート日が未設定なら今月1日をデフォルト
+  if(!settings.startDate){
+    const now=new Date();
+    settings.startDate=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+  }
+  renderCalendar();
+  renderExList();
+  // 設定タブのフォームにセット
+  if(settings.currentWeight) document.getElementById('s-current').value=settings.currentWeight;
+  if(settings.targetWeight) document.getElementById('s-target').value=settings.targetWeight;
+  if(settings.height) document.getElementById('s-height').value=settings.height;
+  if(settings.startDate) document.getElementById('s-startdate').value=settings.startDate;
+
+  updatePatternBtns();
+  // モーダルを体操一覧から開いたとき用の要素リセット
+  document.getElementById('modal-overlay').addEventListener('click', e=>{
+    if(e.target===document.getElementById('modal-overlay')){
+      // 非表示にしたエレメントを元に戻す
+      document.querySelector('.weight-row').style.display='';
+      document.getElementById('done-toggle-btn').style.display='';
+      document.querySelector('.save-btn').style.display='';
+      closeModal();
+    }
+  });
+}
+init();
+</script>
+</body>
+</html>
